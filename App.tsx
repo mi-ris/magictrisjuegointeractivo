@@ -12,6 +12,7 @@ import ChatBuddy from './components/ChatBuddy';
 import VoiceLive from './components/VoiceLive';
 import MediaGenerator from './components/MediaGenerator';
 import NavBar from './components/NavBar';
+import CloudBackground from './components/CloudBackground';
 import { MAGIC_PATH } from './services/mockData';
 import { supabase, isSupabaseReady } from './services/supabaseClient';
 
@@ -141,6 +142,8 @@ const App: React.FC = () => {
   };
 
   const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
+  const inGame = selectedCardIndex !== null;
+  const darkBg = inGame || section === 'info';
 
   const renderSection = () => {
     if (selectedCardIndex !== null && user) {
@@ -162,17 +165,18 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-10">
+    <div className="min-h-screen pb-10 relative">
+      <CloudBackground variant={darkBg ? 'dark' : 'light'} />
       {showNavBar && user && (
         <NavBar
           user={user}
           currentSection={section}
-          inGame={selectedCardIndex !== null}
+          inGame={inGame}
           onNavigate={(s) => { setSelectedCardIndex(null); setSection(s); }}
           onHome={handleNavBarHome}
         />
       )}
-      {renderSection()}
+      <div className="relative z-10">{renderSection()}</div>
     </div>
   );
 };

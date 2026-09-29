@@ -35,7 +35,7 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-white md:bg-gray-100 p-4 sm:p-8 animate-fade-in pb-20 pt-24 sm:pt-28">
+    <div className="min-h-screen bg-transparent md:bg-transparent p-4 sm:p-8 animate-fade-in pb-20 pt-24 sm:pt-28">
       <div className="print:hidden flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
         <div className="text-center">
             <h1 className="text-4xl font-magic text-indigo-900 uppercase">Álbum de Recortes</h1>
@@ -51,13 +51,13 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
       </div>
 
       <div className="print:hidden max-w-4xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-[2.5rem] border-4 border-yellow-400 shadow-xl flex items-center gap-6">
+          <div className="bg-white p-6 rounded-[2.5rem] border-4 border-amber-400 shadow-xl flex items-center gap-6">
               <span className="text-5xl"></span>
               <p className="text-indigo-900 font-bold leading-tight">
                  Recorta las tarjetas y pégalas en cartulina. ¡Ahora cada sílaba se ve mejor que nunca!
               </p>
           </div>
-          <div className="bg-blue-600 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
+          <div className="bg-indigo-500 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
               <h3 className="font-magic text-xl mb-2">¿Cómo imprimir?</h3>
               <p className="text-sm font-bold opacity-90">1. Toca el botón verde "IMPRIMIR".</p>
               <p className="text-sm font-bold opacity-90">2. En las opciones de tu impresora, activa <b>"Gráficos de fondo"</b>.</p>

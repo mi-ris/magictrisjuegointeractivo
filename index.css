@@ -35,3 +35,13 @@ body {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+.cloud-emoji {
+  position: absolute;
+  animation: float-cloud linear infinite;
+}
+
+@keyframes float-cloud {
+  from { transform: translateX(-20vw); }
+  to { transform: translateX(110vw); }
+}

@@ -48,14 +48,14 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
 
   return (
     <div className="p-4 pt-24 sm:pt-28 max-w-4xl mx-auto space-y-4 pb-12 relative">
-      <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-blue-100/30">
+      <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-indigo-100/30">
         
         <div className="bg-gradient-to-r from-indigo-500 to-cyan-500 p-6 flex flex-row items-center justify-center gap-6">
           <div className="relative">
             <span className="text-[70px] bg-white w-24 h-24 rounded-full border-[6px] border-white shadow-xl flex items-center justify-center animate-bounce-in">
               {user.avatar}
             </span>
-            <div className="absolute -bottom-1 -right-1 bg-yellow-400 p-2 rounded-full border-2 border-white shadow-lg animate-pulse text-xs">✨</div>
+            <div className="absolute -bottom-1 -right-1 bg-amber-400 p-2 rounded-full border-2 border-white shadow-lg animate-pulse text-xs">✨</div>
           </div>
           <h2 className="text-3xl text-white font-magic drop-shadow-lg uppercase tracking-tight">¡Perfil de {user.nickname}!</h2>
         </div>
@@ -111,7 +111,7 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
                   <button 
                     key={a}
                     onClick={() => handleAvatarSelect(a)}
-                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-blue-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-blue-200'}`}
+                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-indigo-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-indigo-200'}`}
                   >
                     {a}
                   </button>

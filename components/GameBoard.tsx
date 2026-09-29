@@ -118,11 +118,8 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   const letterCardClass = "w-28 h-40 sm:w-36 md:w-48 sm:h-52 md:h-64 rounded-[2rem] sm:rounded-[2.5rem] bg-white border-[6px] sm:border-[10px] border-indigo-200 flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-center overflow-hidden p-2 sm:p-3";
 
   return (
-    <div className="fixed inset-0 bg-indigo-950 z-[100] flex flex-col p-3 sm:p-6 pt-24 sm:pt-28 overflow-y-auto">
+    <div className="fixed inset-0 bg-indigo-950/90 backdrop-blur-sm z-[100] flex flex-col p-3 sm:p-6 pt-24 sm:pt-28 overflow-y-auto">
       <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute left-[15%] top-[-10%] opacity-20 animate-bounce text-4xl sm:text-6xl">🫧</div>
-          <div className="absolute left-[45%] top-[-20%] opacity-20 animate-pulse text-2xl sm:text-4xl">⭐</div>
-          <div className="absolute left-[75%] top-[-5%] opacity-20 animate-bounce text-5xl sm:text-7xl">🫧</div>
       </div>
 
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto w-full pb-8 sm:pb-10">

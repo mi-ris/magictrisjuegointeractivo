@@ -46,12 +46,12 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
                     disabled={!isUnlocked}
                     onClick={() => handleCardSelect(currentIndex)}
                     className={`group relative w-24 sm:w-32 aspect-[4/5] p-2 rounded-[2rem] flex flex-col items-center justify-around transition-all duration-300 shadow-xl border-4 ${
-                      isUnlocked ? `${card.color} border-white/30 ${isNext ? 'ring-4 ring-yellow-400 scale-110 z-10' : 'hover:scale-105'}` : 'bg-indigo-950/40 opacity-40 grayscale border-transparent cursor-not-allowed'
+                      isUnlocked ? `${card.color} border-white/30 ${isNext ? 'ring-4 ring-amber-400 scale-110 z-10' : 'hover:scale-105'}` : 'bg-indigo-950/40 opacity-40 grayscale border-transparent cursor-not-allowed'
                     }`}
                   >
                     <div className="text-4xl sm:text-5xl">{isUnlocked ? card.icon : '🔒'}</div>
                     <h4 className="font-magic text-white text-2xl sm:text-3xl uppercase">{isUnlocked ? card.value : ''}</h4>
-                    {isNext && <div className="absolute -top-3 -right-3 bg-yellow-400 w-8 h-8 rounded-full border-2 border-white animate-bounce flex items-center justify-center text-xs shadow-lg z-20">⭐</div>}
+                    {isNext && <div className="absolute -top-3 -right-3 bg-amber-400 w-8 h-8 rounded-full border-2 border-white animate-bounce flex items-center justify-center text-xs shadow-lg z-20">⭐</div>}
                   </button>
                 );
               })}
@@ -65,7 +65,7 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
             <div className="text-3xl sm:text-4xl floating-gumi select-none">👾</div>
             <div className="flex-1">
                 <div className="w-full bg-black/40 h-2.5 sm:h-3 rounded-full overflow-hidden border border-white/10">
-                    <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-400 shadow-[0_0_15px_rgba(34,211,238,0.6)] transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
+                    <div className="h-full bg-gradient-to-r from-cyan-400 to-indigo-400 shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
                 </div>
                 <div className="flex justify-between mt-1.5 px-1">
                     <p className="text-[8px] sm:text-[10px] font-magic text-cyan-300 uppercase tracking-widest">Progreso Mágico</p>

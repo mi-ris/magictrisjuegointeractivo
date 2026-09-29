@@ -28,7 +28,7 @@ const Info: React.FC<Props> = ({ onBack }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-indigo-950 z-[110] overflow-y-auto animate-fade-in pt-20 sm:pt-24">
+    <div className="fixed inset-0 bg-indigo-950/90 backdrop-blur-sm z-[110] overflow-y-auto animate-fade-in pt-20 sm:pt-24">
       <div className="p-6 max-w-5xl mx-auto pb-32 pt-8">
         <div className="bg-indigo-900/60 backdrop-blur-3xl rounded-[5rem] border-4 border-white/20 p-8 sm:p-20 shadow-2xl">
           <h2 className="text-5xl sm:text-8xl font-magic text-white text-center mb-16 drop-shadow-2xl uppercase tracking-tighter">¿Qué es MagicTris?</h2>

@@ -33,7 +33,13 @@ const BRIGHT_COLORS = [
     { bg: 'bg-cyan-500', hex: '#06b6d4' },
     { bg: 'bg-teal-500', hex: '#14b8a6' },
     { bg: 'bg-sky-500', hex: '#0ea5e9' },
+    { bg: 'bg-violet-500', hex: '#8b5cf6' },
     { bg: 'bg-amber-500', hex: '#f59e0b' },
+    { bg: 'bg-emerald-500', hex: '#10b981' },
+    { bg: 'bg-rose-500', hex: '#f43f5e' },
+    { bg: 'bg-fuchsia-500', hex: '#d946ef' },
+    { bg: 'bg-orange-500', hex: '#f97316' },
+    { bg: 'bg-lime-500', hex: '#84cc16' },
 ];
 
 const PICTOGRAM_DATA: Record<string, { icon: string, word: string }> = {
