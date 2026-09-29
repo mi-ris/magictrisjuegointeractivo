@@ -206,7 +206,7 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
             <button onClick={handleToggle} className="text-indigo-400 text-sm font-bold uppercase tracking-widest">
                 {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Entra'}
             </button>
-            <button onClick={handleGuestEntry} className="text-pink-500 font-magic text-xl uppercase">
+            <button onClick={handleGuestEntry} className="text-cyan-600 font-magic text-xl uppercase">
                 MODO INVITADO
             </button>
         </div>

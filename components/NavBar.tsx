@@ -24,9 +24,9 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
   const getStreakData = (s: number) => {
     if (s === 0) return { color: 'from-gray-400 to-gray-500', icon: '❄️' };
-    if (s < 4) return { color: 'from-orange-400 to-red-500', icon: '🔥' };
-    if (s < 7) return { color: 'from-fuchsia-500 to-purple-600', icon: '💜' };
-    return { color: 'from-yellow-400 via-orange-500 to-red-600 animate-pulse', icon: '👑' };
+    if (s < 4) return { color: 'from-amber-400 to-amber-500', icon: '🔥' };
+    if (s < 7) return { color: 'from-cyan-400 to-blue-500', icon: '🔥' };
+    return { color: 'from-amber-400 to-yellow-400 animate-pulse', icon: '👑' };
   };
 
   const streak = getStreakData(user.streak);
@@ -50,11 +50,11 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
-        <div className="bg-white/10 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-yellow-400/50 flex items-center gap-1 sm:gap-2 shadow-lg backdrop-blur-md">
+        <div className="bg-white/10 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-amber-400/50 flex items-center gap-1 sm:gap-2 shadow-lg backdrop-blur-md">
           <span className="text-lg sm:text-2xl drop-shadow-md">⭐</span>
           <div className="flex flex-col items-start leading-none">
             <span className="text-sm sm:text-xl font-magic text-white">{user.score}</span>
-            <span className="text-[5px] sm:text-[7px] font-magic text-yellow-300 font-bold uppercase tracking-widest">Puntos</span>
+            <span className="text-[5px] sm:text-[7px] font-magic text-amber-300 font-bold uppercase tracking-widest">Puntos</span>
           </div>
         </div>
 
@@ -70,7 +70,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('info')}
-          className="bg-cyan-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+          className="bg-cyan-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
           title="¿Qué es MagicTris?"
         >
           <span className="text-sm sm:text-xl font-bold">❓</span>
@@ -78,7 +78,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('printable')}
-          className="bg-white text-indigo-700 hover:bg-blue-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-indigo-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
+          className="bg-white text-indigo-700 hover:bg-indigo-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-indigo-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
         >
           <span className="hidden sm:inline">🎴</span> Álbum
         </button>

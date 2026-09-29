@@ -148,7 +148,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                         <VoiceButton text={card.audioInstruction} className="py-3 sm:py-4 bg-indigo-500 rounded-full border-b-[6px] sm:border-b-[8px] border-indigo-800" />
                         <button 
                             onClick={handleStartGame}
-                            className="bg-pink-500 text-white py-4 sm:py-6 rounded-[2rem] sm:rounded-[2.5rem] text-2xl sm:text-3xl font-magic shadow-2xl hover:bg-pink-600 border-b-[6px] sm:border-b-[8px] border-pink-800 transition-all active:translate-y-1 uppercase tracking-widest"
+                            className="bg-cyan-500 text-white py-4 sm:py-6 rounded-[2rem] sm:rounded-[2.5rem] text-2xl sm:text-3xl font-magic shadow-2xl hover:bg-cyan-600 border-b-[6px] sm:border-b-[8px] border-cyan-800 transition-all active:translate-y-1 uppercase tracking-widest"
                         >
                             JUGAR
                         </button>
@@ -197,7 +197,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                         onClick={choice === card.value ? handleCorrectFindLetter : handleError}
                         className={letterCardClass}
                     >
-                        <span className={`font-magic leading-none text-center block text-black tracking-tighter ${choice.length > 2 ? 'text-[50px] sm:text-[90px]' : 'text-[70px] sm:text-[130px]'}`}>
+                        <span className={`font-magic leading-none text-center block text-indigo-900 tracking-tighter ${choice.length > 2 ? 'text-[50px] sm:text-[90px]' : 'text-[70px] sm:text-[130px]'}`}>
                             {choice}
                         </span>
                     </button>
@@ -207,7 +207,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         )}
 
         {gameState === 'success' && (
-          <div className="bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 p-8 sm:p-16 rounded-[3rem] sm:rounded-[5rem] border-[6px] sm:border-[10px] border-white shadow-[0_0_80px_rgba(251,191,36,0.6)] text-center space-y-6 sm:space-y-10 max-w-lg w-full">
+          <div className="bg-gradient-to-br from-amber-400 via-cyan-500 to-indigo-500 p-8 sm:p-16 rounded-[3rem] sm:rounded-[5rem] border-[6px] sm:border-[10px] border-white shadow-[0_0_80px_rgba(99,102,241,0.5)] text-center space-y-6 sm:space-y-10 max-w-lg w-full">
              <div className="text-[100px] sm:text-[180px] drop-shadow-2xl">🌟</div>
              <div className="space-y-2">
                 <h3 className="text-4xl sm:text-7xl font-magic text-white drop-shadow-lg tracking-tighter uppercase">EXCELENTE</h3>
@@ -215,7 +215,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
              </div>
              <button 
                 onClick={handleComplete}
-                className="bg-white text-orange-600 py-4 sm:py-6 px-10 sm:px-16 rounded-full text-2xl sm:text-3xl font-magic shadow-2xl hover:scale-110 active:scale-95 transition-all border-b-[6px] sm:border-b-[8px] border-orange-200 uppercase tracking-widest"
+                className="bg-white text-indigo-600 py-4 sm:py-6 px-10 sm:px-16 rounded-full text-2xl sm:text-3xl font-magic shadow-2xl hover:scale-110 active:scale-95 transition-all border-b-[6px] sm:border-b-[8px] border-indigo-200 uppercase tracking-widest"
              >
                 SIGUIENTE
              </button>

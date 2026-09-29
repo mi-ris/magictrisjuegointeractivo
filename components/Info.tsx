@@ -43,12 +43,12 @@ const Info: React.FC<Props> = ({ onBack }) => {
               ))}
           </div>
 
-          <div className="mt-20 p-10 sm:p-14 bg-gradient-to-br from-indigo-500 to-purple-700 rounded-[4.5rem] text-center border-8 border-white/40 shadow-2xl">
+          <div className="mt-20 p-10 sm:p-14 bg-gradient-to-br from-indigo-500 to-cyan-600 rounded-[4.5rem] text-center border-8 border-white/40 shadow-2xl">
               <span className="text-7xl mb-8 block">✨</span>
               <p className="text-2xl sm:text-3xl font-bold text-white leading-snug">
                   "Este juego ha sido diseñado para que cada letra sea un paso lleno de alegría y aprendizaje."
               </p>
-              <p className="mt-8 text-yellow-300 font-magic text-4xl sm:text-5xl drop-shadow-md">MAGICTRIS</p>
+              <p className="mt-8 text-amber-300 font-magic text-4xl sm:text-5xl drop-shadow-md">MAGICTRIS</p>
           </div>
         </div>
       </div>

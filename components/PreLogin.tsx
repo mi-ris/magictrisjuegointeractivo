@@ -5,8 +5,8 @@ import { getSharedAudioContext, playPopSound } from './AudioUtils';
 interface Props { onStart: () => void; }
 
 const PreLogin: React.FC<Props> = ({ onStart }) => {
-  const cardColors = ['border-pink-400', 'border-yellow-400', 'border-green-400'];
-  const textColors = ['text-pink-500', 'text-yellow-500', 'text-green-500'];
+  const cardColors = ['border-indigo-400', 'border-cyan-400', 'border-blue-400'];
+  const textColors = ['text-indigo-500', 'text-cyan-500', 'text-blue-500'];
 
   const handleStart = () => {
     // Activamos el contexto de audio en la primera interacción real
@@ -55,7 +55,7 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
       <div className="flex flex-col items-center w-full max-w-sm z-20">
         <button 
           onClick={handleStart}
-          className="btn-magic-pop bg-orange-500 hover:bg-orange-600 text-white text-2xl sm:text-4xl px-10 sm:px-16 py-4 sm:py-6 rounded-full font-magic uppercase tracking-widest border-2 sm:border-4 border-white shadow-[0_8px_0_#c2410c] sm:shadow-[0_12px_0_#c2410c] active:shadow-none active:translate-y-2 flex items-center justify-center"
+          className="btn-magic-pop bg-indigo-500 hover:bg-indigo-600 text-white text-2xl sm:text-4xl px-10 sm:px-16 py-4 sm:py-6 rounded-full font-magic uppercase tracking-widest border-2 sm:border-4 border-white shadow-[0_8px_0_#3730a3] sm:shadow-[0_12px_0_#3730a3] active:shadow-none active:translate-y-2 flex items-center justify-center"
         >
           COMENZAR
         </button>

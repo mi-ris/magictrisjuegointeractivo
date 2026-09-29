@@ -28,23 +28,12 @@ const LEVEL_GROUPS = [
 ];
 
 const BRIGHT_COLORS = [
-    { bg: 'bg-red-500', hex: '#ef4444' },
-    { bg: 'bg-orange-500', hex: '#f97316' },
-    { bg: 'bg-amber-500', hex: '#f59e0b' },
-    { bg: 'bg-yellow-500', hex: '#eab308' },
-    { bg: 'bg-lime-500', hex: '#84cc16' },
-    { bg: 'bg-green-500', hex: '#22c55e' },
-    { bg: 'bg-emerald-500', hex: '#10b981' },
-    { bg: 'bg-teal-500', hex: '#14b8a6' },
-    { bg: 'bg-cyan-500', hex: '#06b6d4' },
-    { bg: 'bg-sky-500', hex: '#0ea5e9' },
-    { bg: 'bg-blue-500', hex: '#3b82f6' },
     { bg: 'bg-indigo-500', hex: '#6366f1' },
-    { bg: 'bg-violet-500', hex: '#8b5cf6' },
-    { bg: 'bg-purple-500', hex: '#a855f7' },
-    { bg: 'bg-fuchsia-500', hex: '#d946ef' },
-    { bg: 'bg-pink-500', hex: '#ec4899' },
-    { bg: 'bg-rose-500', hex: '#f43f5e' },
+    { bg: 'bg-blue-500', hex: '#3b82f6' },
+    { bg: 'bg-cyan-500', hex: '#06b6d4' },
+    { bg: 'bg-teal-500', hex: '#14b8a6' },
+    { bg: 'bg-sky-500', hex: '#0ea5e9' },
+    { bg: 'bg-amber-500', hex: '#f59e0b' },
 ];
 
 const PICTOGRAM_DATA: Record<string, { icon: string, word: string }> = {
