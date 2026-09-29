@@ -23,7 +23,7 @@ const CloudBackground: React.FC<Props> = ({ variant = 'light' }) => {
           className={`cloud-emoji absolute ${c.size} ${c.top}`}
           style={{ animationDuration: c.duration, left: c.left, opacity }}
         >
-          {i % 2 === 0 ? '☁️' : '✨'}
+          ☁️
         </div>
       ))}
     </div>
