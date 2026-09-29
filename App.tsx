@@ -11,6 +11,7 @@ import PrintableCards from './components/PrintableCards';
 import ChatBuddy from './components/ChatBuddy';
 import VoiceLive from './components/VoiceLive';
 import MediaGenerator from './components/MediaGenerator';
+import NavBar from './components/NavBar';
 import { MAGIC_PATH } from './services/mockData';
 import { supabase, isSupabaseReady } from './services/supabaseClient';
 
@@ -134,6 +135,13 @@ const App: React.FC = () => {
     </div>
   );
 
+  const handleNavBarHome = () => {
+    setSelectedCardIndex(null);
+    setSection('hub');
+  };
+
+  const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
+
   const renderSection = () => {
     if (selectedCardIndex !== null && user) {
         return <GameBoard user={user} card={MAGIC_PATH[selectedCardIndex]} onComplete={handleGameComplete} onBack={() => setSelectedCardIndex(null)} />;
@@ -146,14 +154,27 @@ const App: React.FC = () => {
       case 'profile': return user ? <Profile user={user} onBack={() => setSection('hub')} onLogout={() => { setUser(null); localStorage.removeItem('magic_user'); setSection('pre-login'); }} onUpdate={(upd) => setUser({...user, ...upd})} /> : null;
       case 'info': return <Info onBack={() => setSection('hub')} />;
       case 'printable': return <PrintableCards onBack={() => setSection('hub')} />;
-      case 'chat': return <div className="p-4 pt-20 max-w-2xl mx-auto"><button onClick={() => setSection('hub')} className="mb-4 text-white bg-indigo-600 px-6 py-2 rounded-full font-magic uppercase">Volver</button><ChatBuddy /></div>;
-      case 'voice': return <div className="p-4 pt-20 max-w-2xl mx-auto"><button onClick={() => setSection('hub')} className="mb-4 text-white bg-indigo-600 px-6 py-2 rounded-full font-magic uppercase">Volver</button><VoiceLive /></div>;
-      case 'generator': return <div className="p-4 pt-20 max-w-2xl mx-auto"><button onClick={() => setSection('hub')} className="mb-4 text-white bg-indigo-600 px-6 py-2 rounded-full font-magic uppercase">Volver</button><MediaGenerator /></div>;
+      case 'chat': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><ChatBuddy /></div>;
+      case 'voice': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><VoiceLive /></div>;
+      case 'generator': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><MediaGenerator /></div>;
       default: return <PreLogin onStart={() => setSection('login')} />;
     }
   };
 
-  return <div className="min-h-screen pb-10">{renderSection()}</div>;
+  return (
+    <div className="min-h-screen pb-10">
+      {showNavBar && user && (
+        <NavBar
+          user={user}
+          currentSection={section}
+          inGame={selectedCardIndex !== null}
+          onNavigate={(s) => { setSelectedCardIndex(null); setSection(s); }}
+          onHome={handleNavBarHome}
+        />
+      )}
+      {renderSection()}
+    </div>
+  );
 };
 
 export default App;

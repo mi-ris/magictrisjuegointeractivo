@@ -35,15 +35,8 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-white md:bg-gray-100 p-4 sm:p-8 animate-fade-in pb-20">
+    <div className="min-h-screen bg-white md:bg-gray-100 p-4 sm:p-8 animate-fade-in pb-20 pt-24 sm:pt-28">
       <div className="print:hidden flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-        <button 
-          onClick={onBack}
-          className="bg-indigo-600 text-white px-8 py-3 rounded-full font-magic text-xl shadow-lg active:scale-95 transition-all flex items-center gap-3"
-        >
-          <span>🏠</span> Volver
-        </button>
-
         <div className="text-center">
             <h1 className="text-4xl font-magic text-indigo-900 uppercase">Álbum de Recortes</h1>
             <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest">¡Imprime y juega fuera de línea!</p>

@@ -47,9 +47,7 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
   };
 
   return (
-    <div className="p-4 pt-16 max-w-4xl mx-auto space-y-4 pb-12 relative">
-      <button onClick={handleBack} className="fixed top-4 left-4 bg-white/80 backdrop-blur-md p-3 rounded-2xl shadow-lg border-2 border-blue-200 text-3xl z-[60] active:scale-90 transition-transform">🏠</button>
-      
+    <div className="p-4 pt-24 sm:pt-28 max-w-4xl mx-auto space-y-4 pb-12 relative">
       <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-blue-100/30">
         
         <div className="bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 p-6 flex flex-row items-center justify-center gap-6">
