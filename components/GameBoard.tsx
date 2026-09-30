@@ -122,7 +122,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {choicePict?.imageUrl ? (
           <img src={choicePict.imageUrl} alt={choice} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
         ) : (
-          <span className="text-4xl sm:text-6xl">{choicePict?.icon || '✨'}</span>
+          <div className="w-full h-full bg-indigo-100" />
         )}
         <div className="absolute bottom-0 left-0 right-0 bg-indigo-500/90 py-1 text-center">
           <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{choice}</span>
@@ -131,20 +131,23 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
     );
   };
 
+  const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>;
+  const CheckIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
+  const StarIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+
   return (
     <div className="fixed inset-0 z-[100] flex flex-col p-3 sm:p-6 pt-20 sm:pt-24 overflow-y-auto">
 
-      {/* Botón volver */}
       <button
         onClick={handleBack}
-        className="absolute top-20 sm:top-24 left-3 sm:left-6 z-[110] bg-white/90 p-2 sm:p-3 rounded-xl border-2 border-indigo-200 text-lg sm:text-xl hover:bg-white transition-all active:scale-90 shadow-md"
+        className="absolute top-20 sm:top-24 left-3 sm:left-6 z-[110] bg-white/90 p-2 sm:p-3 rounded-xl border-2 border-indigo-200 hover:bg-white transition-all active:scale-90 shadow-md"
       >
-        ←
+        <BackIcon />
       </button>
 
       {/* Gumi guía */}
       <div className="fixed top-20 sm:top-24 right-3 sm:right-6 z-[110] flex flex-col items-end">
-        <div className={`text-3xl sm:text-4xl ${!reduceAnim ? 'floating-gumi' : ''} select-none`}>👾</div>
+        <img src="/gumi-avatar.webp" alt="Gumi" className={`w-8 h-8 sm:w-10 sm:h-10 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
       </div>
 
       {/* Mensaje de Gumi */}
@@ -159,7 +162,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {/* GREETING */}
         {step === 'greeting' && (
           <div className="flex flex-col items-center space-y-4 text-center w-full animate-fade-in">
-            <div className={`text-7xl ${!reduceAnim ? 'animate-bounce' : ''}`}>👾</div>
+            <img src="/gumi-avatar.webp" alt="Gumi" className={`w-20 h-20 ${!reduceAnim ? 'animate-bounce' : ''} object-contain`} />
             <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[2rem] border-4 border-indigo-200 max-w-xs w-full shadow-xl">
               <h3 className="text-xl sm:text-2xl font-magic text-indigo-700 uppercase mb-1">¡Hola, {user.nickname}!</h3>
               <p className="text-indigo-400 text-sm mb-3">Vamos a aprender una palabra.</p>
@@ -183,9 +186,9 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                 </h3>
                 <div className="bg-white rounded-[2rem] border-4 border-indigo-100 shadow-lg overflow-hidden w-[85%] mx-auto">
                   {pictInfo?.imageUrl ? (
-                    <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-full h-36 sm:h-48 object-cover" />
+                    <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-full h-36 sm:h-48 object-contain bg-white" />
                   ) : (
-                    <div className="text-6xl sm:text-7xl py-6">{card.icon}</div>
+                    <div className="w-full h-36 sm:h-48 bg-indigo-100" />
                   )}
                   <div className="py-1.5 bg-white">
                     <span className="font-magic text-xl sm:text-2xl text-indigo-700 uppercase tracking-tight">{card.pictogramWord}</span>
@@ -231,7 +234,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
             </div>
             <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-5 border-2 border-indigo-200 shadow-lg flex flex-col items-center">
               {pictInfo?.imageUrl && (
-                <img src={pictInfo.imageUrl} alt={wordData.word} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl mb-3 border-2 border-indigo-200" />
+                <img src={pictInfo.imageUrl} alt={wordData.word} className="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-xl mb-3 border-2 border-indigo-200 bg-white" />
               )}
               <div className="flex gap-2 sm:gap-3 justify-center items-center">
                 {wordData.syllables.map((syl, idx) => {
@@ -241,12 +244,12 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                       key={idx}
                       onClick={() => !touched && handleSyllableTouch(idx)}
                       disabled={touched}
-                      className={`w-18 h-24 sm:w-24 sm:h-32 rounded-2xl bg-white border-4 flex items-center justify-center shadow-lg transition-all px-2 ${
+                      className={`rounded-2xl bg-white border-4 flex items-center justify-center shadow-lg transition-all px-2 ${
                         !touched
                           ? `border-indigo-200 hover:scale-105 active:scale-95 ${!reduceAnim ? 'ring-4 ring-amber-300/70 animate-pulse' : ''}`
                           : 'border-emerald-400 ring-2 ring-emerald-400'
                       }`}
-                      style={{ width: touched ? 'auto' : undefined, minWidth: '72px' }}
+                      style={{ minWidth: '72px', height: '88px' }}
                     >
                       <span className={`font-magic text-2xl sm:text-4xl leading-none ${touched ? 'text-emerald-500' : 'text-indigo-700'}`}>
                         {syl}
@@ -263,16 +266,16 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {step === 'reward' && (
           <div className="flex flex-col items-center space-y-4 text-center w-full animate-fade-in">
             <div className="bg-white/95 p-6 rounded-[2.5rem] border-4 border-indigo-200 shadow-xl max-w-xs w-full">
-              <div className={`text-6xl mb-2 ${!reduceAnim ? 'animate-bounce' : ''}`}>👾</div>
+              <img src="/gumi-avatar.webp" alt="Gumi" className={`w-16 h-16 mx-auto mb-2 ${!reduceAnim ? 'animate-bounce' : ''} object-contain`} />
               <h3 className="text-2xl sm:text-3xl font-magic text-indigo-700 uppercase mb-1">¡MUY BIEN!</h3>
               <p className="text-base sm:text-lg font-bold text-indigo-500 uppercase mb-3">¡Aprendiste {card.value}!</p>
               <div className="bg-indigo-50 rounded-2xl p-2.5 mb-3 flex flex-col items-center">
                 {pictInfo?.imageUrl && (
-                  <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-16 h-16 rounded-xl object-cover border-2 border-indigo-200" />
+                  <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-16 h-16 rounded-xl object-contain border-2 border-indigo-200 bg-white" />
                 )}
                 <span className="font-magic text-xl text-indigo-700 uppercase mt-1">{card.pictogramWord}</span>
               </div>
-              <div className={`text-4xl mb-1 ${!reduceAnim ? 'animate-bounce' : ''}`}>⭐</div>
+              <StarIcon className="w-8 h-8 mx-auto mb-1" />
               <p className="text-indigo-500 font-bold text-sm">+100 estrellas</p>
             </div>
             <button
@@ -287,7 +290,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {/* SUCCESS */}
         {step === 'success' && (
           <div className="flex flex-col items-center space-y-4 text-center w-full">
-            <div className={`text-7xl ${!reduceAnim ? 'animate-bounce' : ''}`}>🌟</div>
+            <StarIcon className={`w-16 h-16 ${!reduceAnim ? 'animate-bounce' : ''}`} />
             <button
               onClick={handleComplete}
               className="bg-indigo-500 text-white py-3 px-8 rounded-full text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 uppercase tracking-widest active:scale-95 transition-all"
@@ -301,7 +304,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {feedback === 'success' && (
           <div className="fixed inset-0 flex items-center justify-center bg-emerald-400/20 z-[150] backdrop-blur-sm pointer-events-none">
             <div className="text-center">
-              <div className="text-6xl sm:text-8xl">✨</div>
+              <CheckIcon className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-emerald-500" />
               <p className="text-xl sm:text-2xl font-magic text-indigo-700 uppercase mt-2">¡Muy bien!</p>
             </div>
           </div>
@@ -310,7 +313,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {feedback === 'error' && (
           <div className="fixed inset-0 flex items-center justify-center bg-amber-400/15 z-[150] backdrop-blur-sm pointer-events-none">
             <div className="text-center">
-              <div className="text-5xl">😊</div>
+              <img src="/gumi-avatar.webp" alt="Gumi" className="w-14 h-14 mx-auto object-contain" />
               <p className="text-lg sm:text-xl font-magic text-indigo-600 uppercase mt-2">¡Casi! Otra vez</p>
             </div>
           </div>

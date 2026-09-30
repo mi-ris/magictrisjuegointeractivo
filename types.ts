@@ -21,10 +21,10 @@ export interface MagicCard {
   type: 'vocal' | 'consonante' | 'silaba' | 'palabra';
   color: string;
   highlightColor: string;
-  icon: string;
+  icon?: string;
   pictogramName: string;
   pictogramWord: string;
-  monster: string;
+  monster?: string;
   description: string;
   audioInstruction: string;
   imageUrl?: string;
@@ -52,7 +52,7 @@ export interface LearnedItem {
 
 export interface WordData {
   word: string;
-  icon: string;
+  icon?: string;
   syllables: string[];
   audioInstruction: string;
   imageUrl?: string;

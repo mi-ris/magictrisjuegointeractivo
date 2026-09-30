@@ -82,7 +82,11 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
             </div>
             
             <div className="bg-white/20 backdrop-blur-md rounded-[2rem] w-full py-4 flex flex-col items-center border border-white/20 overflow-hidden">
-                <div className="text-7xl leading-none mb-2 drop-shadow-xl">{card.icon}</div>
+                {card.imageUrl ? (
+                  <img src={card.imageUrl} alt={card.pictogramWord} className="w-20 h-20 object-contain mb-2 bg-white rounded-2xl p-1" />
+                ) : (
+                  <div className="w-20 h-20 bg-white/30 rounded-2xl mb-2" />
+                )}
                 <div className={`text-center px-2 w-full overflow-hidden ${card.pictogramWord.length > 8 ? 'text-lg' : 'text-xl'}`}>
                     {renderHighlightedWord(card.pictogramWord, card.value, card.highlightColor)}
                 </div>
