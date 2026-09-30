@@ -18,21 +18,42 @@ export interface MagicCard {
   id: string;
   title: string;
   value: string;
-  type: 'vocal' | 'consonante' | 'silaba';
+  type: 'vocal' | 'consonante' | 'silaba' | 'palabra';
   color: string;
-  highlightColor: string; // Color para resaltar la sílaba en la palabra
+  highlightColor: string;
   icon: string;
-  pictogramName: string; // Nombre amigable (ej: "Abeja")
-  pictogramWord: string; // Palabra completa para mostrar (ej: "Abeja", "Ballena")
+  pictogramName: string;
+  pictogramWord: string;
   monster: string;
   description: string;
   audioInstruction: string;
 }
 
+export interface IslandLevel {
+  id: string;
+  name: string;
+  islandIcon: string;
+  cardIds: string[];
+}
+
 export interface GameState {
   card: MagicCard;
-  step: 'intro' | 'identify' | 'findLetter' | 'success';
+  step: 'intro' | 'identify' | 'findLetter' | 'wordMatch' | 'success';
   score: number;
+}
+
+export interface LearnedItem {
+  value: string;
+  timesPracticed: number;
+  lastPracticed: number;
+  nextReview: number;
+}
+
+export interface WordData {
+  word: string;
+  icon: string;
+  syllables: string[];
+  audioInstruction: string;
 }
 
 export interface Flashcard {
