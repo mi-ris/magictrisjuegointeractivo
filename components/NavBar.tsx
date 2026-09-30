@@ -33,7 +33,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
   const showHome = inGame || currentSection !== 'hub';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-indigo-900/80 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
+    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-white/80 backdrop-blur-xl shadow-md z-[200] px-3 sm:px-8 flex items-center justify-between border-b-2 border-indigo-100">
       <div className="flex items-center gap-2 sm:gap-3">
         {showHome && (
           <button
@@ -44,17 +44,17 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
             🏠
           </button>
         )}
-        <h1 className="text-xl sm:text-3xl md:text-4xl font-magic text-white tracking-tighter drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] select-none">
-          MAGIC<span className="text-cyan-400">TRIS</span>
+        <h1 className="text-xl sm:text-3xl md:text-4xl font-magic text-indigo-700 tracking-tighter drop-shadow-[0_2px_0_rgba(0,0,0,0.05)] select-none">
+          MAGIC<span className="text-cyan-500">TRIS</span>
         </h1>
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
-        <div className="bg-white/10 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-amber-400/50 flex items-center gap-1 sm:gap-2 shadow-lg backdrop-blur-md">
+        <div className="bg-indigo-50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-indigo-200 flex items-center gap-1 sm:gap-2 shadow-sm">
           <span className="text-lg sm:text-2xl drop-shadow-md">⭐</span>
           <div className="flex flex-col items-start leading-none">
-            <span className="text-sm sm:text-xl font-magic text-white">{user.score}</span>
-            <span className="text-[5px] sm:text-[7px] font-magic text-amber-300 font-bold uppercase tracking-widest">Puntos</span>
+            <span className="text-sm sm:text-xl font-magic text-indigo-700">{user.score}</span>
+            <span className="text-[5px] sm:text-[7px] font-magic text-indigo-400 font-bold uppercase tracking-widest">Puntos</span>
           </div>
         </div>
 
@@ -70,7 +70,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('info')}
-          className="bg-cyan-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+          className="bg-indigo-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-md border-2 border-white flex items-center justify-center transition-all hover:scale-110 active:scale-95"
           title="¿Qué es MagicTris?"
         >
           <span className="text-sm sm:text-xl font-bold">❓</span>
@@ -78,17 +78,17 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('printable')}
-          className="bg-white text-indigo-700 hover:bg-indigo-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-indigo-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
+          className="bg-white text-indigo-600 hover:bg-indigo-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-indigo-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-sm active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
         >
           <span className="hidden sm:inline">🎴</span> Álbum
         </button>
 
         <button
           onClick={() => handleNav('profile')}
-          className="flex items-center gap-1 sm:gap-2 bg-white/10 p-0.5 sm:p-1 rounded-full border-2 border-white/20 hover:bg-white/30 shadow-lg pr-2 sm:pr-4"
+          className="flex items-center gap-1 sm:gap-2 bg-indigo-50 p-0.5 sm:p-1 rounded-full border-2 border-indigo-200 hover:bg-white shadow-sm pr-2 sm:pr-4"
         >
           <span className="text-xl sm:text-3xl bg-white p-0.5 sm:p-1 rounded-full shadow-inner flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 overflow-hidden">{user.avatar}</span>
-          <span className="text-[10px] sm:text-sm font-magic text-white hidden lg:block tracking-tight">{user.nickname}</span>
+          <span className="text-[10px] sm:text-sm font-magic text-indigo-600 hidden lg:block tracking-tight">{user.nickname}</span>
         </button>
       </div>
     </header>

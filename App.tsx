@@ -144,7 +144,7 @@ const App: React.FC = () => {
 
   const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
   const inGame = selectedCardIndex !== null;
-  const darkBg = inGame || section === 'info';
+  const darkBg = section === 'info';
 
   const renderSection = () => {
     if (selectedCardIndex !== null && user) {

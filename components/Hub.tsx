@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { User, Section } from '../types';
-import { MAGIC_PATH, MAGIC_ISLANDS, MAGIC_LEVELS } from '../services/mockData';
+import { MAGIC_PATH, MAGIC_ISLANDS, MAGIC_LEVELS, PICTOGRAMS } from '../services/mockData';
 import { playPopSound } from './AudioUtils';
 import { useSettings } from './SettingsContext';
 
@@ -29,13 +29,8 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
 
   const progressPercent = Math.round((user.progressIndex / MAGIC_PATH.length) * 100);
 
-  const isCardUnlocked = (cardIndex: number) => {
-    return adultUnlock || cardIndex <= user.progressIndex;
-  };
-
-  const isCardNext = (cardIndex: number) => {
-    return !adultUnlock && cardIndex === user.progressIndex;
-  };
+  const isCardUnlocked = (cardIndex: number) => adultUnlock || cardIndex <= user.progressIndex;
+  const isCardNext = (cardIndex: number) => !adultUnlock && cardIndex === user.progressIndex;
 
   const totalLevelNumber = (islandIdx: number, cardIdx: number) => {
     let count = 0;
@@ -45,19 +40,29 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
 
   const reduceAnim = settings.reduceAnimations;
 
+  // Posiciones en zigzag para el camino sobre nubes
+  const ZIGZAG = [
+    { x: '15%', y: 0 },
+    { x: '65%', y: 0 },
+    { x: '20%', y: 0 },
+    { x: '70%', y: 0 },
+    { x: '35%', y: 0 },
+    { x: '60%', y: 0 },
+  ];
+
   return (
     <div className="relative min-h-screen flex flex-col">
 
-      <main className="flex-1 pt-24 sm:pt-28 pb-44 px-4 max-w-md mx-auto w-full">
+      <main className="flex-1 pt-20 sm:pt-24 pb-32 px-3 max-w-lg mx-auto w-full">
 
-        {/* Gumi guía */}
-        <div className="flex flex-col items-center mb-6 text-center">
-          <div className={`text-6xl mb-1 ${!reduceAnim ? 'floating-gumi' : ''} select-none`}>👾</div>
-          <h2 className="text-3xl sm:text-5xl font-magic text-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)] mb-1 uppercase tracking-tighter">
+        {/* Encabezado con Gumi */}
+        <div className="flex flex-col items-center mb-3 text-center">
+          <div className={`text-5xl mb-0.5 ${!reduceAnim ? 'floating-gumi' : ''} select-none`}>👾</div>
+          <h2 className="text-2xl sm:text-4xl font-magic text-indigo-700 drop-shadow-[0_3px_8px_rgba(255,255,255,0.8)] uppercase tracking-tighter">
             ¡Hola, {user.nickname}!
           </h2>
-          <p className="text-xs sm:text-sm text-cyan-200 font-bold uppercase tracking-widest opacity-80">
-            Sigue el camino y aprende palabras
+          <p className="text-[10px] sm:text-xs text-indigo-500 font-bold uppercase tracking-widest">
+            Toca las nubes y aprende palabras
           </p>
         </div>
 
@@ -65,210 +70,202 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
         <div className="fixed top-20 sm:top-24 right-3 sm:right-6 z-50">
           <button
             onClick={() => setShowAdultPanel(true)}
-            className="bg-white/10 backdrop-blur-md p-2 sm:p-3 rounded-2xl border-2 border-white/20 text-lg sm:text-xl hover:bg-white/20 transition-all active:scale-90 shadow-lg"
+            className="bg-white/80 backdrop-blur-md p-2 sm:p-2.5 rounded-xl border-2 border-indigo-200 text-base sm:text-lg hover:bg-white transition-all active:scale-90 shadow-md"
             title="Panel de adulto"
           >
             ⚙️
           </button>
         </div>
 
-        {/* Camino vertical de mundos */}
-        <div className="relative">
+        {/* Camino de nubes */}
+        <div className="relative mt-2">
           {MAGIC_ISLANDS.map((island, islandIdx) => {
             const islandCards = island.cardIds.map(id => MAGIC_PATH[cardIdToIndex[id]]);
             const firstCardIdx = cardIdToIndex[island.cardIds[0]];
             const lastCardIdx = cardIdToIndex[island.cardIds[island.cardIds.length - 1]];
             const islandUnlocked = isCardUnlocked(firstCardIdx);
             const islandComplete = user.progressIndex > lastCardIdx;
-            const islandColor = MAGIC_LEVELS[islandIdx].color || 'from-cyan-400 to-blue-500';
 
             return (
-              <div key={island.id} className="relative mb-6">
-                {/* Conector entre mundos */}
-                {islandIdx > 0 && (
-                  <div className="flex justify-center -my-2 z-0 relative">
-                    <div className={`w-1 h-8 bg-gradient-to-b ${islandColor} rounded-full opacity-50`}></div>
-                  </div>
-                )}
+              <div key={island.id} className="relative mb-2">
+                {/* Título del mundo - compacto */}
+                <div className="flex items-center gap-2 mb-2 px-2">
+                  <div className="text-xl sm:text-2xl">{island.islandIcon}</div>
+                  <h3 className={`text-xs sm:text-sm font-magic uppercase tracking-wider ${islandUnlocked ? 'text-indigo-700' : 'text-indigo-300'}`}>
+                    {island.name}
+                  </h3>
+                  {islandComplete && <span className="text-[10px] text-emerald-500 font-bold">✓</span>}
+                </div>
 
-                {/* Mundo */}
-                <div className={`relative rounded-[2rem] overflow-hidden transition-all duration-500 ${
-                  islandUnlocked
-                    ? `bg-gradient-to-br ${islandColor} shadow-2xl`
-                    : 'bg-gray-800/60 opacity-60'
-                }`}>
-                  {/* Cabecera del mundo */}
-                  <div className="flex items-center gap-3 px-4 py-3 bg-black/20">
-                    <div className="text-3xl sm:text-4xl">{island.islandIcon}</div>
-                    <div className="flex-1">
-                      <h3 className={`text-sm sm:text-lg font-magic uppercase tracking-wider ${islandUnlocked ? 'text-white' : 'text-white/50'}`}>
-                        {island.name}
-                      </h3>
-                      {islandComplete && (
-                        <span className="text-[10px] text-white/80 font-bold">¡Completado! ✓</span>
-                      )}
-                    </div>
-                    <div className="text-[10px] sm:text-xs text-white/60 font-bold">
-                      {islandCards.filter(c => user.progressIndex > cardIdToIndex[c.id]).length}/{islandCards.length}
-                    </div>
-                  </div>
+                {/* Niveles sobre nubes en zigzag */}
+                <div className="relative" style={{ minHeight: `${islandCards.length * 78}px` }}>
+                  {islandCards.map((card, cardIdx) => {
+                    const globalIdx = cardIdToIndex[card.id];
+                    const unlocked = isCardUnlocked(globalIdx);
+                    const isNext = isCardNext(globalIdx);
+                    const completed = user.progressIndex > globalIdx;
+                    const levelNum = totalLevelNumber(islandIdx, cardIdx);
+                    const pos = ZIGZAG[cardIdx % ZIGZAG.length];
+                    const pictInfo = PICTOGRAMS[card.value];
 
-                  {/* Nodos del camino */}
-                  <div className="relative p-4 pt-2">
-                    {/* Línea curva de fondo */}
-                    <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                      <path
-                        d={islandCards.length === 5
-                          ? "M 50% 0 Q 20% 25% 50% 50 Q 80% 75% 50% 100"
-                          : "M 50% 0 Q 25% 33% 50% 66 Q 75% 100% 50% 100"
-                        }
-                        stroke="rgba(255,255,255,0.25)"
-                        strokeWidth="3"
-                        strokeDasharray="8 6"
-                        fill="none"
-                      />
-                    </svg>
-
-                    <div className="relative z-10">
-                      {islandCards.map((card, cardIdx) => {
-                        const globalIdx = cardIdToIndex[card.id];
-                        const unlocked = isCardUnlocked(globalIdx);
-                        const isNext = isCardNext(globalIdx);
-                        const completed = user.progressIndex > globalIdx;
-                        const levelNum = totalLevelNumber(islandIdx, cardIdx);
-
-                        // Posiciones en zigzag
-                        const offsets = ['10%', '40%', '70%', '40%', '10%'];
-                        const leftOffset = offsets[cardIdx % offsets.length];
-
-                        return (
-                          <div key={card.id} className="relative flex justify-center" style={{ marginBottom: cardIdx < islandCards.length - 1 ? '0.5rem' : 0 }}>
-                            <div className="relative" style={{ alignSelf: 'flex-start', marginLeft: leftOffset, width: '72px' }}>
-                              {/* Número de nivel arriba */}
-                              <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-magic text-white/70 whitespace-nowrap">
-                                Nivel {levelNum}
-                              </div>
-
-                              <button
-                                disabled={!unlocked}
-                                onClick={() => handleCardSelect(globalIdx)}
-                                className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-xl border-4 overflow-hidden ${
-                                  unlocked
-                                    ? `${card.color} border-white/50 ${isNext ? `ring-4 ring-amber-300 scale-110 z-20 ${!reduceAnim ? 'animate-pulse' : ''}` : 'hover:scale-105'}`
-                                    : 'bg-gray-700 border-gray-600 cursor-not-allowed'
-                                } ${completed ? 'ring-2 ring-emerald-400' : ''}`}
-                              >
-                                {unlocked ? (
-                                  <>
-                                    {card.imageUrl ? (
-                                      <img
-                                        src={card.imageUrl}
-                                        alt={card.pictogramWord}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                        loading="lazy"
-                                      />
-                                    ) : (
-                                      <div className="text-2xl sm:text-3xl">{card.icon}</div>
-                                    )}
-                                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 py-0.5 text-center">
-                                      <span className="text-[9px] sm:text-[10px] font-magic text-white uppercase leading-none">{card.value}</span>
-                                    </div>
-                                    {completed && (
-                                      <div className="absolute -top-1 -right-1 bg-emerald-400 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white flex items-center justify-center text-[10px] shadow-lg z-20">
-                                        ✓
-                                      </div>
-                                    )}
-                                    {isNext && (
-                                      <div className={`absolute -top-2 -right-2 bg-amber-400 w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 border-white flex items-center justify-center text-[10px] shadow-lg z-20 ${!reduceAnim ? 'animate-bounce' : ''}`}>
-                                        ⭐
-                                      </div>
-                                    )}
-                                  </>
-                                ) : (
-                                  <div className="text-xl sm:text-2xl opacity-50">🔒</div>
-                                )}
-                              </button>
-                            </div>
+                    return (
+                      <div
+                        key={card.id}
+                        className="absolute transition-all duration-300"
+                        style={{
+                          left: pos.x,
+                          top: `${cardIdx * 76}px`,
+                          width: '90px',
+                        }}
+                      >
+                        {/* Número de nivel */}
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                          <div className="bg-indigo-500 text-white text-[10px] font-magic w-5 h-5 rounded-full flex items-center justify-center shadow-md border border-white">
+                            {levelNum}
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                        </div>
+
+                        {/* Nube-nivel */}
+                        <button
+                          disabled={!unlocked}
+                          onClick={() => handleCardSelect(globalIdx)}
+                          className={`relative w-[90px] h-[68px] flex flex-col items-center justify-center transition-all duration-300 group ${
+                            unlocked ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-not-allowed'
+                          }`}
+                        >
+                          {/* Forma de nube */}
+                          <div className={`absolute inset-0 rounded-[2rem] rounded-tr-md transition-all ${
+                            unlocked
+                              ? isNext
+                                ? `bg-white shadow-[0_0_20px_rgba(99,102,241,0.5)] ${!reduceAnim ? 'animate-pulse' : ''} ring-3 ring-amber-300 scale-110`
+                                : completed
+                                  ? 'bg-white shadow-lg ring-2 ring-emerald-300'
+                                  : 'bg-white/95 shadow-lg'
+                              : 'bg-white/40 shadow-sm'
+                          }`}>
+                            {/* Picos de nube */}
+                            <div className={`absolute -top-2 left-3 w-6 h-6 rounded-full ${unlocked ? 'bg-white' : 'bg-white/40'}`} />
+                            <div className={`absolute -top-1 right-4 w-5 h-5 rounded-full ${unlocked ? 'bg-white' : 'bg-white/40'}`} />
+                            <div className={`absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full ${unlocked ? 'bg-white' : 'bg-white/40'}`} />
+                          </div>
+
+                          {/* Contenido de la nube */}
+                          <div className="relative z-10 flex flex-col items-center justify-center h-full pb-1">
+                            {unlocked ? (
+                              <>
+                                {pictInfo?.imageUrl ? (
+                                  <img
+                                    src={pictInfo.imageUrl}
+                                    alt={card.pictogramWord}
+                                    className="w-10 h-10 rounded-full object-cover border-2 border-indigo-200 shadow-sm"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <div className="text-xl">{card.icon}</div>
+                                )}
+                                <span className="text-[9px] font-magic text-indigo-700 uppercase leading-none mt-0.5">
+                                  {card.value.length > 5 ? card.value.slice(0, 4) + '…' : card.value}
+                                </span>
+                              </>
+                            ) : (
+                              <div className="text-lg opacity-40">🔒</div>
+                            )}
+                          </div>
+
+                          {/* Badge completado */}
+                          {completed && (
+                            <div className="absolute -bottom-1 -right-1 bg-emerald-400 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[9px] shadow-md z-20">
+                              ✓
+                            </div>
+                          )}
+
+                          {/* Badge siguiente */}
+                          {isNext && (
+                            <div className={`absolute -bottom-1 -right-1 bg-amber-400 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-[10px] shadow-md z-20 ${!reduceAnim ? 'animate-bounce' : ''}`}>
+                              ⭐
+                            </div>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
           })}
+
+          {/* Nube final */}
+          <div className="flex justify-center mt-2 mb-4">
+            <div className="relative">
+              <div className="absolute -top-2 left-3 w-6 h-6 rounded-full bg-white/80" />
+              <div className="absolute -top-1 right-4 w-5 h-5 rounded-full bg-white/80" />
+              <div className="bg-white/80 rounded-[2rem] rounded-tr-md px-6 py-4 shadow-md flex flex-col items-center">
+                <div className="text-2xl">🏆</div>
+                <span className="text-[10px] font-magic text-indigo-500 uppercase">¡Meta!</span>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
-      {/* Barra de progreso con Gumi */}
-      <footer className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 z-40 flex justify-center pointer-events-none">
-        <div className="bg-indigo-900/90 backdrop-blur-xl p-3 sm:p-4 rounded-[2rem] border-2 border-cyan-400/30 shadow-2xl flex items-center gap-3 w-full max-w-sm pointer-events-auto">
-          <div className={`text-3xl sm:text-4xl select-none ${!reduceAnim ? 'floating-gumi' : ''}`}>👾</div>
+      {/* Barra de progreso flotante */}
+      <footer className="fixed bottom-0 left-0 right-0 p-2 sm:p-3 z-40 flex justify-center pointer-events-none">
+        <div className="bg-white/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-2xl border-2 border-indigo-200 shadow-lg flex items-center gap-2.5 w-full max-w-xs pointer-events-auto">
+          <div className={`text-2xl sm:text-3xl select-none ${!reduceAnim ? 'floating-gumi' : ''}`}>👾</div>
           <div className="flex-1">
-            <div className="w-full bg-black/40 h-2.5 sm:h-3 rounded-full overflow-hidden border border-white/10">
-              <div className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
+            <div className="w-full bg-indigo-100 h-2 sm:h-2.5 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-indigo-400 to-cyan-400 transition-all duration-1000" style={{ width: `${progressPercent}%` }} />
             </div>
-            <div className="flex justify-between mt-1 px-1">
-              <p className="text-[8px] sm:text-[10px] font-magic text-cyan-300 uppercase tracking-widest">{progressPercent}%</p>
-              <p className="text-[8px] sm:text-[10px] font-bold text-white/70">{getSessionMinutes()} min</p>
+            <div className="flex justify-between mt-0.5 px-0.5">
+              <p className="text-[7px] sm:text-[9px] font-magic text-indigo-500 uppercase tracking-wider">{progressPercent}%</p>
+              <p className="text-[7px] sm:text-[9px] font-bold text-indigo-400">{getSessionMinutes()} min</p>
             </div>
           </div>
           {settings.soundEnabled ? (
-            <button onClick={() => updateSettings({ soundEnabled: false })} className="text-xl sm:text-2xl p-1" title="Silenciar">🔊</button>
+            <button onClick={() => updateSettings({ soundEnabled: false })} className="text-base sm:text-lg p-0.5" title="Silenciar">🔊</button>
           ) : (
-            <button onClick={() => updateSettings({ soundEnabled: true })} className="text-xl sm:text-2xl p-1 opacity-50" title="Activar sonido">🔇</button>
+            <button onClick={() => updateSettings({ soundEnabled: true })} className="text-base sm:text-lg p-0.5 opacity-40" title="Activar sonido">🔇</button>
           )}
         </div>
       </footer>
 
       {/* Panel de adulto */}
       {showAdultPanel && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] flex items-center justify-center p-4" onClick={() => setShowAdultPanel(false)}>
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border-4 border-cyan-300 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h3 className="text-2xl font-magic text-indigo-900 uppercase text-center mb-4">Panel de Adulto</h3>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300] flex items-center justify-center p-4" onClick={() => setShowAdultPanel(false)}>
+          <div className="bg-white rounded-3xl p-5 sm:p-6 max-w-xs w-full shadow-2xl border-4 border-indigo-200 max-h-[88vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <h3 className="text-xl font-magic text-indigo-800 uppercase text-center mb-3">Panel de Adulto</h3>
 
-            {/* Progreso */}
-            <div className="bg-indigo-50 rounded-2xl p-4 mb-4">
-              <h4 className="text-sm font-bold text-indigo-700 uppercase mb-2">Progreso de {user.nickname}</h4>
+            <div className="bg-indigo-50 rounded-2xl p-3 mb-3">
+              <h4 className="text-xs font-bold text-indigo-600 uppercase mb-2">Progreso de {user.nickname}</h4>
               <div className="flex justify-between text-xs text-gray-600 mb-1">
-                <span>Niveles completados</span>
-                <span className="font-bold">{user.progressIndex} / {MAGIC_PATH.length}</span>
+                <span>Niveles</span><span className="font-bold">{user.progressIndex} / {MAGIC_PATH.length}</span>
               </div>
               <div className="flex justify-between text-xs text-gray-600 mb-1">
-                <span>Puntos</span>
-                <span className="font-bold">{user.score} ⭐</span>
+                <span>Puntos</span><span className="font-bold">{user.score} ⭐</span>
               </div>
               <div className="flex justify-between text-xs text-gray-600 mb-1">
-                <span>Racha</span>
-                <span className="font-bold">{user.streak} días 🔥</span>
+                <span>Racha</span><span className="font-bold">{user.streak} días 🔥</span>
               </div>
               <div className="flex justify-between text-xs text-gray-600">
-                <span>Tiempo de sesión</span>
-                <span className="font-bold">{getSessionMinutes()} min</span>
+                <span>Tiempo</span><span className="font-bold">{getSessionMinutes()} min</span>
               </div>
             </div>
 
-            {/* Ajustes */}
-            <div className="space-y-3 mb-4">
-              <h4 className="text-sm font-bold text-indigo-700 uppercase">Ajustes</h4>
-
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-3 cursor-pointer">
-                <span className="text-sm text-gray-700">Sonidos del juego</span>
+            <div className="space-y-2 mb-3">
+              <h4 className="text-xs font-bold text-indigo-600 uppercase">Ajustes</h4>
+              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
+                <span className="text-sm text-gray-700">Sonidos</span>
                 <input type="checkbox" checked={settings.soundEnabled} onChange={e => updateSettings({ soundEnabled: e.target.checked })} className="w-5 h-5" />
               </label>
-
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-3 cursor-pointer">
+              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
                 <span className="text-sm text-gray-700">Voz automática</span>
                 <input type="checkbox" checked={settings.autoPlayVoice} onChange={e => updateSettings({ autoPlayVoice: e.target.checked })} className="w-5 h-5" />
               </label>
-
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-3 cursor-pointer">
+              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
                 <span className="text-sm text-gray-700">Reducir animaciones</span>
                 <input type="checkbox" checked={settings.reduceAnimations} onChange={e => updateSettings({ reduceAnimations: e.target.checked })} className="w-5 h-5" />
               </label>
-
-              <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
+              <div className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5">
                 <span className="text-sm text-gray-700">Velocidad de voz</span>
                 <select value={settings.speechRate} onChange={e => updateSettings({ speechRate: e.target.value as 'slow' | 'normal' })} className="text-sm border border-gray-200 rounded-lg px-2 py-1">
                   <option value="slow">Lenta</option>
@@ -277,17 +274,15 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
               </div>
             </div>
 
-            {/* Desbloqueo */}
             <button
               onClick={() => { setAdultUnlock(!adultUnlock); if (settings.soundEnabled) playPopSound(); }}
-              className={`w-full py-3 rounded-2xl font-bold uppercase text-sm shadow-lg active:scale-95 transition-all mb-2 ${adultUnlock ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-cyan-500 text-white'}`}
+              className={`w-full py-2.5 rounded-xl font-bold uppercase text-sm shadow-md active:scale-95 transition-all mb-2 ${adultUnlock ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-indigo-500 text-white'}`}
             >
-              {adultUnlock ? '✓ Todos los niveles desbloqueados' : '🔓 Desbloquear todos los niveles'}
+              {adultUnlock ? '✓ Niveles desbloqueados' : '🔓 Desbloquear todos'}
             </button>
-
             <button
               onClick={() => setShowAdultPanel(false)}
-              className="w-full bg-gray-200 text-gray-600 py-3 rounded-2xl font-bold uppercase text-sm active:scale-95 transition-all"
+              className="w-full bg-gray-100 text-gray-500 py-2.5 rounded-xl font-bold uppercase text-sm active:scale-95 transition-all"
             >
               Cerrar
             </button>
@@ -297,15 +292,12 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
 
       {/* Aviso de descanso */}
       {showBreakReminder && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[310] flex items-center justify-center p-4" onClick={dismissBreakReminder}>
-          <div className="bg-white rounded-[2.5rem] p-8 max-w-xs w-full shadow-2xl border-4 border-cyan-300 text-center" onClick={e => e.stopPropagation()}>
-            <div className="text-6xl mb-4">👾</div>
-            <h3 className="text-xl font-magic text-indigo-800 uppercase mb-2">¡Hora de descansar!</h3>
-            <p className="text-sm text-gray-600 mb-6">Llevas {getSessionMinutes()} minutos jugando. ¿Hacemos una pausa?</p>
-            <button
-              onClick={dismissBreakReminder}
-              className="w-full bg-cyan-500 text-white py-3 rounded-2xl font-bold uppercase text-sm shadow-lg active:scale-95 transition-all"
-            >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[310] flex items-center justify-center p-4" onClick={dismissBreakReminder}>
+          <div className="bg-white rounded-[2rem] p-6 max-w-xs w-full shadow-2xl border-4 border-indigo-200 text-center" onClick={e => e.stopPropagation()}>
+            <div className="text-5xl mb-3">👾</div>
+            <h3 className="text-lg font-magic text-indigo-700 uppercase mb-2">¡Hora de descansar!</h3>
+            <p className="text-sm text-gray-500 mb-4">Llevas {getSessionMinutes()} minutos. ¿Hacemos una pausa?</p>
+            <button onClick={dismissBreakReminder} className="w-full bg-indigo-500 text-white py-2.5 rounded-xl font-bold uppercase text-sm shadow-md active:scale-95 transition-all">
               ¡Descansar!
             </button>
           </div>

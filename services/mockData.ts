@@ -2,12 +2,12 @@
 import { MagicCard, IslandLevel, WordData } from '../types';
 
 const LEVEL_GROUPS = [
-  { name: 'MIS PRIMERAS PALABRAS', islandIcon: '🌴', color: 'from-teal-400 to-cyan-500', items: ['MAMÁ', 'PAPÁ', 'CASA', 'AGUA', 'SOL'] },
-  { name: 'MI FAMILIA', islandIcon: '🌈', color: 'from-amber-400 to-orange-500', items: ['BEBÉ', 'FELIZ', 'PAPÁ', 'MAMÁ', 'CASA'] },
-  { name: 'MI CASA', islandIcon: '🏡', color: 'from-rose-400 to-pink-500', items: ['CAMA', 'MESA', 'LECHE', 'VASO', 'PUERTA'] },
-  { name: 'ANIMALES', islandIcon: '🐾', color: 'from-emerald-400 to-teal-500', items: ['GATO', 'OSO', 'LOBO', 'CONEJO', 'PATO'] },
-  { name: 'NATURALEZA', islandIcon: '🌳', color: 'from-sky-400 to-blue-500', items: ['LUNA', 'NUBE', 'RÍO', 'SOL', 'FUEGO'] },
-  { name: 'JUEGOS Y OBJETOS', islandIcon: '🎁', color: 'from-violet-400 to-indigo-500', items: ['PELOTA', 'DADO', 'JUGO', 'LÁPIZ', 'ROBOT'] },
+  { name: 'MIS PRIMERAS PALABRAS', islandIcon: '🌴', color: 'from-indigo-400 to-cyan-400', items: ['MAMÁ', 'PAPÁ', 'CASA', 'AGUA', 'SOL'] },
+  { name: 'MI FAMILIA', islandIcon: '🌈', color: 'from-indigo-400 to-cyan-400', items: ['BEBÉ', 'FELIZ', 'PAPÁ', 'MAMÁ', 'CASA'] },
+  { name: 'MI CASA', islandIcon: '🏡', color: 'from-indigo-400 to-cyan-400', items: ['CAMA', 'MESA', 'LECHE', 'VASO', 'PUERTA'] },
+  { name: 'ANIMALES', islandIcon: '🐾', color: 'from-indigo-400 to-cyan-400', items: ['GATO', 'OSO', 'LOBO', 'CONEJO', 'PATO'] },
+  { name: 'NATURALEZA', islandIcon: '🌳', color: 'from-indigo-400 to-cyan-400', items: ['LUNA', 'NUBE', 'RÍO', 'SOL', 'FUEGO'] },
+  { name: 'JUEGOS Y OBJETOS', islandIcon: '🎁', color: 'from-indigo-400 to-cyan-400', items: ['PELOTA', 'DADO', 'JUGO', 'LÁPIZ', 'ROBOT'] },
 ];
 
 export interface PictogramInfo {
@@ -55,16 +55,16 @@ export const FIRST_WORDS: WordData[] = Object.entries(PICTOGRAM_DATA).map(([key,
 }));
 
 const BRIGHT_COLORS = [
-    { bg: 'bg-teal-500', hex: '#14b8a6' },
-    { bg: 'bg-cyan-500', hex: '#06b6d4' },
-    { bg: 'bg-sky-500', hex: '#0ea5e9' },
-    { bg: 'bg-blue-500', hex: '#3b82f6' },
     { bg: 'bg-indigo-500', hex: '#6366f1' },
-    { bg: 'bg-amber-500', hex: '#f59e0b' },
-    { bg: 'bg-emerald-500', hex: '#10b981' },
-    { bg: 'bg-rose-500', hex: '#f43f5e' },
-    { bg: 'bg-orange-500', hex: '#f97316' },
-    { bg: 'bg-lime-500', hex: '#84cc16' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
+    { bg: 'bg-indigo-500', hex: '#6366f1' },
 ];
 
 const flattenPath = (): MagicCard[] => {
