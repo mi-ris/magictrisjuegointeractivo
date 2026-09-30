@@ -55,14 +55,14 @@ export const FIRST_WORDS: WordData[] = Object.entries(PICTOGRAM_DATA).map(([key,
 const flattenPath = (): MagicCard[] => {
   const path: MagicCard[] = [];
 
-  LEVEL_GROUPS.forEach((group) => {
-    group.items.forEach((item) => {
+  LEVEL_GROUPS.forEach((group, groupIdx) => {
+    group.items.forEach((item, itemIdx) => {
       const pictInfo = PICTOGRAM_DATA[item] || { word: item, syllables: [item], imageUrl: '' };
 
       const audioInstruction = `¡Vamos a aprender la palabra ${item}! ${pictInfo.word}. ${pictInfo.syllables.join('-')}. ¡${pictInfo.word}!`;
 
       path.push({
-        id: `card-${item}`,
+        id: `card-${groupIdx}-${itemIdx}-${item}`,
         title: `Palabra ${item}`,
         value: item,
         type: 'palabra',
