@@ -25,15 +25,15 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
   const getStreakData = (s: number) => {
     if (s === 0) return { color: 'from-gray-400 to-gray-500', icon: '❄️' };
     if (s < 4) return { color: 'from-amber-400 to-amber-500', icon: '🔥' };
-    if (s < 7) return { color: 'from-teal-400 to-teal-500', icon: '🔥' };
-    return { color: 'from-amber-400 to-amber-500 animate-pulse', icon: '👑' };
+    if (s < 7) return { color: 'from-cyan-400 to-blue-500', icon: '🔥' };
+    return { color: 'from-amber-400 to-yellow-400 animate-pulse', icon: '👑' };
   };
 
   const streak = getStreakData(user.streak);
   const showHome = inGame || currentSection !== 'hub';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-gradient-to-r from-violet-800 to-teal-600 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
+    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-indigo-900/80 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
       <div className="flex items-center gap-2 sm:gap-3">
         {showHome && (
           <button
@@ -45,7 +45,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
           </button>
         )}
         <h1 className="text-xl sm:text-3xl md:text-4xl font-magic text-white tracking-tighter drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] select-none">
-          MAGIC<span className="text-amber-300">TRIS</span>
+          MAGIC<span className="text-cyan-400">TRIS</span>
         </h1>
       </div>
 
@@ -70,7 +70,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('info')}
-          className="bg-teal-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+          className="bg-cyan-500 text-white w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl shadow-lg border-2 border-white/40 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
           title="¿Qué es MagicTris?"
         >
           <span className="text-sm sm:text-xl font-bold">❓</span>
@@ -78,7 +78,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
 
         <button
           onClick={() => handleNav('printable')}
-          className="bg-white text-violet-700 hover:bg-violet-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-violet-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
+          className="bg-white text-indigo-700 hover:bg-indigo-50 px-2 py-1.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-indigo-200 text-[8px] sm:text-xs font-magic uppercase tracking-widest transition-all shadow-xl active:scale-95 flex items-center gap-1 sm:gap-2 font-bold"
         >
           <span className="hidden sm:inline">🎴</span> Álbum
         </button>

@@ -38,13 +38,13 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
     <div className="min-h-screen bg-transparent md:bg-transparent p-4 sm:p-8 animate-fade-in pb-20 pt-24 sm:pt-28">
       <div className="print:hidden flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
         <div className="text-center">
-            <h1 className="text-4xl font-magic text-violet-900 uppercase">Álbum de Recortes</h1>
-            <p className="text-sm font-bold text-violet-400 uppercase tracking-widest">¡Imprime y juega fuera de línea!</p>
+            <h1 className="text-4xl font-magic text-indigo-900 uppercase">Álbum de Recortes</h1>
+            <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest">¡Imprime y juega fuera de línea!</p>
         </div>
 
         <button 
           onClick={handlePrint}
-          className="bg-teal-500 text-white px-10 py-4 rounded-[2rem] font-magic text-2xl shadow-xl hover:bg-teal-600 active:translate-y-1 transition-all flex items-center justify-center min-w-[180px]"
+          className="bg-green-500 text-white px-10 py-4 rounded-[2rem] font-magic text-2xl shadow-xl hover:bg-green-600 active:translate-y-1 transition-all flex items-center justify-center min-w-[180px]"
         >
           IMPRIMIR
         </button>
@@ -53,11 +53,11 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
       <div className="print:hidden max-w-4xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-[2.5rem] border-4 border-amber-400 shadow-xl flex items-center gap-6">
               <span className="text-5xl"></span>
-              <p className="text-violet-900 font-bold leading-tight">
+              <p className="text-indigo-900 font-bold leading-tight">
                  Recorta las tarjetas y pégalas en cartulina. ¡Ahora cada sílaba se ve mejor que nunca!
               </p>
           </div>
-          <div className="bg-gradient-to-r from-violet-500 to-violet-600 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
+          <div className="bg-indigo-500 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
               <h3 className="font-magic text-xl mb-2">¿Cómo imprimir?</h3>
               <p className="text-sm font-bold opacity-90">1. Toca el botón verde "IMPRIMIR".</p>
               <p className="text-sm font-bold opacity-90">2. En las opciones de tu impresora, activa <b>"Gráficos de fondo"</b>.</p>

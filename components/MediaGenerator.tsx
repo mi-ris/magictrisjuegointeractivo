@@ -72,18 +72,18 @@ const MediaGenerator: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 p-4 bg-white/40 backdrop-blur-md rounded-[2.5rem] border-2 border-white/30 shadow-xl">
-      <div className="flex justify-center gap-2 bg-teal-900/10 p-2 rounded-2xl">
+      <div className="flex justify-center gap-2 bg-indigo-900/10 p-2 rounded-2xl">
         {['generate', 'edit', 'video'].map((m) => (
-          <button key={m} onClick={() => { setMode(m as any); setResultUrl(null); }} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all uppercase ${mode === m ? 'bg-teal-500 text-white shadow-md' : 'text-teal-800 hover:bg-white/20'}`}>
+          <button key={m} onClick={() => { setMode(m as any); setResultUrl(null); }} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all uppercase ${mode === m ? 'bg-indigo-600 text-white shadow-md' : 'text-indigo-800 hover:bg-white/20'}`}>
             {m === 'generate' ? 'Crear' : m === 'edit' ? 'Editar' : 'Video'}
           </button>
         ))}
       </div>
 
       {(mode === 'edit' || mode === 'video') && (
-        <div className="flex flex-col items-center gap-3 p-4 border-2 border-dashed border-teal-200 rounded-3xl">
-          <label className="text-xs font-magic text-teal-700 uppercase">Selecciona una imagen base</label>
-          <input type="file" onChange={handleFileUpload} className="text-[10px] text-teal-800" />
+        <div className="flex flex-col items-center gap-3 p-4 border-2 border-dashed border-indigo-200 rounded-3xl">
+          <label className="text-xs font-magic text-indigo-700 uppercase">Selecciona una imagen base</label>
+          <input type="file" onChange={handleFileUpload} className="text-[10px] text-indigo-800" />
           {baseImage && <img src={baseImage} className="w-24 h-24 object-cover rounded-2xl shadow-lg ring-4 ring-white" />}
         </div>
       )}
@@ -92,28 +92,28 @@ const MediaGenerator: React.FC = () => {
         value={prompt} 
         onChange={(e) => setPrompt(e.target.value)} 
         placeholder={mode === 'video' ? "Describe qué quieres que pase en el video..." : "Describe el hechizo que quieres lanzar..."} 
-        className="w-full p-4 rounded-3xl border-none shadow-inner bg-white/80 focus:ring-4 focus:ring-teal-300 outline-none text-teal-900 font-bold placeholder-teal-300" 
+        className="w-full p-4 rounded-3xl border-none shadow-inner bg-white/80 focus:ring-4 focus:ring-indigo-300 outline-none text-indigo-900 font-bold placeholder-indigo-300" 
         rows={3} 
       />
 
       <div className="flex flex-col gap-2">
-        <button onClick={handleAction} disabled={loading || (!prompt && mode !== 'video')} className="w-full py-5 rounded-full font-magic text-xl text-white bg-gradient-to-r from-teal-500 to-teal-600 btn-magic-pop disabled:grayscale shadow-xl active:translate-y-1">
+        <button onClick={handleAction} disabled={loading || (!prompt && mode !== 'video')} className="w-full py-5 rounded-full font-magic text-xl text-white bg-indigo-600 btn-magic-pop disabled:grayscale shadow-xl active:translate-y-1">
           {loading ? 'HACIENDO MAGIA...' : 'LANZAR HECHIZO'}
         </button>
         {mode === 'video' && (
-          <p className="text-[10px] text-center text-teal-400 font-bold uppercase">El video requiere cuenta con facturación en Google Cloud</p>
+          <p className="text-[10px] text-center text-indigo-400 font-bold uppercase">El video requiere cuenta con facturación en Google Cloud</p>
         )}
       </div>
 
       {resultUrl && (
         <div className="mt-4 p-4 bg-white/60 rounded-3xl border-2 border-white shadow-xl flex flex-col items-center gap-4 animate-fade-in">
-          <h3 className="font-magic text-lg text-teal-900 uppercase">¡HECHIZO COMPLETADO!</h3>
+          <h3 className="font-magic text-lg text-indigo-900 uppercase">¡HECHIZO COMPLETADO!</h3>
           {mode === 'video' ? (
             <video src={resultUrl} controls className="w-full rounded-2xl shadow-lg" />
           ) : (
             <img src={resultUrl} className="w-full rounded-2xl shadow-lg" />
           )}
-          <a href={resultUrl} download="magia-gumi" className="bg-teal-500 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">Guardar Obra</a>
+          <a href={resultUrl} download="magia-gumi" className="bg-indigo-500 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-md">Guardar Obra</a>
         </div>
       )}
     </div>

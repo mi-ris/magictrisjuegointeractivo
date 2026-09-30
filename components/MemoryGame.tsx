@@ -68,7 +68,7 @@ const MemoryGame: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-3xl font-magic text-amber-600 mb-6 uppercase tracking-wider">Juego de Memoria</h2>
+      <h2 className="text-3xl font-magic text-yellow-600 mb-6 uppercase tracking-wider">Juego de Memoria</h2>
       
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 mb-8">
         {cards.map((card) => (
@@ -77,8 +77,8 @@ const MemoryGame: React.FC = () => {
             onClick={() => handleCardClick(card.id)}
             className={`w-20 h-20 sm:w-24 sm:h-24 rounded-3xl text-4xl flex items-center justify-center transition-all duration-300 transform border-b-4 active:scale-95 ${
               card.isFlipped || card.isMatched 
-                ? 'bg-white border-amber-200 rotate-y-180 shadow-inner' 
-                : 'bg-amber-400 border-amber-600 shadow-lg'
+                ? 'bg-white border-yellow-200 rotate-y-180 shadow-inner' 
+                : 'bg-yellow-400 border-yellow-600 shadow-lg'
             }`}
           >
             {card.isFlipped || card.isMatched ? card.symbol : '❓'}
@@ -88,10 +88,10 @@ const MemoryGame: React.FC = () => {
 
       {matches === symbols.length && (
         <div className="text-center animate-bounce">
-          <h3 className="text-4xl text-teal-500 font-bold mb-4 font-magic">¡Ganaste! 🎉</h3>
+          <h3 className="text-4xl text-green-500 font-bold mb-4 font-magic">¡Ganaste! 🎉</h3>
           <button 
             onClick={initGame}
-            className="bg-teal-500 text-white px-8 py-3 rounded-full shadow-lg font-bold text-xl btn-magic-pop"
+            className="bg-green-500 text-white px-8 py-3 rounded-full shadow-lg font-bold text-xl btn-magic-pop"
           >
             Jugar otra vez
           </button>
@@ -100,10 +100,10 @@ const MemoryGame: React.FC = () => {
       
       <div className="mt-8 flex gap-8">
         <div className="text-center">
-          <p className="text-teal-500 uppercase text-xs font-bold">Parejas</p>
-          <p className="text-3xl font-bold text-teal-600">{matches}</p>
+          <p className="text-blue-400 uppercase text-xs font-bold">Parejas</p>
+          <p className="text-3xl font-bold text-blue-600">{matches}</p>
         </div>
-        <button onClick={initGame} className="text-teal-500 hover:text-red-500 font-bold transition-colors">
+        <button onClick={initGame} className="text-blue-400 hover:text-red-500 font-bold transition-colors">
           Reiniciar
         </button>
       </div>
