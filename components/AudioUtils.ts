@@ -13,6 +13,70 @@ export function getSharedAudioContext(): AudioContext {
   return sharedAudioCtx;
 }
 
+// ---- Central audio manager: prevents overlapping voice playback ----
+
+let currentVoiceSource: AudioBufferSourceNode | null = null;
+let currentVoiceText: string | null = null;
+const voiceListeners: Set<(text: string | null) => void> = new Set();
+
+export function onVoiceChange(cb: (text: string | null) => void): () => void {
+  voiceListeners.add(cb);
+  return () => voiceListeners.delete(cb);
+}
+
+function notifyVoiceChange() {
+  voiceListeners.forEach(cb => cb(currentVoiceText));
+}
+
+export function stopCurrentVoice(): void {
+  if (currentVoiceSource) {
+    try { currentVoiceSource.onended = null; currentVoiceSource.stop(); } catch {}
+    currentVoiceSource = null;
+  }
+  currentVoiceText = null;
+  notifyVoiceChange();
+}
+
+export function isVoicePlaying(text?: string): boolean {
+  if (!currentVoiceSource) return false;
+  if (text) return currentVoiceText === text;
+  return true;
+}
+
+export async function playVoiceBuffer(buffer: AudioBuffer, text: string): Promise<void> {
+  stopCurrentVoice();
+  const ctx = getSharedAudioContext();
+  if (ctx.state === 'suspended') await ctx.resume();
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(ctx.destination);
+  currentVoiceSource = source;
+  currentVoiceText = text;
+  notifyVoiceChange();
+  source.onended = () => {
+    if (currentVoiceSource === source) {
+      currentVoiceSource = null;
+      currentVoiceText = null;
+      notifyVoiceChange();
+    }
+  };
+  source.start();
+}
+
+export async function speakText(text: string): Promise<void> {
+  const { textToSpeech } = await import('../services/gemini');
+  const audioData = await textToSpeech(text);
+  if (!audioData) return;
+  const ctx = getSharedAudioContext();
+  if (ctx.state === 'suspended') await ctx.resume();
+  const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
+  await playVoiceBuffer(buffer, text);
+}
+
+export function getCurrentVoiceText(): string | null {
+  return currentVoiceText;
+}
+
 export function decode(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -163,6 +227,29 @@ export function playApplauseSound() {
     }
   } catch (e) {
     console.warn("Audio applause failed", e);
+  }
+}
+
+export function playRewardSound() {
+  try {
+    playApplauseSound();
+    const ctx = getSharedAudioContext();
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + i * 0.15 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.15 + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.4);
+    });
+  } catch (e) {
+    console.warn("Audio reward failed", e);
   }
 }
 

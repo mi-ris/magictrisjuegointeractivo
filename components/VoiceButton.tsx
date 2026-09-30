@@ -1,7 +1,8 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { decode, decodeAudioData, getSharedAudioContext, playVoiceBuffer, stopCurrentVoice, onVoiceChange, getCurrentVoiceText } from './AudioUtils';
 import { textToSpeech } from '../services/gemini';
-import { decode, decodeAudioData, getSharedAudioContext, playPopSound } from './AudioUtils';
+import { useSettings } from './SettingsContext';
 
 interface Props {
   text: string;
@@ -11,64 +12,58 @@ interface Props {
 }
 
 const VoiceButton: React.FC<Props> = ({ text, className, autoPlayMarker, large }) => {
+  const { settings } = useSettings();
   const [isPlaying, setIsPlaying] = useState(false);
-  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
   const isMounted = useRef(true);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     isMounted.current = true;
+    const unsub = onVoiceChange((current) => {
+      if (!isMounted.current) return;
+      setIsPlaying(current === text);
+    });
     return () => {
       isMounted.current = false;
-      if (sourceRef.current) {
-        sourceRef.current.stop();
-        sourceRef.current = null;
-      }
+      unsub();
     };
-  }, []);
+  }, [text]);
 
   const handlePlay = async () => {
-    if (isPlaying) {
-      if (sourceRef.current) {
-        sourceRef.current.stop();
-        sourceRef.current = null;
-      }
-      setIsPlaying(false);
+    if (!isMounted.current) return;
+    if (!settings.soundEnabled) return;
+
+    // If this text is currently playing, stop it (toggle off)
+    if (getCurrentVoiceText() === text) {
+      stopCurrentVoice();
       return;
     }
+
+    if (loadingRef.current) return;
+    loadingRef.current = true;
 
     const audioCtx = getSharedAudioContext();
     if (audioCtx.state === 'suspended') {
       await audioCtx.resume();
     }
 
-    setIsPlaying(true);
     try {
       const audioData = await textToSpeech(text);
       if (!isMounted.current) return;
-
       if (audioData) {
         const buffer = await decodeAudioData(decode(audioData), audioCtx, 24000, 1);
         if (!isMounted.current) return;
-
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioCtx.destination);
-        sourceRef.current = source;
-
-        source.onended = () => {
-          if (isMounted.current) setIsPlaying(false);
-          sourceRef.current = null;
-        };
-
-        source.start();
-      } else {
-        setIsPlaying(false);
+        // If another voice started while loading, don't override it
+        if (getCurrentVoiceText() && getCurrentVoiceText() !== text) {
+          loadingRef.current = false;
+          return;
+        }
+        await playVoiceBuffer(buffer, text);
       }
     } catch (err: any) {
       console.error("Error de voz:", err);
-      if (isMounted.current) {
-        setIsPlaying(false);
-      }
+    } finally {
+      loadingRef.current = false;
     }
   };
 
@@ -78,6 +73,7 @@ const VoiceButton: React.FC<Props> = ({ text, className, autoPlayMarker, large }
     <button
       onClick={handlePlay}
       data-auto-voice={autoPlayMarker ? 'true' : undefined}
+      data-voice-text={text}
       className={`rounded-full bg-indigo-400 text-white shadow hover:scale-110 transition-transform flex items-center justify-center ${sizeClass} ${className}`}
     >
       {isPlaying ? (

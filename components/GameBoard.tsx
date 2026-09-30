@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { User, MagicCard } from '../types';
 import VoiceButton from './VoiceButton';
-import { playPopSound, playGentleSuccessSound, playGentleErrorSound, playApplauseSound } from './AudioUtils';
+import { playPopSound, playGentleSuccessSound, playGentleErrorSound, playRewardSound, stopCurrentVoice, speakText } from './AudioUtils';
 import { FIRST_WORDS, PICTOGRAMS } from '../services/mockData';
 import { useSettings } from './SettingsContext';
 import { supabase } from '../services/supabaseClient';
@@ -55,7 +55,6 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
   const [attempts, setAttempts] = useState(0);
   const [touchedSyllables, setTouchedSyllables] = useState<number[]>([]);
   const [gumiMessage, setGumiMessage] = useState('');
-  const voicePlayedRef = useRef(false);
   const levelStartTime = useRef<number>(Date.now());
   const gameStartTime = useRef<number>(Date.now());
 
@@ -94,16 +93,38 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     return { missingIdx, correctSyl, options: shuffle([...wrongs, correctSyl]) };
   }, [wordData]);
 
-  useEffect(() => {
-    if (step === 'intro' && settings.autoPlayVoice && settings.soundEnabled && !voicePlayedRef.current) {
-      voicePlayedRef.current = true;
-      const timer = setTimeout(() => {
-        const speakBtn = document.querySelector('[data-auto-voice]') as HTMLButtonElement;
-        if (speakBtn) speakBtn.click();
-      }, 500);
-      return () => clearTimeout(timer);
+  // Auto-play voice for each step's instruction
+  const stepVoiceText = useMemo(() => {
+    if (!settings.autoPlayVoice || !settings.soundEnabled) return null;
+    switch (step) {
+      case 'intro': return card.audioInstruction;
+      case 'identify': return `¿Cuál es ${card.value}? Toca la correcta.`;
+      case 'wordBuild': return `¡Toca las sílabas en orden para armar ${card.value}!`;
+      case 'imageMatch': return `Esta es la palabra ${card.value}. Toca la imagen que va con ella.`;
+      case 'syllableFill': return `¡Falta una sílaba! Toca la que completa ${card.value}.`;
+      case 'listenPick': return card.pictogramWord;
+      case 'reward': return `¡Muy bien! ¡Aprendiste ${card.value}!`;
+      default: return null;
     }
-  }, [step, settings.autoPlayVoice, settings.soundEnabled]);
+  }, [step, card, settings.autoPlayVoice, settings.soundEnabled]);
+
+  const voiceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    // Stop any previous voice when step changes
+    stopCurrentVoice();
+    if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
+
+    if (!stepVoiceText) return;
+
+    voiceTimerRef.current = setTimeout(() => {
+      speakText(stepVoiceText).catch(() => {});
+    }, 400);
+
+    return () => {
+      if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
+    };
+  }, [stepVoiceText]);
 
   useEffect(() => {
     if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
@@ -114,11 +135,17 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     else if (step === 'listenPick') setGumiMessage(`Escucha y toca la palabra correcta.`);
     else if (step === 'reward') {
       setGumiMessage(`¡Muy bien! ¡Aprendiste ${card.value}!`);
-      if (settings.soundEnabled) playApplauseSound();
+      if (settings.soundEnabled) {
+        playRewardSound();
+      }
     }
   }, [step, user.nickname, card.value, settings.soundEnabled]);
 
   const playSound = (fn: () => void) => { if (settings.soundEnabled) fn(); };
+
+  useEffect(() => {
+    return () => { stopCurrentVoice(); };
+  }, []);
 
   const advanceFromGame = () => {
     setWrongChoice(null);
@@ -150,9 +177,10 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     setTimeout(() => { setFeedback(null); }, 1500);
   };
 
-  const handleBack = () => { playSound(playPopSound); onBack(); };
+  const handleBack = () => { playSound(playPopSound); stopCurrentVoice(); onBack(); };
   const handleComplete = () => {
     playSound(playPopSound);
+    stopCurrentVoice();
     const totalTime = Date.now() - levelStartTime.current;
     logAttempt(user.id, card.id, card.value, 'complete', true, null, attempts, totalTime);
     onComplete(100);

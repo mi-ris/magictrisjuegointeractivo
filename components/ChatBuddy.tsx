@@ -1,7 +1,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { chatWithPro, textToSpeech } from '../services/gemini';
+import { chatWithPro } from '../services/gemini';
+import { playVoiceBuffer, stopCurrentVoice } from './AudioUtils';
 import { decode, decodeAudioData, getSharedAudioContext } from './AudioUtils';
+import { textToSpeech } from '../services/gemini';
 import VoiceButton from './VoiceButton';
 
 const ChatBuddy: React.FC = () => {
@@ -9,16 +11,13 @@ const ChatBuddy: React.FC = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const currentSource = useRef<AudioBufferSourceNode | null>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
   useEffect(() => {
-    return () => {
-        if (currentSource.current) currentSource.current.stop();
-    };
+    return () => { stopCurrentVoice(); };
   }, []);
 
   const sendMessage = async (e?: React.FormEvent) => {
@@ -26,10 +25,7 @@ const ChatBuddy: React.FC = () => {
     const textToSubmit = input.trim();
     if (!textToSubmit || isTyping) return;
 
-    if (currentSource.current) {
-        currentSource.current.stop();
-        currentSource.current = null;
-    }
+    stopCurrentVoice();
 
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: textToSubmit }]);
@@ -49,11 +45,7 @@ const ChatBuddy: React.FC = () => {
       if (audioData) {
         const audioCtx = getSharedAudioContext();
         const buffer = await decodeAudioData(decode(audioData), audioCtx, 24000, 1);
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioCtx.destination);
-        currentSource.current = source;
-        source.start();
+        await playVoiceBuffer(buffer, modelText);
       }
     } catch (err) {
       console.error(err);
