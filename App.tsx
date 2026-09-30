@@ -15,7 +15,7 @@ import MediaGenerator from './components/MediaGenerator';
 import NavBar from './components/NavBar';
 import CloudBackground from './components/CloudBackground';
 import { SettingsProvider } from './components/SettingsContext';
-import { MAGIC_PATH } from './services/mockData';
+import { MAGIC_PATH, PICTOGRAMS } from './services/mockData';
 import { supabase, isSupabaseReady } from './services/supabaseClient';
 
 const App: React.FC = () => {
@@ -23,6 +23,7 @@ const App: React.FC = () => {
   const [section, setSection] = useState<Section | 'chat' | 'voice' | 'generator' | 'admin'>('pre-login');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
   const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
+  const [levelUpAnimation, setLevelUpAnimation] = useState<{ word: string; imageUrl: string } | null>(null);
   const [initializing, setInitializing] = useState(true);
 
   const getDaysDiff = (date1: Date, date2: Date) => {
@@ -98,16 +99,15 @@ const App: React.FC = () => {
     
     let newStreak = user.streak;
     
-    // Lógica de racha:
-    // Si es su primera vez o la racha estaba en 0, empieza en 1.
-    // Si jugó ayer (diff === 1), aumenta la racha.
-    // Si ya jugó hoy (diff === 0), la racha se mantiene igual.
-    // Si pasó más de un día (diff > 1), se reinicia a 1 porque acaba de completar un juego.
     if (user.streak === 0 || diff > 1) {
       newStreak = 1;
     } else if (diff === 1) {
       newStreak = user.streak + 1;
     }
+
+    const wasNewLevel = selectedCardIndex >= user.progressIndex;
+    const completedCard = MAGIC_PATH[selectedCardIndex];
+    const completedPict = PICTOGRAMS[completedCard.value];
 
     const updatedUser: User = {
       ...user,
@@ -120,7 +120,6 @@ const App: React.FC = () => {
     localStorage.setItem('magic_user', JSON.stringify(updatedUser));
     
     if (isSupabaseReady() && user.id !== 'guest') {
-      console.log("Actualizando racha en Supabase:", newStreak);
       await supabase!.from('profiles').update({
         score: updatedUser.score,
         streak: updatedUser.streak,
@@ -130,6 +129,11 @@ const App: React.FC = () => {
     }
     setSelectedCardIndex(null);
     setSection('hub');
+
+    if (wasNewLevel) {
+      setLevelUpAnimation({ word: completedCard.value, imageUrl: completedPict?.imageUrl || '' });
+      setTimeout(() => setLevelUpAnimation(null), 4000);
+    }
   };
 
   if (initializing) return (
@@ -193,6 +197,38 @@ const App: React.FC = () => {
           />
         )}
         <div className="relative z-10">{renderSection()}</div>
+        {levelUpAnimation && (
+          <div className="fixed inset-0 z-[500] flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 bg-amber-400/30 animate-pulse" />
+            <div className="relative flex flex-col items-center animate-bounce">
+              <div className="flex gap-1 mb-3">
+                {[...Array(8)].map((_, i) => (
+                  <svg key={i} viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" className="w-8 h-8 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                ))}
+              </div>
+              <div className="bg-white rounded-3xl p-5 shadow-2xl border-4 border-amber-400 flex flex-col items-center">
+                {levelUpAnimation.imageUrl && (
+                  <img src={levelUpAnimation.imageUrl} alt="" className="w-20 h-20 object-contain rounded-2xl border-2 border-amber-200 bg-white mb-2" />
+                )}
+                <h2 className="text-2xl sm:text-3xl font-magic text-amber-500 uppercase">¡Nivel Desbloqueado!</h2>
+                <p className="text-lg font-magic text-indigo-700 uppercase mt-1">{levelUpAnimation.word}</p>
+                <div className="flex gap-2 mt-2">
+                  <span className="bg-amber-400 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">+100 estrellas</span>
+                </div>
+              </div>
+              <div className="flex gap-1 mt-3">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="w-3 h-3 rounded-full animate-ping" style={{
+                    backgroundColor: ['#fbbf24', '#f59e0b', '#fbbf24', '#f59e0b', '#fbbf24', '#f59e0b'][i],
+                    animationDelay: `${i * 0.15}s`
+                  }} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </SettingsProvider>
   );
