@@ -8,6 +8,7 @@ import GameBoard from './components/GameBoard';
 import Profile from './components/Profile';
 import Info from './components/Info';
 import PrintableCards from './components/PrintableCards';
+import AdminPanel from './components/AdminPanel';
 import ChatBuddy from './components/ChatBuddy';
 import VoiceLive from './components/VoiceLive';
 import MediaGenerator from './components/MediaGenerator';
@@ -19,7 +20,7 @@ import { supabase, isSupabaseReady } from './services/supabaseClient';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [section, setSection] = useState<Section | 'chat' | 'voice' | 'generator'>('pre-login');
+  const [section, setSection] = useState<Section | 'chat' | 'voice' | 'generator' | 'admin'>('pre-login');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
   const [initializing, setInitializing] = useState(true);
 
@@ -158,6 +159,7 @@ const App: React.FC = () => {
       case 'profile': return user ? <Profile user={user} onBack={() => setSection('hub')} onLogout={() => { setUser(null); localStorage.removeItem('magic_user'); setSection('pre-login'); }} onUpdate={(upd) => setUser({...user, ...upd})} /> : null;
       case 'info': return <Info onBack={() => setSection('hub')} />;
       case 'printable': return <PrintableCards onBack={() => setSection('hub')} />;
+      case 'admin': return user ? <AdminPanel user={user} onBack={() => setSection('hub')} /> : null;
       case 'chat': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><ChatBuddy /></div>;
       case 'voice': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><VoiceLive /></div>;
       case 'generator': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><MediaGenerator /></div>;

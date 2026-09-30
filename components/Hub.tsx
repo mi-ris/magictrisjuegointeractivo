@@ -7,7 +7,7 @@ import { useSettings } from './SettingsContext';
 
 interface Props {
   user: User;
-  setSection: (s: Section) => void;
+  setSection: (s: Section | 'admin') => void;
   onSelectCard: (index: number) => void;
 }
 
@@ -23,9 +23,7 @@ const IslandIcon: React.FC<{ name: string; className?: string }> = ({ name, clas
   return icons[name] || icons.sun;
 };
 
-const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
-  const [adultUnlock, setAdultUnlock] = useState(false);
-  const [showAdultPanel, setShowAdultPanel] = useState(false);
+const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
   const { settings, updateSettings, getSessionMinutes, showBreakReminder, dismissBreakReminder } = useSettings();
 
   const handleCardSelect = (index: number) => {
@@ -41,8 +39,8 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
 
   const progressPercent = Math.round((user.progressIndex / MAGIC_PATH.length) * 100);
 
-  const isCardUnlocked = (cardIndex: number) => adultUnlock || cardIndex <= user.progressIndex;
-  const isCardNext = (cardIndex: number) => !adultUnlock && cardIndex === user.progressIndex;
+  const isCardUnlocked = (cardIndex: number) => cardIndex <= user.progressIndex;
+  const isCardNext = (cardIndex: number) => cardIndex === user.progressIndex;
 
   const totalLevelNumber = (islandIdx: number, cardIdx: number) => {
     let count = 0;
@@ -77,10 +75,10 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
           </p>
         </div>
 
-        {/* Botón adulto */}
+        {/* Botón adulto - abre panel administrativo */}
         <div className="fixed top-20 sm:top-24 right-3 sm:right-6 z-50">
           <button
-            onClick={() => setShowAdultPanel(true)}
+            onClick={() => { if (settings.soundEnabled) playPopSound(); setSection('admin'); }}
             className="bg-white/80 backdrop-blur-md p-2 sm:p-2.5 rounded-xl border-2 border-indigo-200 hover:bg-white transition-all active:scale-90 shadow-md"
             title="Panel de adulto"
           >
@@ -230,54 +228,6 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
           )}
         </div>
       </footer>
-
-      {/* Panel de adulto */}
-      {showAdultPanel && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300] flex items-center justify-center p-4" onClick={() => setShowAdultPanel(false)}>
-          <div className="bg-white rounded-3xl p-5 sm:p-6 max-w-xs w-full shadow-2xl border-4 border-indigo-200 max-h-[88vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h3 className="text-xl font-magic text-indigo-800 uppercase text-center mb-3">Panel de Adulto</h3>
-
-            <div className="bg-indigo-50 rounded-2xl p-3 mb-3">
-              <h4 className="text-xs font-bold text-indigo-600 uppercase mb-2">Progreso de {user.nickname}</h4>
-              <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Niveles</span><span className="font-bold">{user.progressIndex} / {MAGIC_PATH.length}</span></div>
-              <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Puntos</span><span className="font-bold">{user.score}</span></div>
-              <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Racha</span><span className="font-bold">{user.streak} días</span></div>
-              <div className="flex justify-between text-xs text-gray-600"><span>Tiempo</span><span className="font-bold">{getSessionMinutes()} min</span></div>
-            </div>
-
-            <div className="space-y-2 mb-3">
-              <h4 className="text-xs font-bold text-indigo-600 uppercase">Ajustes</h4>
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
-                <span className="text-sm text-gray-700">Sonidos</span>
-                <input type="checkbox" checked={settings.soundEnabled} onChange={e => updateSettings({ soundEnabled: e.target.checked })} className="w-5 h-5" />
-              </label>
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
-                <span className="text-sm text-gray-700">Voz automática</span>
-                <input type="checkbox" checked={settings.autoPlayVoice} onChange={e => updateSettings({ autoPlayVoice: e.target.checked })} className="w-5 h-5" />
-              </label>
-              <label className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5 cursor-pointer">
-                <span className="text-sm text-gray-700">Reducir animaciones</span>
-                <input type="checkbox" checked={settings.reduceAnimations} onChange={e => updateSettings({ reduceAnimations: e.target.checked })} className="w-5 h-5" />
-              </label>
-              <div className="flex items-center justify-between bg-gray-50 rounded-xl p-2.5">
-                <span className="text-sm text-gray-700">Velocidad de voz</span>
-                <select value={settings.speechRate} onChange={e => updateSettings({ speechRate: e.target.value as 'slow' | 'normal' })} className="text-sm border border-gray-200 rounded-lg px-2 py-1">
-                  <option value="slow">Lenta</option>
-                  <option value="normal">Normal</option>
-                </select>
-              </div>
-            </div>
-
-            <button
-              onClick={() => { setAdultUnlock(!adultUnlock); if (settings.soundEnabled) playPopSound(); }}
-              className={`w-full py-2.5 rounded-xl font-bold uppercase text-sm shadow-md active:scale-95 transition-all mb-2 ${adultUnlock ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-indigo-500 text-white'}`}
-            >
-              {adultUnlock ? 'Niveles desbloqueados' : 'Desbloquear todos'}
-            </button>
-            <button onClick={() => setShowAdultPanel(false)} className="w-full bg-gray-100 text-gray-500 py-2.5 rounded-xl font-bold uppercase text-sm active:scale-95 transition-all">Cerrar</button>
-          </div>
-        </div>
-      )}
 
       {/* Aviso de descanso */}
       {showBreakReminder && (

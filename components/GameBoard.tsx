@@ -5,6 +5,7 @@ import VoiceButton from './VoiceButton';
 import { playPopSound, playGentleSuccessSound, playGentleErrorSound, playApplauseSound } from './AudioUtils';
 import { FIRST_WORDS, PICTOGRAMS } from '../services/mockData';
 import { useSettings } from './SettingsContext';
+import { supabase } from '../services/supabaseClient';
 
 interface Props {
   user: User;
@@ -15,6 +16,23 @@ interface Props {
 
 type Step = 'intro' | 'identify' | 'wordBuild' | 'reward' | 'success';
 
+const logAttempt = async (userId: string, cardId: string, cardValue: string, step: string, isCorrect: boolean, wrongChoice: string | null, attemptsCount: number, timeMs: number | null) => {
+  try {
+    await supabase.from('game_attempts').insert({
+      user_id: userId,
+      card_id: cardId,
+      card_value: cardValue,
+      step,
+      is_correct: isCorrect,
+      wrong_choice: wrongChoice,
+      attempts_count: attemptsCount,
+      time_spent_ms: timeMs,
+    });
+  } catch (err) {
+    console.warn('No se pudo registrar intento:', err);
+  }
+};
+
 const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   const [step, setStep] = useState<Step>('intro');
   const [feedback, setFeedback] = useState<'success' | 'error' | null>(null);
@@ -23,6 +41,8 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   const [touchedSyllables, setTouchedSyllables] = useState<number[]>([]);
   const [gumiMessage, setGumiMessage] = useState('');
   const voicePlayedRef = useRef(false);
+  const levelStartTime = useRef<number>(Date.now());
+  const identifyStartTime = useRef<number>(Date.now());
 
   const { settings } = useSettings();
   const reduceAnim = settings.reduceAnimations;
@@ -64,18 +84,22 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
   const handleCorrectIdentify = () => {
     playSound(playGentleSuccessSound);
+    const elapsed = Date.now() - identifyStartTime.current;
+    logAttempt(user.id, card.id, card.value, 'identify', true, null, attempts, elapsed);
     setFeedback('success');
     setTimeout(() => { setFeedback(null); setWrongChoice(null); setTouchedSyllables([]); setStep('wordBuild'); }, 1200);
   };
 
   const handleCorrectWordBuild = () => {
     playSound(playGentleSuccessSound);
+    logAttempt(user.id, card.id, card.value, 'wordBuild', true, null, attempts, null);
     setFeedback('success');
     setTimeout(() => { setFeedback(null); setStep('reward'); }, 800);
   };
 
   const handleError = (choice: string) => {
     playSound(playGentleErrorSound);
+    logAttempt(user.id, card.id, card.value, 'identify', false, choice, attempts, null);
     setFeedback('error');
     setWrongChoice(choice);
     setGumiMessage('¡Casi! Intenta de nuevo, tú puedes.');
@@ -83,7 +107,12 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   };
 
   const handleBack = () => { playSound(playPopSound); onBack(); };
-  const handleComplete = () => { playSound(playPopSound); onComplete(100); };
+  const handleComplete = () => {
+    playSound(playPopSound);
+    const totalTime = Date.now() - levelStartTime.current;
+    logAttempt(user.id, card.id, card.value, 'complete', true, null, attempts, totalTime);
+    onComplete(100);
+  };
 
   const handleSyllableTouch = (idx: number) => {
     playSound(playPopSound);
@@ -183,7 +212,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                   autoPlayMarker
                 />
                 <button
-                  onClick={() => { setAttempts(0); setStep('identify'); }}
+                  onClick={() => { setAttempts(0); setStep('identify'); identifyStartTime.current = Date.now(); }}
                   className="w-full bg-cyan-500 text-white py-3.5 rounded-2xl text-xl sm:text-2xl font-magic shadow-lg border-b-4 border-cyan-700 active:translate-y-1 transition-all uppercase tracking-widest"
                 >
                   ¡JUGAR!
