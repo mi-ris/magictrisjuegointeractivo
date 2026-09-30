@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { decode, decodeAudioData, getSharedAudioContext, playVoiceBuffer, stopCurrentVoice, onVoiceChange, getCurrentVoiceText } from './AudioUtils';
-import { textToSpeech } from '../services/gemini';
+import { getSharedAudioContext, speakText, stopCurrentVoice, onVoiceChange, getCurrentVoiceText } from './AudioUtils';
 import { useSettings } from './SettingsContext';
 
 interface Props {
@@ -48,18 +47,12 @@ const VoiceButton: React.FC<Props> = ({ text, className, autoPlayMarker, large }
     }
 
     try {
-      const audioData = await textToSpeech(text);
-      if (!isMounted.current) return;
-      if (audioData) {
-        const buffer = await decodeAudioData(decode(audioData), audioCtx, 24000, 1);
-        if (!isMounted.current) return;
-        // If another voice started while loading, don't override it
-        if (getCurrentVoiceText() && getCurrentVoiceText() !== text) {
-          loadingRef.current = false;
-          return;
-        }
-        await playVoiceBuffer(buffer, text);
+      // If another voice started while loading, don't override it
+      if (getCurrentVoiceText() && getCurrentVoiceText() !== text) {
+        loadingRef.current = false;
+        return;
       }
+      await speakText(text);
     } catch (err: any) {
       console.error("Error de voz:", err);
     } finally {

@@ -17,6 +17,7 @@ export function getSharedAudioContext(): AudioContext {
 
 let currentVoiceSource: AudioBufferSourceNode | null = null;
 let currentVoiceText: string | null = null;
+let browserUtterance: SpeechSynthesisUtterance | null = null;
 const voiceListeners: Set<(text: string | null) => void> = new Set();
 
 export function onVoiceChange(cb: (text: string | null) => void): () => void {
@@ -32,6 +33,10 @@ export function stopCurrentVoice(): void {
   if (currentVoiceSource) {
     try { currentVoiceSource.onended = null; currentVoiceSource.stop(); } catch {}
     currentVoiceSource = null;
+  }
+  if (browserUtterance && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    browserUtterance = null;
   }
   currentVoiceText = null;
   notifyVoiceChange();
@@ -64,13 +69,53 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string): Promis
 }
 
 export async function speakText(text: string): Promise<void> {
-  const { textToSpeech } = await import('../services/gemini');
-  const audioData = await textToSpeech(text);
-  if (!audioData) return;
-  const ctx = getSharedAudioContext();
-  if (ctx.state === 'suspended') await ctx.resume();
-  const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
-  await playVoiceBuffer(buffer, text);
+  try {
+    const { textToSpeech } = await import('../services/gemini');
+    const audioData = await textToSpeech(text);
+    if (audioData) {
+      const ctx = getSharedAudioContext();
+      if (ctx.state === 'suspended') await ctx.resume();
+      const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
+      await playVoiceBuffer(buffer, text);
+      return;
+    }
+  } catch (err) {
+    console.warn('Gemini TTS no disponible, usando voz del navegador:', err);
+  }
+  // Fallback: browser built-in speech synthesis
+  speakWithBrowser(text);
+}
+
+// ---- Browser Speech Synthesis fallback ----
+
+function speakWithBrowser(text: string): void {
+  stopCurrentVoice();
+  if (!('speechSynthesis' in window)) return;
+
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'es-ES';
+  utter.rate = 0.85;
+  utter.pitch = 1.1;
+
+  const voices = window.speechSynthesis.getVoices();
+  const spanishVoice = voices.find(v => v.lang.startsWith('es'));
+  if (spanishVoice) utter.voice = spanishVoice;
+
+  browserUtterance = utter;
+  currentVoiceText = text;
+  notifyVoiceChange();
+
+  utter.onend = () => {
+    if (currentVoiceText === text) {
+      currentVoiceText = null;
+      currentVoiceSource = null;
+      browserUtterance = null;
+      notifyVoiceChange();
+    }
+  };
+
+  window.speechSynthesis.speak(utter);
 }
 
 export function getCurrentVoiceText(): string | null {

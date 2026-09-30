@@ -1,9 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { chatWithPro } from '../services/gemini';
-import { playVoiceBuffer, stopCurrentVoice } from './AudioUtils';
-import { decode, decodeAudioData, getSharedAudioContext } from './AudioUtils';
-import { textToSpeech } from '../services/gemini';
+import { stopCurrentVoice, speakText } from './AudioUtils';
 import VoiceButton from './VoiceButton';
 
 const ChatBuddy: React.FC = () => {
@@ -41,12 +39,7 @@ const ChatBuddy: React.FC = () => {
       
       setMessages(prev => [...prev, { role: 'model', text: modelText }]);
       
-      const audioData = await textToSpeech(modelText);
-      if (audioData) {
-        const audioCtx = getSharedAudioContext();
-        const buffer = await decodeAudioData(decode(audioData), audioCtx, 24000, 1);
-        await playVoiceBuffer(buffer, modelText);
-      }
+      await speakText(modelText);
     } catch (err) {
       console.error(err);
     } finally {
