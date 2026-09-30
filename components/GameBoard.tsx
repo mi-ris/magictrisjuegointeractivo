@@ -173,7 +173,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     }
   };
 
-  const cardBase = "w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-white border-4 border-indigo-200 shadow-xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden relative";
+  const imageCardBase = "w-32 sm:w-40 rounded-3xl bg-white border-4 border-indigo-200 shadow-xl flex flex-col transition-all transform hover:scale-105 active:scale-95 overflow-hidden relative";
 
   const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>;
   const CheckIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
@@ -191,8 +191,13 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     const isWrong = wrongChoice === word;
     if (isWrong) {
       return (
-        <div key={idx} className={`${cardBase} opacity-30 scale-90 pointer-events-none transition-all duration-500`}>
-          <img src={imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+        <div key={idx} className={`${imageCardBase} opacity-30 scale-90 pointer-events-none transition-all duration-500`}>
+          <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-indigo-50 p-1">
+            <img src={imageUrl} alt="" className="w-full h-full object-contain opacity-30" />
+          </div>
+          <div className="bg-indigo-100 py-1 text-center">
+            <span className="font-magic text-indigo-400 text-sm sm:text-lg uppercase leading-tight">{word}</span>
+          </div>
         </div>
       );
     }
@@ -203,10 +208,12 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
           if (word === card.value) handleGameSuccess('identify');
           else { handleGameError('identify', word); setAttempts(a => a + 1); }
         }}
-        className={`${cardBase} ${word === card.value && step === 'identify' ? `ring-4 ring-amber-300 ${!reduceAnim ? 'animate-pulse' : ''}` : ''}`}
+        className={`${imageCardBase} ${word === card.value && step === 'identify' ? `ring-4 ring-amber-300 ${!reduceAnim ? 'animate-pulse' : ''}` : ''}`}
       >
-        <img src={imageUrl} alt={word} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-        <div className="absolute bottom-0 left-0 right-0 bg-indigo-500/90 py-1 text-center">
+        <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-white p-1.5">
+          <img src={imageUrl} alt={word} className="w-full h-full object-contain" loading="lazy" />
+        </div>
+        <div className="bg-indigo-500 py-1.5 text-center">
           <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{word}</span>
         </div>
       </button>
@@ -337,8 +344,13 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
                 const isWrong = wrongChoice === word;
                 if (isWrong) {
                   return (
-                    <div key={idx} className={`${cardBase} opacity-30 scale-90 pointer-events-none`}>
-                      <img src={info.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                    <div key={idx} className={`${imageCardBase} opacity-30 scale-90 pointer-events-none`}>
+                      <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-indigo-50 p-1">
+                        <img src={info.imageUrl} alt="" className="w-full h-full object-contain opacity-30" />
+                      </div>
+                      <div className="bg-indigo-100 py-1 text-center">
+                        <span className="font-magic text-indigo-400 text-sm sm:text-lg uppercase leading-tight">{word}</span>
+                      </div>
                     </div>
                   );
                 }
@@ -349,9 +361,14 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
                       if (word === card.value) handleGameSuccess('imageMatch');
                       else { handleGameError('imageMatch', word); setAttempts(a => a + 1); }
                     }}
-                    className={cardBase}
+                    className={imageCardBase}
                   >
-                    <img src={info.imageUrl} alt={word} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                    <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-white p-1.5">
+                      <img src={info.imageUrl} alt={word} className="w-full h-full object-contain" loading="lazy" />
+                    </div>
+                    <div className="bg-indigo-500 py-1.5 text-center">
+                      <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{word}</span>
+                    </div>
                   </button>
                 );
               })}
