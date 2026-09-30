@@ -22,9 +22,10 @@ const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
 
   const progressPercent = Math.round((user.progressIndex / MAGIC_PATH.length) * 100);
 
-  const isCardUnlocked = (cardIndex: number) => cardIndex === 0 || cardIndex <= user.progressIndex;
-  const isCardNext = (cardIndex: number) => cardIndex === user.progressIndex;
-  const isCardCompleted = (cardIndex: number) => user.progressIndex > cardIndex;
+  const pi = Number(user.progressIndex) || 0;
+  const isCardUnlocked = (cardIndex: number) => cardIndex === 0 || cardIndex <= pi;
+  const isCardNext = (cardIndex: number) => cardIndex === pi;
+  const isCardCompleted = (cardIndex: number) => pi > cardIndex;
 
   const reduceAnim = settings.reduceAnimations;
 

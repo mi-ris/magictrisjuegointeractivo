@@ -51,7 +51,7 @@ const App: React.FC = () => {
       avatar: profile.avatar || '🌈',
       score: Number(profile.score) || 0,
       streak: currentStreak,
-      progressIndex: Number(profile.progress_index || profile.progressIndex) || 0,
+      progressIndex: Number(profile.progress_index ?? profile.progressIndex ?? 0) || 0,
       lastLogin: lastLoginStr
     };
   };

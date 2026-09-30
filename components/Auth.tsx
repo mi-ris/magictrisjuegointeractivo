@@ -152,10 +152,10 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
               email: profile.email,
               nickname: profile.nickname,
               avatar: profile.avatar,
-              score: profile.score,
-              streak: profile.streak,
-              progressIndex: profile.progress_index,
-              lastLogin: profile.last_login
+              score: Number(profile.score) || 0,
+              streak: Number(profile.streak) || 0,
+              progressIndex: Number(profile.progress_index) || 0,
+              lastLogin: profile.last_login || new Date().toISOString()
           });
         }
       }
