@@ -106,19 +106,19 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
       const target = word.substring(index, index + syllable.length);
       const after = word.substring(index + syllable.length);
       return (
-        <span className={`font-magic uppercase tracking-tight text-indigo-900 drop-shadow-sm whitespace-nowrap ${wordSizeClass}`}>
+        <span className={`font-magic uppercase tracking-tight text-violet-900 drop-shadow-sm whitespace-nowrap ${wordSizeClass}`}>
           {before}<span style={{ color: color }} className="text-[1.25em] inline-block font-black">{target}</span>{after}
         </span>
       );
     }
-    return <span className={`font-magic uppercase tracking-tight text-indigo-900 whitespace-nowrap ${wordSizeClass}`}>{word}</span>;
+    return <span className={`font-magic uppercase tracking-tight text-violet-900 whitespace-nowrap ${wordSizeClass}`}>{word}</span>;
   };
 
-  const bubbleClass = "w-32 h-32 sm:w-44 md:w-56 sm:h-44 md:h-56 rounded-full bg-indigo-800/60 border-[6px] sm:border-[8px] border-white/40 shadow-2xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden p-3 sm:p-4";
-  const letterCardClass = "w-28 h-40 sm:w-36 md:w-48 sm:h-52 md:h-64 rounded-[2rem] sm:rounded-[2.5rem] bg-white border-[6px] sm:border-[10px] border-indigo-200 flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-center overflow-hidden p-2 sm:p-3";
+  const bubbleClass = "w-32 h-32 sm:w-44 md:w-56 sm:h-44 md:h-56 rounded-full bg-teal-700/50 border-[6px] sm:border-[8px] border-white/40 shadow-2xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden p-3 sm:p-4";
+  const letterCardClass = "w-28 h-40 sm:w-36 md:w-48 sm:h-52 md:h-64 rounded-[2rem] sm:rounded-[2.5rem] bg-white border-[6px] sm:border-[10px] border-violet-200 flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-center overflow-hidden p-2 sm:p-3";
 
   return (
-    <div className="fixed inset-0 bg-indigo-950/90 backdrop-blur-sm z-[100] flex flex-col p-3 sm:p-6 pt-24 sm:pt-28 overflow-y-auto">
+    <div className="fixed inset-0 bg-violet-950/90 backdrop-blur-sm z-[100] flex flex-col p-3 sm:p-6 pt-24 sm:pt-28 overflow-y-auto">
       <div className="fixed inset-0 pointer-events-none z-0">
       </div>
 
@@ -127,11 +127,11 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         {gameState === 'intro' && (
           <div className="flex flex-col items-center space-y-4 sm:space-y-6 text-center w-full">
             <div className="bg-white/10 backdrop-blur-2xl p-6 sm:p-12 rounded-[3rem] sm:rounded-[4rem] border-2 sm:border-4 border-white/30 w-full max-w-lg space-y-6 sm:space-y-8 shadow-2xl">
-                <div className="flex flex-col items-center justify-center bg-indigo-900/40 py-6 sm:py-8 rounded-[2rem] sm:rounded-[3rem] border-2 border-white/10 shadow-inner overflow-hidden">
+                <div className="flex flex-col items-center justify-center bg-violet-900/40 py-6 sm:py-8 rounded-[2rem] sm:rounded-[3rem] border-2 border-white/10 shadow-inner overflow-hidden">
                     <h3 className={`font-magic drop-shadow-[0_8px_0_rgba(0,0,0,0.15)] mb-4 sm:mb-6 leading-none tracking-tighter ${card.value.length > 2 ? 'text-[60px] sm:text-[110px]' : 'text-[80px] sm:text-[160px]'}`} style={{ color: '#000000' }}>
                         {card.value}
                     </h3>
-                    <div className="bg-white p-4 sm:p-8 rounded-[2rem] sm:rounded-full border-2 sm:border-4 border-indigo-100 shadow-xl flex flex-col items-center w-[90%] mx-auto min-h-[140px] sm:min-h-[180px] justify-center">
+                    <div className="bg-white p-4 sm:p-8 rounded-[2rem] sm:rounded-full border-2 sm:border-4 border-violet-100 shadow-xl flex flex-col items-center w-[90%] mx-auto min-h-[140px] sm:min-h-[180px] justify-center">
                         <span className="text-6xl sm:text-9xl mb-2 sm:text-9xl leading-none">{card.icon}</span>
                         <div className="w-full overflow-hidden">
                             {renderHighlightedWord(card.pictogramWord, card.value, '#000000')}
@@ -140,12 +140,12 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                 </div>
 
                 <div className="space-y-4 sm:space-y-6">
-                    <p className="text-xl sm:text-4xl font-bold text-cyan-300 uppercase tracking-widest leading-tight">{card.description}</p>
+                    <p className="text-xl sm:text-4xl font-bold text-amber-300 uppercase tracking-widest leading-tight">{card.description}</p>
                     <div className="flex flex-col gap-3 sm:gap-4">
-                        <VoiceButton text={card.audioInstruction} className="py-3 sm:py-4 bg-indigo-500 rounded-full border-b-[6px] sm:border-b-[8px] border-indigo-800" />
+                        <VoiceButton text={card.audioInstruction} className="py-3 sm:py-4 bg-violet-500 rounded-full border-b-[6px] sm:border-b-[8px] border-violet-800" />
                         <button 
                             onClick={handleStartGame}
-                            className="bg-cyan-500 text-white py-4 sm:py-6 rounded-[2rem] sm:rounded-[2.5rem] text-2xl sm:text-3xl font-magic shadow-2xl hover:bg-cyan-600 border-b-[6px] sm:border-b-[8px] border-cyan-800 transition-all active:translate-y-1 uppercase tracking-widest"
+                            className="bg-gradient-to-r from-rose-500 to-amber-500 text-white py-4 sm:py-6 rounded-[2rem] sm:rounded-[2.5rem] text-2xl sm:text-3xl font-magic shadow-2xl hover:from-rose-600 hover:to-amber-600 border-b-[6px] sm:border-b-[8px] border-white/30 transition-all active:translate-y-1 uppercase tracking-widest"
                         >
                             JUGAR
                         </button>
@@ -157,7 +157,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
         {gameState === 'identify' && (
           <div className="w-full flex flex-col items-center justify-center space-y-6 sm:space-y-8 py-6 sm:py-10">
-            <div className="bg-indigo-900/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 sm:border-4 border-white/20 shadow-2xl">
+            <div className="bg-violet-900/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 sm:border-4 border-white/20 shadow-2xl">
                  <h3 className="text-xl sm:text-4xl font-magic text-white leading-tight uppercase text-center">
                    {card.type === 'silaba' 
                      ? `Toca el dibujo que inicia con la sílaba ${card.value}` 
@@ -181,7 +181,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
         {gameState === 'findLetter' && (
           <div className="w-full flex flex-col items-center justify-center space-y-6 sm:space-y-8 py-6 sm:py-10">
-            <div className="bg-gradient-to-r from-cyan-400 to-blue-600 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 sm:border-4 border-white shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+            <div className="bg-gradient-to-r from-amber-400 to-rose-500 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 sm:border-4 border-white shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
                  <h3 className="text-2xl sm:text-5xl font-magic text-white leading-tight uppercase text-center drop-shadow-lg">
                    ¿Qué {typeName} aprendimos?
                  </h3>
@@ -194,7 +194,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                         onClick={choice === card.value ? handleCorrectFindLetter : handleError}
                         className={letterCardClass}
                     >
-                        <span className={`font-magic leading-none text-center block text-indigo-900 tracking-tighter ${choice.length > 2 ? 'text-[50px] sm:text-[90px]' : 'text-[70px] sm:text-[130px]'}`}>
+                        <span className={`font-magic leading-none text-center block text-violet-900 tracking-tighter ${choice.length > 2 ? 'text-[50px] sm:text-[90px]' : 'text-[70px] sm:text-[130px]'}`}>
                             {choice}
                         </span>
                     </button>
@@ -204,7 +204,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         )}
 
         {gameState === 'success' && (
-          <div className="bg-gradient-to-br from-amber-400 via-cyan-500 to-indigo-500 p-8 sm:p-16 rounded-[3rem] sm:rounded-[5rem] border-[6px] sm:border-[10px] border-white shadow-[0_0_80px_rgba(99,102,241,0.5)] text-center space-y-6 sm:space-y-10 max-w-lg w-full">
+          <div className="bg-gradient-to-br from-amber-400 via-rose-500 to-violet-500 p-8 sm:p-16 rounded-[3rem] sm:rounded-[5rem] border-[6px] sm:border-[10px] border-white shadow-[0_0_80px_rgba(244,63,94,0.4)] text-center space-y-6 sm:space-y-10 max-w-lg w-full">
              <div className="text-[100px] sm:text-[180px] drop-shadow-2xl">🌟</div>
              <div className="space-y-2">
                 <h3 className="text-4xl sm:text-7xl font-magic text-white drop-shadow-lg tracking-tighter uppercase">EXCELENTE</h3>
@@ -212,7 +212,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
              </div>
              <button 
                 onClick={handleComplete}
-                className="bg-white text-indigo-600 py-4 sm:py-6 px-10 sm:px-16 rounded-full text-2xl sm:text-3xl font-magic shadow-2xl hover:scale-110 active:scale-95 transition-all border-b-[6px] sm:border-b-[8px] border-indigo-200 uppercase tracking-widest"
+                className="bg-white text-violet-600 py-4 sm:py-6 px-10 sm:px-16 rounded-full text-2xl sm:text-3xl font-magic shadow-2xl hover:scale-110 active:scale-95 transition-all border-b-[6px] sm:border-b-[8px] border-violet-200 uppercase tracking-widest"
              >
                 SIGUIENTE
              </button>
@@ -220,7 +220,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         )}
 
         {feedback === 'success' && (
-            <div className="fixed inset-0 flex items-center justify-center bg-green-500/30 z-[150] backdrop-blur-lg">
+            <div className="fixed inset-0 flex items-center justify-center bg-emerald-500/30 z-[150] backdrop-blur-lg">
                 <span className="text-[120px] sm:text-[200px] animate-bounce">✨</span>
             </div>
         )}

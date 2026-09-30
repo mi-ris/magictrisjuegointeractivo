@@ -48,9 +48,9 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
 
   return (
     <div className="p-4 pt-24 sm:pt-28 max-w-4xl mx-auto space-y-4 pb-12 relative">
-      <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-indigo-100/30">
+      <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-rose-100/30">
         
-        <div className="bg-gradient-to-r from-indigo-500 to-cyan-500 p-6 flex flex-row items-center justify-center gap-6">
+        <div className="bg-gradient-to-r from-rose-400 via-fuchsia-500 to-violet-500 p-6 flex flex-row items-center justify-center gap-6">
           <div className="relative">
             <span className="text-[70px] bg-white w-24 h-24 rounded-full border-[6px] border-white shadow-xl flex items-center justify-center animate-bounce-in">
               {user.avatar}
@@ -64,13 +64,13 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-[10px] font-magic text-indigo-500 uppercase tracking-widest ml-4">Nombre Real</label>
+              <label className="text-[10px] font-magic text-rose-500 uppercase tracking-widest ml-4">Nombre Real</label>
               <div className="w-full bg-gray-50 px-6 py-3 rounded-full border-2 border-gray-100 text-lg font-bold text-gray-500 shadow-inner italic">
                 {user.username}
               </div>
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-magic text-indigo-500 uppercase tracking-widest ml-4">Correo Amigo</label>
+              <label className="text-[10px] font-magic text-rose-500 uppercase tracking-widest ml-4">Correo Amigo</label>
               <div className="w-full bg-gray-50 px-6 py-3 rounded-full border-2 border-gray-100 text-base font-bold text-gray-400 shadow-inner overflow-hidden text-ellipsis">
                 {user.email}
               </div>
@@ -78,13 +78,13 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-magic text-indigo-500 uppercase tracking-widest ml-4">Apodo Mágico (Toca para cambiar)</label>
+            <label className="text-[10px] font-magic text-fuchsia-500 uppercase tracking-widest ml-4">Apodo Mágico (Toca para cambiar)</label>
             <input 
               type="text"
               value={tempNickname}
               onChange={(e) => setTempNickname(e.target.value)}
               onBlur={handleNicknameBlur}
-              className="w-full bg-indigo-50 px-6 py-4 rounded-full border-2 border-indigo-200 text-2xl font-magic text-indigo-600 outline-none focus:ring-4 focus:ring-indigo-100 transition-all shadow-md placeholder-indigo-200"
+              className="w-full bg-fuchsia-50 px-6 py-4 rounded-full border-2 border-fuchsia-200 text-2xl font-magic text-fuchsia-600 outline-none focus:ring-4 focus:ring-fuchsia-100 transition-all shadow-md placeholder-fuchsia-200"
               placeholder="Escribe tu apodo..."
               spellCheck="false"
             />
@@ -97,21 +97,21 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
                 <p className="text-3xl font-magic text-amber-700">{user.score}</p>
                 <p className="text-[10px] uppercase font-magic text-amber-600 tracking-widest">Estrellas</p>
               </div>
-              <div className="bg-cyan-100/50 p-4 rounded-[2rem] text-center border-2 border-cyan-200 shadow-sm">
+              <div className="bg-rose-100/50 p-4 rounded-[2rem] text-center border-2 border-rose-200 shadow-sm">
                 <p className="text-4xl mb-1">🔥</p>
-                <p className="text-3xl font-magic text-cyan-700">{user.streak}</p>
-                <p className="text-[10px] uppercase font-magic text-cyan-600 tracking-widest">Racha</p>
+                <p className="text-3xl font-magic text-rose-700">{user.streak}</p>
+                <p className="text-[10px] uppercase font-magic text-rose-600 tracking-widest">Racha</p>
               </div>
             </div>
 
-            <div className="bg-indigo-50/50 p-4 rounded-[2.5rem] border-2 border-indigo-100">
-              <h3 className="text-sm font-magic text-indigo-700 mb-3 text-center uppercase tracking-tighter">Cambia tu foto</h3>
+            <div className="bg-fuchsia-50/50 p-4 rounded-[2.5rem] border-2 border-fuchsia-100">
+              <h3 className="text-sm font-magic text-fuchsia-700 mb-3 text-center uppercase tracking-tighter">Cambia tu foto</h3>
               <div className="flex justify-center gap-2 flex-wrap">
                 {avatars.map(a => (
                   <button 
                     key={a}
                     onClick={() => handleAvatarSelect(a)}
-                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-indigo-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-indigo-200'}`}
+                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-fuchsia-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-fuchsia-200'}`}
                   >
                     {a}
                   </button>
@@ -130,10 +130,10 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
       </div>
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-indigo-950/50 backdrop-blur-lg animate-fade-in">
-          <div className="bg-white/95 backdrop-blur-2xl border-[10px] border-indigo-400 p-8 rounded-[4rem] shadow-2xl w-full max-w-md flex flex-col items-center text-center transform animate-[bounceIn_0.6s_ease-out]">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-violet-950/50 backdrop-blur-lg animate-fade-in">
+          <div className="bg-white/95 backdrop-blur-2xl border-[10px] border-rose-400 p-8 rounded-[4rem] shadow-2xl w-full max-w-md flex flex-col items-center text-center transform animate-[bounceIn_0.6s_ease-out]">
             <div className="text-[80px] mb-2 floating-gumi">👾</div>
-            <h3 className="text-3xl font-magic text-indigo-800 mb-2 leading-tight uppercase">¿Quieres salir?</h3>
+            <h3 className="text-3xl font-magic text-violet-800 mb-2 leading-tight uppercase">¿Quieres salir?</h3>
             <p className="text-lg font-bold text-gray-500 mb-6">¡Gumi y las letras te esperarán!</p>
             
             <div className="w-full space-y-3">
@@ -146,7 +146,7 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
               
               <button 
                 onClick={handleLogoutCancel}
-                className="w-full bg-indigo-100 text-indigo-600 py-4 rounded-[2rem] text-xl font-magic border-2 border-indigo-200 hover:bg-indigo-200 transition-all active:scale-95 uppercase tracking-widest"
+                className="w-full bg-violet-100 text-violet-600 py-4 rounded-[2rem] text-xl font-magic border-2 border-violet-200 hover:bg-violet-200 transition-all active:scale-95 uppercase tracking-widest"
               >
                 CANCELAR
               </button>

@@ -166,13 +166,13 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
     }
   };
 
-  const inputClass = "w-full p-4 rounded-3xl border-2 border-indigo-200 text-black font-bold focus:ring-4 focus:ring-indigo-100 outline-none placeholder-indigo-300 bg-white/80 transition-all shadow-sm";
+  const inputClass = "w-full p-4 rounded-3xl border-2 border-violet-200 text-black font-bold focus:ring-4 focus:ring-violet-100 outline-none placeholder-violet-300 bg-white/80 transition-all shadow-sm";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl w-full max-w-md border-[6px] sm:border-[8px] border-white flex flex-col items-center animate-fade-in">
         <div className="mb-4 sm:mb-6 text-center">
-            <h2 className="text-2xl sm:text-4xl font-magic text-indigo-700 uppercase tracking-tighter drop-shadow-sm">
+            <h2 className="text-2xl sm:text-4xl font-magic text-violet-700 uppercase tracking-tighter drop-shadow-sm">
               {mode === 'login' ? '¡HOLA DE NUEVO!' : '¡HOLA NUEVO AMIGO!'}
             </h2>
         </div>
@@ -196,17 +196,17 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-indigo-600 text-white py-4 sm:py-5 rounded-[1.5rem] sm:rounded-[2rem] font-magic text-xl sm:text-2xl shadow-xl hover:bg-indigo-700 active:translate-y-1 transition-all border-b-6 sm:border-b-8 border-indigo-800"
+            className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white py-4 sm:py-5 rounded-[1.5rem] sm:rounded-[2rem] font-magic text-xl sm:text-2xl shadow-xl hover:from-violet-600 hover:to-fuchsia-600 active:translate-y-1 transition-all border-b-6 sm:border-b-8 border-violet-800"
           >
             {loading ? 'CARGANDO...' : 'ENTRAR'}
           </button>
         </form>
 
         <div className="mt-8 flex flex-col gap-4 w-full text-center">
-            <button onClick={handleToggle} className="text-indigo-400 text-sm font-bold uppercase tracking-widest">
+            <button onClick={handleToggle} className="text-violet-400 text-sm font-bold uppercase tracking-widest">
                 {mode === 'login' ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Entra'}
             </button>
-            <button onClick={handleGuestEntry} className="text-cyan-600 font-magic text-xl uppercase">
+            <button onClick={handleGuestEntry} className="text-rose-500 font-magic text-xl uppercase">
                 MODO INVITADO
             </button>
         </div>

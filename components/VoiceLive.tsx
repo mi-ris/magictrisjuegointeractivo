@@ -97,23 +97,23 @@ const VoiceLive: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center gap-6 p-4">
-      <div className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-500 shadow-xl ${isActive ? 'bg-cyan-300 scale-110' : 'bg-indigo-100'}`}>
+      <div className={`w-48 h-48 rounded-full flex items-center justify-center transition-all duration-500 shadow-xl ${isActive ? 'bg-amber-300 scale-110' : 'bg-rose-100'}`}>
         <span className={`text-8xl transition-all ${isActive ? 'floating-gumi' : ''}`}>✨</span>
       </div>
       
       <button 
         onClick={toggleSession}
-        className={`px-8 py-4 rounded-full font-magic text-xl text-white btn-magic-pop uppercase tracking-widest ${isActive ? 'bg-red-500' : 'bg-indigo-500'}`}
+        className={`px-8 py-4 rounded-full font-magic text-xl text-white btn-magic-pop uppercase tracking-widest ${isActive ? 'bg-red-500' : 'bg-gradient-to-r from-rose-500 to-fuchsia-500'}`}
       >
         {isActive ? 'Detener' : 'Hablar'}
       </button>
 
       <div className="w-full max-w-md bg-white/50 rounded-2xl p-4 min-h-[100px] shadow-inner text-sm overflow-y-auto max-h-40">
         {transcript.length === 0 ? (
-          <p className="text-indigo-400 italic text-center">Di algo para empezar...</p>
+          <p className="text-rose-400 italic text-center">Di algo para empezar...</p>
         ) : (
           transcript.map((line, i) => (
-            <p key={i} className={`mb-1 ${line.startsWith('Gumi') ? 'font-bold text-indigo-800' : 'text-indigo-600'}`}>
+            <p key={i} className={`mb-1 ${line.startsWith('Gumi') ? 'font-bold text-rose-800' : 'text-fuchsia-600'}`}>
               {line}
             </p>
           ))

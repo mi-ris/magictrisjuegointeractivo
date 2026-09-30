@@ -100,10 +100,10 @@ const MemoryGame: React.FC = () => {
       
       <div className="mt-8 flex gap-8">
         <div className="text-center">
-          <p className="text-blue-400 uppercase text-xs font-bold">Parejas</p>
-          <p className="text-3xl font-bold text-blue-600">{matches}</p>
+          <p className="text-teal-500 uppercase text-xs font-bold">Parejas</p>
+          <p className="text-3xl font-bold text-teal-600">{matches}</p>
         </div>
-        <button onClick={initGame} className="text-blue-400 hover:text-red-500 font-bold transition-colors">
+        <button onClick={initGame} className="text-teal-500 hover:text-red-500 font-bold transition-colors">
           Reiniciar
         </button>
       </div>

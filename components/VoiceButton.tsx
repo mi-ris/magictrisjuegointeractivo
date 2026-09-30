@@ -86,7 +86,7 @@ const VoiceButton: React.FC<Props> = ({ text, className }) => {
   return (
     <button 
       onClick={handlePlay} 
-      className={`p-2 rounded-full bg-indigo-400 text-white shadow hover:scale-110 transition-transform flex items-center justify-center min-w-[3rem] ${className}`}
+      className={`p-2 rounded-full bg-violet-400 text-white shadow hover:scale-110 transition-transform flex items-center justify-center min-w-[3rem] ${className}`}
     >
       {isPlaying ? (
         <span className="flex gap-1 items-center px-2">

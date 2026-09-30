@@ -71,11 +71,11 @@ const ChatBuddy: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-indigo-100/80 p-4 rounded-t-3xl border-b-4 border-indigo-200 flex items-center gap-4">
+      <div className="bg-teal-100/80 p-4 rounded-t-3xl border-b-4 border-teal-200 flex items-center gap-4">
         <span className="text-5xl">🤖</span>
         <div>
-          <h2 className="text-2xl text-indigo-700 font-magic">Chat con Pipo</h2>
-          <p className="text-xs text-indigo-500 font-bold uppercase tracking-wider">Tu amigo robot inteligente</p>
+          <h2 className="text-2xl text-teal-700 font-magic">Chat con Pipo</h2>
+          <p className="text-xs text-teal-500 font-bold uppercase tracking-wider">Tu amigo robot inteligente</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ const ChatBuddy: React.FC = () => {
         {messages.length === 0 && (
           <div className="text-center py-10 opacity-60">
             <span className="text-6xl mb-4 block floating-gumi">👋</span>
-            <p className="text-xl text-indigo-800">¡Hola! Soy Pipo. Escríbeme algo lindo para charlar.</p>
+            <p className="text-xl text-teal-800">¡Hola! Soy Pipo. Escríbeme algo lindo para charlar.</p>
           </div>
         )}
         
@@ -91,13 +91,13 @@ const ChatBuddy: React.FC = () => {
           <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] p-4 rounded-3xl shadow-sm ${
               m.role === 'user' 
-                ? 'bg-indigo-500 text-white rounded-tr-none' 
-                : 'bg-white text-gray-800 border-2 border-indigo-100 rounded-tl-none'
+                ? 'bg-teal-500 text-white rounded-tr-none' 
+                : 'bg-white text-gray-800 border-2 border-teal-100 rounded-tl-none'
             }`}>
               <p className="text-lg leading-relaxed">{m.text}</p>
               {m.role === 'model' && (
                 <div className="mt-2 flex justify-end">
-                   <VoiceButton text={m.text} className="!p-1.5 !bg-indigo-400" />
+                   <VoiceButton text={m.text} className="!p-1.5 !bg-teal-400" />
                 </div>
               )}
             </div>
@@ -105,7 +105,7 @@ const ChatBuddy: React.FC = () => {
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-indigo-50 p-4 rounded-3xl animate-pulse text-indigo-400 font-bold">
+            <div className="bg-teal-50 p-4 rounded-3xl animate-pulse text-teal-400 font-bold">
               Pipo está pensando...
             </div>
           </div>
@@ -113,13 +113,13 @@ const ChatBuddy: React.FC = () => {
         <div ref={scrollRef} />
       </div>
 
-      <div className="bg-indigo-50/80 p-4 rounded-b-3xl border-t-2 border-indigo-100">
+      <div className="bg-teal-50/80 p-4 rounded-b-3xl border-t-2 border-teal-100">
         <div className="flex gap-2 overflow-x-auto pb-4 mb-2 scrollbar-hide">
           {suggestions.map((s, i) => (
             <button
               key={i}
               onClick={() => { setInput(s); }}
-              className="bg-white px-4 py-2 rounded-full text-sm font-bold text-indigo-600 border border-indigo-200 whitespace-nowrap hover:bg-indigo-600 hover:text-white transition-colors"
+              className="bg-white px-4 py-2 rounded-full text-sm font-bold text-teal-600 border border-teal-200 whitespace-nowrap hover:bg-teal-600 hover:text-white transition-colors"
             >
               {s}
             </button>
@@ -132,11 +132,11 @@ const ChatBuddy: React.FC = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Escribe aquí..."
-            className="flex-1 p-4 rounded-2xl border-2 border-indigo-200 focus:border-indigo-500 outline-none text-lg bg-white/90 shadow-inner"
+            className="flex-1 p-4 rounded-2xl border-2 border-teal-200 focus:border-teal-500 outline-none text-lg bg-white/90 shadow-inner"
           />
           <button 
             type="submit"
-            className="bg-indigo-500 text-white px-6 py-4 rounded-2xl text-lg font-magic shadow-lg btn-magic-pop uppercase"
+            className="bg-teal-500 text-white px-6 py-4 rounded-2xl text-lg font-magic shadow-lg btn-magic-pop uppercase"
           >
             Enviar
           </button>
