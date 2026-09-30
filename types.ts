@@ -27,6 +27,7 @@ export interface MagicCard {
   monster: string;
   description: string;
   audioInstruction: string;
+  imageUrl?: string;
 }
 
 export interface IslandLevel {
@@ -54,6 +55,15 @@ export interface WordData {
   icon: string;
   syllables: string[];
   audioInstruction: string;
+  imageUrl?: string;
+}
+
+export interface AppSettings {
+  soundEnabled: boolean;
+  reduceAnimations: boolean;
+  autoPlayVoice: boolean;
+  speechRate: 'slow' | 'normal';
+  sessionStartTime: number;
 }
 
 export interface Flashcard {

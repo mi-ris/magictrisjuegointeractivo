@@ -6,9 +6,11 @@ import { decode, decodeAudioData, getSharedAudioContext, playPopSound } from './
 interface Props {
   text: string;
   className?: string;
+  autoPlayMarker?: boolean;
+  large?: boolean;
 }
 
-const VoiceButton: React.FC<Props> = ({ text, className }) => {
+const VoiceButton: React.FC<Props> = ({ text, className, autoPlayMarker, large }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const sourceRef = useRef<AudioBufferSourceNode | null>(null);
   const isMounted = useRef(true);
@@ -25,7 +27,6 @@ const VoiceButton: React.FC<Props> = ({ text, className }) => {
   }, []);
 
   const handlePlay = async () => {
-    playPopSound(); // Sonido inmediato al tocar
     if (isPlaying) {
       if (sourceRef.current) {
         sourceRef.current.stop();
@@ -43,59 +44,50 @@ const VoiceButton: React.FC<Props> = ({ text, className }) => {
     setIsPlaying(true);
     try {
       const audioData = await textToSpeech(text);
-      
-      // Si el componente se desmontó mientras cargaba la API, no reproducir
       if (!isMounted.current) return;
 
       if (audioData) {
         const buffer = await decodeAudioData(decode(audioData), audioCtx, 24000, 1);
-        
         if (!isMounted.current) return;
 
         const source = audioCtx.createBufferSource();
         source.buffer = buffer;
         source.connect(audioCtx.destination);
         sourceRef.current = source;
-        
+
         source.onended = () => {
           if (isMounted.current) setIsPlaying(false);
           sourceRef.current = null;
         };
-        
+
         source.start();
       } else {
         setIsPlaying(false);
-        alert("⚠️ Gumi no devolvió audio. Esto suele pasar si la VITE_GEMINI_API_KEY no está bien configurada en Vercel.");
       }
     } catch (err: any) {
       console.error("Error de voz:", err);
       if (isMounted.current) {
         setIsPlaying(false);
-        // Alertamos al usuario para que sepa qué está fallando
-        if (err.message?.includes("API key not valid")) {
-          alert("❌ La Llave Mágica no es válida. Revisa que la hayas copiado bien en Vercel.");
-        } else if (err.message?.includes("quota")) {
-          alert("❌ Se ha agotado el límite gratuito de tu Llave Mágica.");
-        } else {
-          alert("❌ Gumi no pudo hablar. Revisa que hayas puesto la VITE_GEMINI_API_KEY en Vercel y hayas hecho Redeploy.");
-        }
       }
     }
   };
 
+  const sizeClass = large ? 'p-3 sm:p-4 min-w-[3.5rem]' : 'p-2 min-w-[3rem]';
+
   return (
-    <button 
-      onClick={handlePlay} 
-      className={`p-2 rounded-full bg-indigo-400 text-white shadow hover:scale-110 transition-transform flex items-center justify-center min-w-[3rem] ${className}`}
+    <button
+      onClick={handlePlay}
+      data-auto-voice={autoPlayMarker ? 'true' : undefined}
+      className={`rounded-full bg-indigo-400 text-white shadow hover:scale-110 transition-transform flex items-center justify-center ${sizeClass} ${className}`}
     >
       {isPlaying ? (
         <span className="flex gap-1 items-center px-2">
-            <span className="w-1.5 h-4 bg-white animate-pulse rounded-full"></span>
-            <span className="w-1.5 h-6 bg-white animate-pulse rounded-full delay-75"></span>
-            <span className="w-1.5 h-4 bg-white animate-pulse rounded-full delay-150"></span>
+          <span className="w-1.5 h-4 bg-white animate-pulse rounded-full"></span>
+          <span className="w-1.5 h-6 bg-white animate-pulse rounded-full delay-75"></span>
+          <span className="w-1.5 h-4 bg-white animate-pulse rounded-full delay-150"></span>
         </span>
       ) : (
-        <span className="text-2xl">📢</span>
+        <span className={large ? 'text-3xl' : 'text-2xl'}>🔊</span>
       )}
     </button>
   );

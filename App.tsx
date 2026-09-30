@@ -13,6 +13,7 @@ import VoiceLive from './components/VoiceLive';
 import MediaGenerator from './components/MediaGenerator';
 import NavBar from './components/NavBar';
 import CloudBackground from './components/CloudBackground';
+import { SettingsProvider } from './components/SettingsContext';
 import { MAGIC_PATH } from './services/mockData';
 import { supabase, isSupabaseReady } from './services/supabaseClient';
 
@@ -165,19 +166,21 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-10 relative">
-      <CloudBackground variant={darkBg ? 'dark' : 'light'} />
-      {showNavBar && user && (
-        <NavBar
-          user={user}
-          currentSection={section}
-          inGame={inGame}
-          onNavigate={(s) => { setSelectedCardIndex(null); setSection(s); }}
-          onHome={handleNavBarHome}
-        />
-      )}
-      <div className="relative z-10">{renderSection()}</div>
-    </div>
+    <SettingsProvider>
+      <div className="min-h-screen pb-10 relative">
+        <CloudBackground variant={darkBg ? 'dark' : 'light'} />
+        {showNavBar && user && (
+          <NavBar
+            user={user}
+            currentSection={section}
+            inGame={inGame}
+            onNavigate={(s) => { setSelectedCardIndex(null); setSection(s); }}
+            onHome={handleNavBarHome}
+          />
+        )}
+        <div className="relative z-10">{renderSection()}</div>
+      </div>
+    </SettingsProvider>
   );
 };
 
