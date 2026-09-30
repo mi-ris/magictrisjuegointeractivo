@@ -1,9 +1,9 @@
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { User, MagicCard } from '../types';
 import VoiceButton from './VoiceButton';
 import { playPopSound, playSuccessSound } from './AudioUtils';
-import { MAGIC_PATH, FIRST_WORDS } from '../services/mockData';
+import { FIRST_WORDS } from '../services/mockData';
 
 interface Props {
   user: User;
@@ -12,44 +12,20 @@ interface Props {
   onBack: () => void;
 }
 
-type Step = 'intro' | 'identify' | 'findLetter' | 'wordBuild' | 'success';
+type Step = 'intro' | 'identify' | 'wordBuild' | 'success';
 
-const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
+const GameBoard: React.FC<Props> = ({ card, onComplete, onBack }) => {
   const [step, setStep] = useState<Step>('intro');
   const [feedback, setFeedback] = useState<'success' | 'error' | null>(null);
   const [wrongChoice, setWrongChoice] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
-  const [hintActive, setHintActive] = useState(true);
+  const [touchedSyllables, setTouchedSyllables] = useState<number[]>([]);
 
-  const isPalabra = card.type === 'palabra';
   const wordData = useMemo(() => FIRST_WORDS.find(w => w.word === card.value), [card.value]);
 
   const numChoices = useMemo(() => {
     return attempts < 2 ? 2 : attempts < 4 ? 3 : 4;
   }, [attempts]);
-
-  const letterChoices = useMemo(() => {
-    const others = MAGIC_PATH
-      .filter(c => c.value !== card.value && c.type === card.type && c.value.length === card.value.length)
-      .map(c => c.value);
-
-    const fallback = MAGIC_PATH.filter(c => c.value !== card.value).map(c => c.value);
-    const source = others.length >= numChoices - 1 ? others : fallback;
-
-    const shuffled = [...source].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, numChoices - 1);
-    return [...selected, card.value].sort(() => Math.random() - 0.5);
-  }, [card.value, card.type, numChoices]);
-
-  const emojiChoices = useMemo(() => {
-    const otherEmojis = MAGIC_PATH
-      .filter(c => c.icon !== card.icon)
-      .map(c => c.icon);
-
-    const shuffled = [...otherEmojis].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, numChoices - 1);
-    return [...selected, card.icon].sort(() => Math.random() - 0.5);
-  }, [card.icon, numChoices]);
 
   const wordChoices = useMemo(() => {
     const others = FIRST_WORDS.filter(w => w.word !== card.value).map(w => w.word);
@@ -64,17 +40,8 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
     setTimeout(() => {
       setFeedback(null);
       setWrongChoice(null);
-      setHintActive(true);
-      setStep(isPalabra ? 'wordBuild' : 'findLetter');
-    }, 1200);
-  };
-
-  const handleCorrectFindLetter = () => {
-    playSuccessSound();
-    setFeedback('success');
-    setTimeout(() => {
-      setFeedback(null);
-      setStep('success');
+      setTouchedSyllables([]);
+      setStep('wordBuild');
     }, 1200);
   };
 
@@ -91,7 +58,6 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
     playPopSound();
     setFeedback('error');
     setWrongChoice(choice);
-    setHintActive(true);
     setTimeout(() => setFeedback(null), 1000);
   };
 
@@ -111,95 +77,25 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
     onComplete(100);
   };
 
-  const getTypeName = () => {
-    if (card.type === 'vocal') return 'vocal';
-    if (card.type === 'silaba') return 'sílaba';
-    if (card.type === 'palabra') return 'palabra';
-    return 'letra';
+  const handleSyllableTouch = (idx: number) => {
+    playPopSound();
+    setTouchedSyllables(prev => [...prev, idx]);
+    if (wordData && touchedSyllables.length + 1 >= wordData.syllables.length) {
+      setTimeout(() => handleCorrectWordBuild(), 400);
+    }
   };
 
-  const typeName = getTypeName();
-
-  const renderHighlightedWord = (word: string, syllable: string, color: string) => {
-    const normalize = (str: string) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const normalizedWord = normalize(word);
-    const normalizedSyllable = normalize(syllable);
+  const renderHighlightedWord = (word: string) => {
     const wordSizeClass = word.length > 8 ? 'text-xl sm:text-3xl' : (word.length > 5 ? 'text-2xl sm:text-4xl' : 'text-3xl sm:text-5xl');
-    const index = normalizedWord.indexOf(normalizedSyllable);
-
-    if (index !== -1) {
-      const before = word.substring(0, index);
-      const target = word.substring(index, index + syllable.length);
-      const after = word.substring(index + syllable.length);
-      return (
-        <span className={`font-magic uppercase tracking-tight text-indigo-900 drop-shadow-sm whitespace-nowrap ${wordSizeClass}`}>
-          {before}<span style={{ color: color }} className="text-[1.25em] inline-block font-black">{target}</span>{after}
-        </span>
-      );
-    }
-    return <span className={`font-magic uppercase tracking-tight text-indigo-900 whitespace-nowrap ${wordSizeClass}`}>{word}</span>;
-  };
-
-  const bubbleClass = "w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-indigo-800/60 border-[6px] sm:border-[8px] border-white/40 shadow-2xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden p-3";
-  const letterCardClass = "w-28 h-40 sm:w-36 md:w-48 sm:h-52 md:h-64 rounded-[2rem] sm:rounded-[2.5rem] bg-white border-[6px] sm:border-[10px] border-indigo-200 flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-center overflow-hidden p-2 sm:p-3";
-
-  const renderHintBubble = (emoji: string, isCorrect: boolean, idx: number) => {
-    const isWrong = wrongChoice === emoji;
-    if (isWrong) {
-      return (
-        <div
-          key={idx}
-          className={`${bubbleClass} opacity-0 scale-0 pointer-events-none transition-all duration-500`}
-        />
-      );
-    }
     return (
-      <button
-        key={idx}
-        onClick={() => {
-          if (emoji === card.icon) {
-            handleCorrectIdentify();
-          } else {
-            handleError(emoji);
-            setAttempts(a => a + 1);
-          }
-        }}
-        className={`${bubbleClass} ${hintActive && isCorrect ? 'ring-4 ring-amber-300/60 animate-pulse' : ''}`}
-      >
-        <span className="text-5xl sm:text-8xl leading-none">{emoji}</span>
-      </button>
+      <span className={`font-magic uppercase tracking-tight text-indigo-900 drop-shadow-sm whitespace-nowrap ${wordSizeClass}`}>
+        {word}
+      </span>
     );
   };
 
-  const renderHintLetterCard = (choice: string, isCorrect: boolean, idx: number) => {
-    const isWrong = wrongChoice === choice;
-    if (isWrong) {
-      return (
-        <div
-          key={idx}
-          className={`${letterCardClass} opacity-0 scale-0 pointer-events-none transition-all duration-500`}
-        />
-      );
-    }
-    return (
-      <button
-        key={idx}
-        onClick={() => {
-          if (choice === card.value) {
-            handleCorrectFindLetter();
-          } else {
-            handleError(choice);
-            setAttempts(a => a + 1);
-          }
-        }}
-        className={`${letterCardClass} ${hintActive && isCorrect ? 'ring-4 ring-amber-300/70 animate-pulse' : ''}`}
-      >
-        <span className={`font-magic leading-none text-center block text-indigo-900 tracking-tighter ${choice.length > 2 ? 'text-[40px] sm:text-[70px]' : 'text-[60px] sm:text-[110px]'}`}>
-          {choice}
-        </span>
-      </button>
-    );
-  };
+  const bubbleClass = "w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-indigo-800/60 border-[6px] sm:border-[8px] border-white/40 shadow-2xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden p-3";
+  const syllableCardClass = "w-24 h-32 sm:w-32 sm:h-40 rounded-[2rem] bg-white border-[6px] sm:border-[10px] border-indigo-200 flex items-center justify-center shadow-2xl transition-all transform hover:scale-105 active:scale-95 text-center overflow-hidden p-2";
 
   const renderHintWordCard = (choice: string, isCorrect: boolean, idx: number) => {
     const isWrong = wrongChoice === choice;
@@ -217,13 +113,13 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         key={idx}
         onClick={() => {
           if (choice === card.value) {
-            handleCorrectWordBuild();
+            handleCorrectIdentify();
           } else {
             handleError(choice);
             setAttempts(a => a + 1);
           }
         }}
-        className={`${bubbleClass} ${hintActive && isCorrect ? 'ring-4 ring-amber-300/60 animate-pulse' : ''}`}
+        className={`${bubbleClass} ${isCorrect ? 'ring-4 ring-amber-300/60 animate-pulse' : ''}`}
       >
         {choiceWord && <span className="text-4xl sm:text-7xl leading-none mb-1">{choiceWord.icon}</span>}
         <span className="font-magic text-white text-lg sm:text-2xl uppercase leading-tight">{choice}</span>
@@ -233,36 +129,27 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
   return (
     <div className="fixed inset-0 bg-indigo-950/90 backdrop-blur-sm z-[100] flex flex-col p-3 sm:p-6 pt-24 sm:pt-28 overflow-y-auto">
+      <button
+        onClick={handleBack}
+        className="absolute top-24 sm:top-28 left-3 sm:left-6 z-[110] bg-white/10 p-2 sm:p-3 rounded-2xl border-2 border-white/20 text-lg sm:text-xl hover:bg-white/20 transition-all active:scale-90 shadow-lg"
+      >
+        ←
+      </button>
+
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-3xl mx-auto w-full pb-8 sm:pb-10">
 
-        {/* INTRO - un solo objetivo: ver y escuchar */}
+        {/* INTRO - ver y escuchar la palabra completa */}
         {step === 'intro' && (
           <div className="flex flex-col items-center space-y-4 sm:space-y-6 text-center w-full animate-fade-in">
             <div className="bg-white/10 backdrop-blur-2xl p-6 sm:p-10 rounded-[3rem] sm:rounded-[4rem] border-2 sm:border-4 border-white/30 w-full max-w-lg space-y-6 shadow-2xl">
               <div className="flex flex-col items-center justify-center bg-indigo-900/40 py-6 sm:py-8 rounded-[2rem] sm:rounded-[3rem] border-2 border-white/10 shadow-inner overflow-hidden">
-                {isPalabra ? (
-                  <>
-                    <h3 className="font-magic text-[50px] sm:text-[90px] text-black leading-none mb-3 uppercase tracking-tight drop-shadow-lg">
-                      {card.value}
-                    </h3>
-                    <div className="bg-white p-4 sm:p-6 rounded-[2rem] border-2 sm:border-4 border-indigo-100 shadow-xl flex flex-col items-center w-[90%] mx-auto">
-                      <span className="text-6xl sm:text-8xl mb-2 leading-none">{card.icon}</span>
-                      {renderHighlightedWord(card.pictogramWord, card.value, '#e11d48')}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <h3 className={`font-magic drop-shadow-[0_8px_0_rgba(0,0,0,0.15)] mb-4 sm:mb-6 leading-none tracking-tighter ${card.value.length > 2 ? 'text-[50px] sm:text-[90px]' : 'text-[70px] sm:text-[140px]'}`} style={{ color: '#000000' }}>
-                      {card.value}
-                    </h3>
-                    <div className="bg-white p-4 sm:p-8 rounded-[2rem] border-2 sm:border-4 border-indigo-100 shadow-xl flex flex-col items-center w-[90%] mx-auto min-h-[120px] sm:min-h-[160px] justify-center">
-                      <span className="text-5xl sm:text-8xl mb-2 leading-none">{card.icon}</span>
-                      <div className="w-full overflow-hidden">
-                        {renderHighlightedWord(card.pictogramWord, card.value, '#000000')}
-                      </div>
-                    </div>
-                  </>
-                )}
+                <h3 className="font-magic text-[50px] sm:text-[90px] text-black leading-none mb-3 uppercase tracking-tight drop-shadow-lg">
+                  {card.value}
+                </h3>
+                <div className="bg-white p-4 sm:p-6 rounded-[2rem] border-2 sm:border-4 border-indigo-100 shadow-xl flex flex-col items-center w-[90%] mx-auto">
+                  <span className="text-6xl sm:text-8xl mb-2 leading-none">{card.icon}</span>
+                  {renderHighlightedWord(card.pictogramWord)}
+                </div>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
@@ -278,24 +165,17 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
           </div>
         )}
 
-        {/* IDENTIFY - Toca el dibujo correcto (2 opciones con pista) */}
+        {/* IDENTIFY - Toca la palabra correcta (2 opciones con pista) */}
         {step === 'identify' && (
           <div className="w-full flex flex-col items-center justify-center space-y-6 sm:space-y-8 py-4 sm:py-6 animate-fade-in">
             <div className="bg-indigo-900/60 backdrop-blur-xl p-5 sm:p-7 rounded-[2rem] border-2 border-white/20 shadow-2xl max-w-lg w-full">
               <h3 className="text-lg sm:text-3xl font-magic text-white leading-tight uppercase text-center">
-                {isPalabra
-                  ? `Toca la palabra ${card.value}`
-                  : card.type === 'silaba'
-                    ? `Toca el dibujo que inicia con la sílaba ${card.value}`
-                    : `Toca el dibujo que empieza con la letra ${card.value}`}
+                ¿Cuál es {card.value}?
               </h3>
             </div>
 
             <div className="flex-1 w-full flex flex-wrap items-center justify-center gap-4 sm:gap-8 px-2">
-              {isPalabra
-                ? wordChoices.map((choice, idx) => renderHintWordCard(choice, choice === card.value, idx))
-                : emojiChoices.map((emoji, idx) => renderHintBubble(emoji, emoji === card.icon, idx))
-              }
+              {wordChoices.map((choice, idx) => renderHintWordCard(choice, choice === card.value, idx))}
             </div>
 
             {wrongChoice && (
@@ -306,28 +186,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
           </div>
         )}
 
-        {/* FIND LETTER - ¿Qué letra/sílaba aprendimos? */}
-        {step === 'findLetter' && (
-          <div className="w-full flex flex-col items-center justify-center space-y-6 sm:space-y-8 py-4 sm:py-6 animate-fade-in">
-            <div className="bg-gradient-to-r from-cyan-400 to-blue-600 p-5 sm:p-7 rounded-[2rem] border-2 sm:border-4 border-white shadow-[0_10px_40px_rgba(0,0,0,0.3)] max-w-lg w-full">
-              <h3 className="text-xl sm:text-4xl font-magic text-white leading-tight uppercase text-center drop-shadow-lg">
-                ¿Qué {typeName} aprendimos?
-              </h3>
-            </div>
-
-            <div className="flex-1 w-full flex flex-wrap items-center justify-center gap-4 sm:gap-8 px-2">
-              {letterChoices.map((choice, idx) => renderHintLetterCard(choice, choice === card.value, idx))}
-            </div>
-
-            {wrongChoice && (
-              <p className="text-amber-300 text-sm sm:text-base font-bold uppercase animate-fade-in">
-                Casi... intenta con la que brilla
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* WORD BUILD - Armar la palabra con sílabas (modo palabra) */}
+        {/* WORD BUILD - Armar la palabra tocando sílabas */}
         {step === 'wordBuild' && wordData && (
           <div className="w-full flex flex-col items-center justify-center space-y-6 sm:space-y-8 py-4 sm:py-6 animate-fade-in">
             <div className="bg-gradient-to-r from-rose-400 to-pink-600 p-5 sm:p-7 rounded-[2rem] border-2 sm:border-4 border-white shadow-[0_10px_40px_rgba(0,0,0,0.3)] max-w-lg w-full">
@@ -339,17 +198,21 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
             <div className="bg-white/10 backdrop-blur-xl rounded-[2rem] p-6 sm:p-8 border-2 border-white/20 shadow-2xl">
               <div className="text-6xl sm:text-8xl text-center mb-4">{wordData.icon}</div>
               <div className="flex gap-2 sm:gap-3 justify-center items-center">
-                {wordData.syllables.map((syl, idx) => (
-                  <button
-                    key={idx}
-                    onClick={handleCorrectWordBuild}
-                    className={`${letterCardClass} !w-24 !h-32 sm:!w-32 sm:!h-40 ${hintActive ? 'ring-4 ring-amber-300/70 animate-pulse' : ''}`}
-                  >
-                    <span className="font-magic text-[40px] sm:text-[70px] text-indigo-900 leading-none">
-                      {syl}
-                    </span>
-                  </button>
-                ))}
+                {wordData.syllables.map((syl, idx) => {
+                  const touched = touchedSyllables.includes(idx);
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => !touched && handleSyllableTouch(idx)}
+                      disabled={touched}
+                      className={`${syllableCardClass} ${!touched ? 'ring-4 ring-amber-300/70 animate-pulse' : 'ring-2 ring-emerald-400 opacity-50'} transition-all`}
+                    >
+                      <span className="font-magic text-[36px] sm:text-[60px] text-indigo-900 leading-none">
+                        {touched ? syl : syl}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
               <p className="text-cyan-200 text-xs sm:text-sm text-center mt-4 font-bold uppercase tracking-wider">
                 Toca cada sílaba para armar la palabra
@@ -365,7 +228,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
             <div className="space-y-2">
               <h3 className="text-3xl sm:text-6xl font-magic text-white drop-shadow-lg tracking-tighter uppercase">EXCELENTE</h3>
               <p className="text-base sm:text-xl font-bold text-white uppercase tracking-[0.15em] opacity-90">
-                {isPalabra ? '¡Aprendiste una palabra!' : '¡Has completado este nivel!'}
+                ¡Aprendiste la palabra {card.value}!
               </p>
             </div>
             <button

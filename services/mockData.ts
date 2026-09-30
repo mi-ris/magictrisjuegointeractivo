@@ -2,30 +2,12 @@
 import { MagicCard, IslandLevel, WordData } from '../types';
 
 const LEVEL_GROUPS = [
-  { name: 'ISLA DE LAS VOCALES', islandIcon: '🏝️', items: ['A', 'E', 'I', 'O', 'U'] },
-  { name: 'ISLA DE LAS PALABRAS', islandIcon: '🌟', items: ['MAMÁ', 'PAPÁ', 'CASA', 'AGUA', 'SOL'] },
-  { name: 'ISLA DE LA LETRA B', islandIcon: '⛵', items: ['B', 'BA', 'BE', 'BI', 'BO', 'BU'] },
-  { name: 'ISLA DE LA LETRA C', islandIcon: '🏠', items: ['C', 'CA', 'CE', 'CI', 'CO', 'CU'] },
-  { name: 'ISLA DE LA LETRA D', islandIcon: '🎲', items: ['D', 'DA', 'DE', 'DI', 'DO', 'DU'] },
-  { name: 'ISLA DE LA LETRA F', islandIcon: '🍓', items: ['F', 'FA', 'FE', 'FI', 'FO', 'FU'] },
-  { name: 'ISLA DE LA LETRA G', islandIcon: '🐱', items: ['G', 'GA', 'GE', 'GI', 'GO', 'GU'] },
-  { name: 'ISLA DE LA LETRA H', islandIcon: '🦛', items: ['H', 'HA', 'HE', 'HI', 'HO', 'HU'] },
-  { name: 'ISLA DE LA LETRA J', islandIcon: '🦒', items: ['J', 'JA', 'JE', 'JI', 'JO', 'JU'] },
-  { name: 'ISLA DE LA LETRA K', islandIcon: '🐨', items: ['K', 'KA', 'KE', 'KI', 'KO', 'KU'] },
-  { name: 'ISLA DE LA LETRA L', islandIcon: '🦁', items: ['L', 'LA', 'LE', 'LI', 'LO', 'LU'] },
-  { name: 'ISLA DE LA LETRA M', islandIcon: '🐒', items: ['M', 'MA', 'ME', 'MI', 'MO', 'MU'] },
-  { name: 'ISLA DE LA LETRA N', islandIcon: '🍊', items: ['N', 'NA', 'NE', 'NI', 'NO', 'NU'] },
-  { name: 'ISLA DE LA LETRA Ñ', islandIcon: '🐦', items: ['Ñ', 'ÑA', 'ÑE', 'ÑI', 'ÑO', 'ÑU'] },
-  { name: 'ISLA DE LA LETRA P', islandIcon: '🦆', items: ['P', 'PA', 'PE', 'PI', 'PO', 'PU'] },
-  { name: 'ISLA DE LA LETRA Q', islandIcon: '🧀', items: ['Q', 'QUE', 'QUI'] },
-  { name: 'ISLA DE LA LETRA R', islandIcon: '🐭', items: ['R', 'RA', 'RE', 'RI', 'RO', 'RU'] },
-  { name: 'ISLA DE LA LETRA S', islandIcon: '☀️', items: ['S', 'SA', 'SE', 'SI', 'SO', 'SU'] },
-  { name: 'ISLA DE LA LETRA T', islandIcon: '🐢', items: ['T', 'TA', 'TE', 'TI', 'TO', 'TU'] },
-  { name: 'ISLA DE LA LETRA V', islandIcon: '🐄', items: ['V', 'VA', 'VE', 'VI', 'VO', 'VU'] },
-  { name: 'ISLA DE LA LETRA W', islandIcon: '🧇', items: ['W', 'WA', 'WE', 'WI', 'WO', 'WU'] },
-  { name: 'ISLA DE LA LETRA X', islandIcon: '🎻', items: ['X', 'XA', 'XE', 'XI', 'XO', 'XU'] },
-  { name: 'ISLA DE LA LETRA Y', islandIcon: '🪀', items: ['Y', 'YA', 'YE', 'YI', 'YO', 'YU'] },
-  { name: 'ISLA DE LA LETRA Z', islandIcon: '🥕', items: ['Z', 'ZA', 'ZE', 'ZI', 'ZO', 'ZU'] },
+  { name: 'MUNDO 1 · MIS PRIMERAS PALABRAS', islandIcon: '🏝️', items: ['MAMÁ', 'PAPÁ', 'CASA', 'AGUA', 'SOL'] },
+  { name: 'MUNDO 2 · MI FAMILIA', islandIcon: '🌈', items: ['BEBÉ', 'HADA', 'MAMÁ', 'PAPÁ', 'FELIZ'] },
+  { name: 'MUNDO 3 · MI CASA', islandIcon: '🏠', items: ['CAMA', 'MESA', 'LECHE', 'VASO', 'PUERTA'] },
+  { name: 'MUNDO 4 · ANIMALES', islandIcon: '🐾', items: ['GATO', 'OSO', 'LOBO', 'CONEJO', 'PATO'] },
+  { name: 'MUNDO 5 · NATURALEZA', islandIcon: '🌳', items: ['LUNA', 'NUBE', 'RÍO', 'SOL', 'FUEGO'] },
+  { name: 'MUNDO 6 · JUEGOS Y OBJETOS', islandIcon: '🎁', items: ['PELOTA', 'DADO', 'JUGO', 'LÁPIZ', 'ROBOT'] },
 ];
 
 const BRIGHT_COLORS = [
@@ -41,76 +23,68 @@ const BRIGHT_COLORS = [
     { bg: 'bg-lime-500', hex: '#84cc16' },
 ];
 
-const PICTOGRAM_DATA: Record<string, { icon: string, word: string }> = {
-  'A': { icon: '🐝', word: 'Abeja' }, 'E': { icon: '🐘', word: 'Elefante' }, 'I': { icon: '🏝️', word: 'Isla' }, 'O': { icon: '🐻', word: 'Oso' }, 'U': { icon: '🍇', word: 'Uva' },
-  'MAMÁ': { icon: '👩', word: 'Mamá' }, 'PAPÁ': { icon: '👨', word: 'Papá' }, 'CASA': { icon: '🏠', word: 'Casa' }, 'AGUA': { icon: '💧', word: 'Agua' }, 'SOL': { icon: '☀️', word: 'Sol' },
-  'B': { icon: '⛵', word: 'Barco' }, 'BA': { icon: '🐳', word: 'Ballena' }, 'BE': { icon: '👶', word: 'Bebé' }, 'BI': { icon: '🚲', word: 'Bici' }, 'BO': { icon: '👢', word: 'Bota' }, 'BU': { icon: '🦉', word: 'Búho' },
-  'C': { icon: '🏠', word: 'Casa' }, 'CA': { icon: '🛌', word: 'Cama' }, 'CE': { icon: '🦓', word: 'Cebra' }, 'CI': { icon: '🦢', word: 'Cisne' }, 'CO': { icon: '🐰', word: 'Conejo' }, 'CU': { icon: '🥄', word: 'Cuchara' },
-  'D': { icon: '🎲', word: 'Dado' }, 'DA': { icon: '💃', word: 'Dama' }, 'DE': { icon: '☝️', word: 'Dedo' }, 'DI': { icon: '🦖', word: 'Dino' }, 'DO': { icon: '🍩', word: 'Dona' }, 'DU': { icon: '🧚', word: 'Duende' },
-  'F': { icon: '🍓', word: 'Fresa' }, 'FA': { icon: '🔦', word: 'Faro' }, 'FE': { icon: '😊', word: 'Feliz' }, 'FI': { icon: '🎫', word: 'Ficha' }, 'FO': { icon: '🦭', word: 'Foca' }, 'FU': { icon: '🔥', word: 'Fuego' },
-  'G': { icon: '🐱', word: 'Gato' }, 'GA': { icon: '🍪', word: 'Galleta' }, 'GE': { icon: '🍮', word: 'Gelatina' }, 'GI': { icon: '🌻', word: 'Girasol' }, 'GO': { icon: '🍬', word: 'Goma' }, 'GU': { icon: '🐛', word: 'Gusano' },
-  'H': { icon: '🦛', word: 'Hipo' }, 'HA': { icon: '🧚‍♀️', word: 'Hada' }, 'HE': { icon: '🍦', word: 'Helado' }, 'HI': { icon: '🧊', word: 'Hielo' }, 'HO': { icon: '🍂', word: 'Hoja' }, 'HU': { icon: '🥚', word: 'Huevo' },
-  'J': { icon: '🦒', word: 'Jirafa' }, 'JA': { icon: '🧼', word: 'Jabón' }, 'JE': { icon: '💉', word: 'Jeringa' }, 'JI': { icon: '🏇', word: 'Jinete' }, 'JO': { icon: '💍', word: 'Joya' }, 'JU': { icon: '🧃', word: 'Jugo' },
-  'K': { icon: '🐨', word: 'Koala' }, 'KA': { icon: '🛶', word: 'Kayak' }, 'KE': { icon: '🥫', word: 'Kétchup' }, 'KI': { icon: '🥝', word: 'Kiwi' }, 'KO': { icon: '🐨', word: 'Koala' }, 'KU': { icon: '🥋', word: 'Kung-fu' },
-  'L': { icon: '🦁', word: 'León' }, 'LA': { icon: '✏️', word: 'Lápiz' }, 'LE': { icon: '🥛', word: 'Leche' }, 'LI': { icon: '🍋', word: 'Limón' }, 'LO': { icon: '🐺', word: 'Lobo' }, 'LU': { icon: '🌙', word: 'Luna' },
-  'M': { icon: '🐒', word: 'Mono' }, 'MA': { icon: '✋', word: 'Mano' }, 'ME': { icon: '🪑', word: 'Mesa' }, 'MI': { icon: '🍯', word: 'Miel' }, 'MO': { icon: '🐒', word: 'Mono' }, 'MU': { icon: '🦷', word: 'Muela' },
-  'N': { icon: '🍊', word: 'Naranja' }, 'NA': { icon: '👃', word: 'Nariz' }, 'NE': { icon: '🌨️', word: 'Nevar' }, 'NI': { icon: '🪹', word: 'Nido' }, 'NO': { icon: '🎵', word: 'Nota' }, 'NU': { icon: '☁️', word: 'Nube' },
-  'Ñ': { icon: '🐦', word: 'Ñandú' }, 'ÑA': { icon: '🕷️', word: 'Araña' }, 'ÑE': { icon: '🪆', word: 'Muñeca' }, 'ÑI': { icon: '🤙', word: 'Meñique' }, 'ÑO': { icon: '🍝', word: 'Ñoquis' }, 'ÑU': { icon: '🐃', word: 'Ñu' },
-  'P': { icon: '🦆', word: 'Pato' }, 'PA': { icon: '🐼', word: 'Panda' }, 'PE': { icon: '⚽', word: 'Pelota' }, 'PI': { icon: '🍍', word: 'Piña' }, 'PO': { icon: '🐥', word: 'Pollito' }, 'PU': { icon: '🚪', word: 'Puerta' },
-  'Q': { icon: '🧀', word: 'Queso' }, 'QUE': { icon: '🧀', word: 'Queso' }, 'QUI': { icon: '📅', word: 'Quince' },
-  'R': { icon: '🐭', word: 'Ratón' }, 'RA': { icon: '🌿', word: 'Rama' }, 'RE': { icon: '⌚', word: 'Reloj' }, 'RI': { icon: '🏞️', word: 'Río' }, 'RO': { icon: '🤖', word: 'Robot' }, 'RU': { icon: '🎡', word: 'Rueda' },
-  'S': { icon: '☀️', word: 'Sol' }, 'SA': { icon: '🐸', word: 'Sapo' }, 'SE': { icon: '🌱', word: 'Semilla' }, 'SI': { icon: '🪑', word: 'Silla' }, 'SO': { icon: '🥣', word: 'Sopa' }, 'SU': { icon: '🆙', word: 'Subir' },
-  'T': { icon: '🐢', word: 'Tortuga' }, 'TA': { icon: '🥁', word: 'Tambor' }, 'TE': { icon: '📺', word: 'Tele' }, 'TI': { icon: '✂️', word: 'Tijera' }, 'TO': { icon: '🍅', word: 'Tomate' }, 'TU': { icon: '🦜', word: 'Tucán' },
-  'V': { icon: '🐄', word: 'Vaca' }, 'VA': { icon: '🥛', word: 'Vaso' }, 'VE': { icon: '👗', word: 'Vestido' }, 'VI': { icon: '🎻', word: 'Violín' }, 'VO': { icon: '🌋', word: 'Volcán' }, 'VU': { icon: '✈️', word: 'Vuelo' },
-  'W': { icon: '🧇', word: 'Waffle' }, 'WA': { icon: '🤽', word: 'Waterpolo' }, 'WE': { icon: '🌐', word: 'Web' }, 'WI': { icon: '📶', word: 'Wi-fi' }, 'WO': { icon: '🍳', word: 'Wok' }, 'WU': { icon: '🥋', word: 'Wushu' },
-  'X': { icon: '🎻', word: 'Xilófono' }, 'XA': { icon: '📝', word: 'Examen' }, 'XE': { icon: '🥊', word: 'Boxeo' }, 'XI': { icon: '🎻', word: 'Xilófono' }, 'XO': { icon: '🎷', word: 'Saxofón' }, 'XU': { icon: '💦', word: 'Exudar' },
-  'Y': { icon: '🪀', word: 'Yoyo' }, 'YA': { icon: '🚤', word: 'Yate' }, 'YE': { icon: '🐎', word: 'Yegua' }, 'YI': { icon: '⚡', word: 'Rayito' }, 'YO': { icon: '🪀', word: 'Yoyo' }, 'YU': { icon: '🍠', word: 'Yuca' },
-  'Z': { icon: '🥕', word: 'Zanahoria' }, 'ZA': { icon: '👟', word: 'Zapato' }, 'ZE': { icon: '🎈', word: 'Zepelín' }, 'ZI': { icon: '📉', word: 'Zigzag' }, 'ZO': { icon: '🦊', word: 'Zorro' }, 'ZU': { icon: '🍹', word: 'Zumo' },
+const PICTOGRAM_DATA: Record<string, { icon: string, word: string, syllables: string[] }> = {
+  'MAMÁ': { icon: '👩', word: 'Mamá', syllables: ['MA', 'MÁ'] },
+  'PAPÁ': { icon: '👨', word: 'Papá', syllables: ['PA', 'PÁ'] },
+  'CASA': { icon: '🏠', word: 'Casa', syllables: ['CA', 'SA'] },
+  'AGUA': { icon: '💧', word: 'Agua', syllables: ['A', 'GUA'] },
+  'SOL': { icon: '☀️', word: 'Sol', syllables: ['SOL'] },
+  'BEBÉ': { icon: '👶', word: 'Bebé', syllables: ['BE', 'BÉ'] },
+  'HADA': { icon: '🧚‍♀️', word: 'Hada', syllables: ['HA', 'DA'] },
+  'FELIZ': { icon: '😊', word: 'Feliz', syllables: ['FE', 'LIZ'] },
+  'CAMA': { icon: '🛌', word: 'Cama', syllables: ['CA', 'MA'] },
+  'MESA': { icon: '🪑', word: 'Mesa', syllables: ['ME', 'SA'] },
+  'LECHE': { icon: '🥛', word: 'Leche', syllables: ['LE', 'CHE'] },
+  'VASO': { icon: '🥛', word: 'Vaso', syllables: ['VA', 'SO'] },
+  'PUERTA': { icon: '🚪', word: 'Puerta', syllables: ['PUER', 'TA'] },
+  'GATO': { icon: '🐱', word: 'Gato', syllables: ['GA', 'TO'] },
+  'OSO': { icon: '🐻', word: 'Oso', syllables: ['O', 'SO'] },
+  'LOBO': { icon: '🐺', word: 'Lobo', syllables: ['LO', 'BO'] },
+  'CONEJO': { icon: '🐰', word: 'Conejo', syllables: ['CO', 'NE', 'JO'] },
+  'PATO': { icon: '🦆', word: 'Pato', syllables: ['PA', 'TO'] },
+  'LUNA': { icon: '🌙', word: 'Luna', syllables: ['LU', 'NA'] },
+  'NUBE': { icon: '☁️', word: 'Nube', syllables: ['NU', 'BE'] },
+  'RÍO': { icon: '🏞️', word: 'Río', syllables: ['RÍ', 'O'] },
+  'FUEGO': { icon: '🔥', word: 'Fuego', syllables: ['FUE', 'GO'] },
+  'PELOTA': { icon: '⚽', word: 'Pelota', syllables: ['PE', 'LO', 'TA'] },
+  'DADO': { icon: '🎲', word: 'Dado', syllables: ['DA', 'DO'] },
+  'JUGO': { icon: '🧃', word: 'Jugo', syllables: ['JU', 'GO'] },
+  'LÁPIZ': { icon: '✏️', word: 'Lápiz', syllables: ['LÁ', 'PIZ'] },
+  'ROBOT': { icon: '🤖', word: 'Robot', syllables: ['RO', 'BOT'] },
 };
 
-export const FIRST_WORDS: WordData[] = [
-  { word: 'MAMÁ', icon: '👩', syllables: ['MA', 'MÁ'], audioInstruction: 'Mamá. Ma-má. ¡Mamá!' },
-  { word: 'PAPÁ', icon: '👨', syllables: ['PA', 'PÁ'], audioInstruction: 'Papá. Pa-pá. ¡Papá!' },
-  { word: 'CASA', icon: '🏠', syllables: ['CA', 'SA'], audioInstruction: 'Casa. Ca-sa. ¡Mi casa!' },
-  { word: 'AGUA', icon: '💧', syllables: ['A', 'GUA'], audioInstruction: 'Agua. A-gua. ¡Agua!' },
-  { word: 'SOL', icon: '☀️', syllables: ['SOL'], audioInstruction: 'Sol. Sol. ¡El sol!' },
-];
+export const FIRST_WORDS: WordData[] = Object.entries(PICTOGRAM_DATA).map(([key, data]) => ({
+  word: key,
+  icon: data.icon,
+  syllables: data.syllables,
+  audioInstruction: `${data.word}. ${data.syllables.join('-')}. ¡${data.word}!`,
+}));
 
 const flattenPath = (): MagicCard[] => {
   const path: MagicCard[] = [];
   let colorCounter = 0;
 
-  LEVEL_GROUPS.forEach((group, groupIdx) => {
+  LEVEL_GROUPS.forEach((group) => {
     group.items.forEach((item) => {
-      const pictInfo = PICTOGRAM_DATA[item] || { icon: '✨', word: 'Magia' };
+      const pictInfo = PICTOGRAM_DATA[item] || { icon: '✨', word: 'Magia', syllables: [item] };
       
       const colorSet = BRIGHT_COLORS[colorCounter % BRIGHT_COLORS.length];
       colorCounter++;
 
-      const isVocal = groupIdx === 0;
-      const isPalabra = groupIdx === 1;
-      const isSilaba = !isPalabra && item.length > 1;
-      
-      const description = isPalabra
-        ? `La palabra ${pictInfo.word}`
-        : `${item} de ${pictInfo.word.toLowerCase()}`;
-
-      const audioInstruction = isPalabra
-        ? `Aprendamos la palabra ${item}. ${pictInfo.word}. ¡${pictInfo.word}!`
-        : `Aprendamos la ${isSilaba ? 'sílaba' : 'letra'} ${item}. ${item} de ${pictInfo.word}`;
+      const audioInstruction = `Aprendamos la palabra ${item}. ${pictInfo.word}. ${pictInfo.syllables.join('-')}. ¡${pictInfo.word}!`;
 
       path.push({
         id: `card-${item}`,
-        title: isPalabra ? `Palabra ${item}` : (isSilaba ? `Sílaba ${item}` : `Letra ${item}`),
+        title: `Palabra ${item}`,
         value: item,
-        type: isPalabra ? 'palabra' : (isVocal ? 'vocal' : (isSilaba ? 'silaba' : 'consonante')),
+        type: 'palabra',
         color: colorSet.bg,
         highlightColor: '#000000',
         icon: pictInfo.icon,
         pictogramName: pictInfo.word,
         pictogramWord: pictInfo.word,
         monster: '👾',
-        description: description,
+        description: `La palabra ${pictInfo.word}`,
         audioInstruction: audioInstruction
       });
     });
