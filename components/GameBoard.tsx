@@ -460,28 +460,39 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
           </div>
         )}
 
-        {/* REWARD */}
+        {/* REWARD — full-screen celebration */}
         {step === 'reward' && (
-          <div className="flex flex-col items-center space-y-4 text-center w-full animate-fade-in">
-            <div className="bg-white/95 p-6 rounded-[2.5rem] border-4 border-indigo-200 shadow-xl max-w-xs w-full">
-              <img src="/gumi-avatar.webp" alt="Gumi" className={`w-16 h-16 mx-auto mb-2 ${!reduceAnim ? 'animate-bounce' : ''} object-contain`} />
-              <h3 className="text-2xl sm:text-3xl font-magic text-indigo-700 uppercase mb-1">¡MUY BIEN!</h3>
-              <p className="text-base sm:text-lg font-bold text-indigo-500 uppercase mb-3">¡Aprendiste {card.value}!</p>
-              <div className="bg-indigo-50 rounded-2xl p-2.5 mb-3 flex flex-col items-center">
-                {pictInfo?.imageUrl && (
-                  <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-16 h-16 rounded-xl object-contain border-2 border-indigo-200 bg-white" />
-                )}
-                <span className="font-magic text-xl text-indigo-700 uppercase mt-1">{card.pictogramWord}</span>
-              </div>
-              <div className="flex justify-center gap-1.5 mb-2">
-                {games.map((g, i) => (
-                  <span key={i} className="text-[8px] font-bold text-indigo-400 uppercase bg-indigo-50 px-2 py-0.5 rounded-full">{gameLabel[g]}</span>
+          <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-300/80 via-orange-300/70 to-yellow-200/80" />
+            {!reduceAnim && [...Array(24)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${10 + Math.random() * 24}px`,
+                  height: `${10 + Math.random() * 24}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  backgroundColor: ['#fbbf24', '#f59e0b', '#fb923c', '#facc15', '#fde047'][i % 5],
+                  animation: `confetti-fall ${2 + Math.random() * 2}s ease-in ${Math.random() * 1.5}s infinite`,
+                }}
+              />
+            ))}
+            <div className="relative z-10 flex flex-col items-center animate-bounce-in px-6 text-center">
+              <img src="/gumi-avatar.webp" alt="Gumi" className={`w-28 h-28 sm:w-36 sm:h-36 mb-3 ${!reduceAnim ? 'animate-bounce' : ''} object-contain drop-shadow-2xl`} />
+              <h2 className="text-5xl sm:text-7xl font-magic text-white uppercase drop-shadow-lg mb-2" style={{ textShadow: '0 4px 0 rgba(245,158,11,0.6)' }}>¡Muy bien!</h2>
+              <p className="text-2xl sm:text-3xl font-magic text-white uppercase mb-4" style={{ textShadow: '0 3px 0 rgba(245,158,11,0.5)' }}>¡Aprendiste {card.value}!</p>
+              {pictInfo?.imageUrl && (
+                <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl object-contain border-4 border-white bg-white shadow-2xl mb-4" />
+              )}
+              <div className="flex gap-2 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i}><StarIcon className="w-10 h-10 sm:w-12 sm:h-12" /></div>
                 ))}
               </div>
-              <StarIcon className="w-8 h-8 mx-auto mb-1" />
-              <p className="text-indigo-500 font-bold text-sm">+100 estrellas</p>
+              <span className="bg-white text-amber-500 text-lg sm:text-xl font-black px-6 py-2 rounded-full shadow-lg uppercase mb-6">+100 estrellas</span>
+              <button onClick={handleComplete} className="bg-white text-indigo-600 py-4 px-12 rounded-full text-xl sm:text-2xl font-magic shadow-2xl border-4 border-indigo-200 uppercase tracking-widest active:scale-95 hover:scale-105 transition-all">SIGUIENTE</button>
             </div>
-            <button onClick={handleComplete} className="bg-indigo-500 text-white py-3 px-8 rounded-full text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 uppercase tracking-widest active:scale-95 transition-all">SIGUIENTE</button>
           </div>
         )}
 

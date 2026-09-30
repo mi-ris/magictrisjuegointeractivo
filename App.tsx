@@ -18,6 +18,8 @@ import { SettingsProvider } from './components/SettingsContext';
 import { MAGIC_PATH, PICTOGRAMS } from './services/mockData';
 import { supabase, isSupabaseReady } from './services/supabaseClient';
 
+const CONFETTI_COLORS = ['#fbbf24', '#f59e0b', '#fb923c', '#facc15', '#fde047', '#ffffff'];
+
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [section, setSection] = useState<Section | 'chat' | 'voice' | 'generator' | 'admin'>('pre-login');
@@ -198,34 +200,43 @@ const App: React.FC = () => {
         )}
         <div className="relative z-10">{renderSection()}</div>
         {levelUpAnimation && (
-          <div className="fixed inset-0 z-[500] flex items-center justify-center pointer-events-none">
-            <div className="absolute inset-0 bg-amber-400/30 animate-pulse" />
-            <div className="relative flex flex-col items-center animate-bounce">
-              <div className="flex gap-1 mb-3">
+          <div className="fixed inset-0 z-[500] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-amber-400/70 via-orange-400/60 to-yellow-300/70" />
+            {[...Array(30)].map((_, i) => {
+              const cw = `${12 + Math.random() * 28}px`;
+              const ch = `${12 + Math.random() * 28}px`;
+              const cl = `${Math.random() * 100}%`;
+              const ct = `${Math.random() * 100}%`;
+              const ca = `confetti-fall ${2 + Math.random() * 2}s ease-in ${Math.random() * 1.5}s infinite`;
+              return (
+                <div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    width: cw,
+                    height: ch,
+                    left: cl,
+                    top: ct,
+                    backgroundColor: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+                    animation: ca,
+                  }}
+                />
+              );
+            })}
+            <div className="relative flex flex-col items-center animate-bounce-in px-6 text-center">
+              <div className="flex gap-1.5 mb-4">
                 {[...Array(8)].map((_, i) => (
-                  <svg key={i} viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" className="w-8 h-8 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <svg key={i} viewBox="0 0 24 24" fill="#fff" stroke="#f59e0b" strokeWidth="1.5" className="w-10 h-12 sm:w-12 sm:h-14 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                   </svg>
                 ))}
               </div>
-              <div className="bg-white rounded-3xl p-5 shadow-2xl border-4 border-amber-400 flex flex-col items-center">
-                {levelUpAnimation.imageUrl && (
-                  <img src={levelUpAnimation.imageUrl} alt="" className="w-20 h-20 object-contain rounded-2xl border-2 border-amber-200 bg-white mb-2" />
-                )}
-                <h2 className="text-2xl sm:text-3xl font-magic text-amber-500 uppercase">¡Nivel Desbloqueado!</h2>
-                <p className="text-lg font-magic text-indigo-700 uppercase mt-1">{levelUpAnimation.word}</p>
-                <div className="flex gap-2 mt-2">
-                  <span className="bg-amber-400 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">+100 estrellas</span>
-                </div>
-              </div>
-              <div className="flex gap-1 mt-3">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="w-3 h-3 rounded-full animate-ping" style={{
-                    backgroundColor: ['#fbbf24', '#f59e0b', '#fbbf24', '#f59e0b', '#fbbf24', '#f59e0b'][i],
-                    animationDelay: `${i * 0.15}s`
-                  }} />
-                ))}
-              </div>
+              {levelUpAnimation.imageUrl && (
+                <img src={levelUpAnimation.imageUrl} alt="" className="w-28 h-28 sm:w-36 sm:h-36 object-contain rounded-3xl border-4 border-white bg-white shadow-2xl mb-4" />
+              )}
+              <h2 className="text-4xl sm:text-6xl font-magic text-white uppercase mb-2" style={{ textShadow: '0 4px 0 rgba(217,119,6,0.6)' }}>¡Nivel Desbloqueado!</h2>
+              <p className="text-2xl sm:text-3xl font-magic text-white uppercase mb-4" style={{ textShadow: '0 3px 0 rgba(217,119,6,0.5)' }}>{levelUpAnimation.word}</p>
+              <span className="bg-white text-amber-500 text-lg sm:text-xl font-black px-6 py-2 rounded-full shadow-lg uppercase">+100 estrellas</span>
             </div>
           </div>
         )}
