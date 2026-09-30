@@ -10,11 +10,24 @@ import { supabase } from '../services/supabaseClient';
 interface Props {
   user: User;
   card: MagicCard;
+  cardIndex: number;
   onComplete: (scoreGain: number) => void;
   onBack: () => void;
 }
 
-type Step = 'intro' | 'identify' | 'wordBuild' | 'reward' | 'success';
+type GameType = 'identify' | 'wordBuild' | 'imageMatch' | 'syllableFill' | 'listenPick';
+type Step = 'intro' | GameType | 'reward';
+
+const GAME_ROTATION: GameType[][] = [
+  ['identify', 'wordBuild'],
+  ['imageMatch', 'wordBuild'],
+  ['identify', 'syllableFill'],
+  ['listenPick', 'wordBuild'],
+  ['imageMatch', 'syllableFill'],
+  ['identify', 'listenPick'],
+  ['wordBuild', 'imageMatch'],
+  ['syllableFill', 'listenPick'],
+];
 
 const logAttempt = async (userId: string, cardId: string, cardValue: string, step: string, isCorrect: boolean, wrongChoice: string | null, attemptsCount: number, timeMs: number | null) => {
   try {
@@ -33,7 +46,9 @@ const logAttempt = async (userId: string, cardId: string, cardValue: string, ste
   }
 };
 
-const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
+const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
+
+const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack }) => {
   const [step, setStep] = useState<Step>('intro');
   const [feedback, setFeedback] = useState<'success' | 'error' | null>(null);
   const [wrongChoice, setWrongChoice] = useState<string | null>(null);
@@ -42,7 +57,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   const [gumiMessage, setGumiMessage] = useState('');
   const voicePlayedRef = useRef(false);
   const levelStartTime = useRef<number>(Date.now());
-  const identifyStartTime = useRef<number>(Date.now());
+  const gameStartTime = useRef<number>(Date.now());
 
   const { settings } = useSettings();
   const reduceAnim = settings.reduceAnimations;
@@ -50,14 +65,34 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   const wordData = useMemo(() => FIRST_WORDS.find(w => w.word === card.value), [card.value]);
   const pictInfo = PICTOGRAMS[card.value];
 
+  const games = useMemo(() => GAME_ROTATION[cardIndex % GAME_ROTATION.length], [cardIndex]);
+  const [currentGameIdx, setCurrentGameIdx] = useState(0);
+  const currentGame = games[currentGameIdx];
+
   const numChoices = useMemo(() => attempts < 2 ? 2 : attempts < 4 ? 3 : 4, [attempts]);
 
   const wordChoices = useMemo(() => {
     const others = FIRST_WORDS.filter(w => w.word !== card.value).map(w => w.word);
-    const shuffled = [...others].sort(() => Math.random() - 0.5);
+    const shuffled = shuffle(others);
     const selected = shuffled.slice(0, numChoices - 1);
-    return [...selected, card.value].sort(() => Math.random() - 0.5);
+    return shuffle([...selected, card.value]);
   }, [card.value, numChoices]);
+
+  const imageChoices = useMemo(() => {
+    const others = Object.entries(PICTOGRAMS).filter(([w]) => w !== card.value);
+    const shuffled = shuffle(others);
+    const selected = shuffled.slice(0, numChoices - 1);
+    return shuffle([...selected, [card.value, pictInfo]]);
+  }, [card.value, pictInfo, numChoices]);
+
+  const syllableFillChoices = useMemo(() => {
+    if (!wordData || wordData.syllables.length < 2) return [];
+    const missingIdx = Math.floor(Math.random() * wordData.syllables.length);
+    const correctSyl = wordData.syllables[missingIdx];
+    const allSyls = FIRST_WORDS.flatMap(w => w.syllables).filter(s => s !== correctSyl);
+    const wrongs = shuffle([...new Set(allSyls)]).slice(0, 3);
+    return { missingIdx, correctSyl, options: shuffle([...wrongs, correctSyl]) };
+  }, [wordData]);
 
   useEffect(() => {
     if (step === 'intro' && settings.autoPlayVoice && settings.soundEnabled && !voicePlayedRef.current) {
@@ -72,8 +107,11 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
   useEffect(() => {
     if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
-    else if (step === 'identify') setGumiMessage(`¿Cuál es ${card.value}? Toca la que brilla.`);
-    else if (step === 'wordBuild') setGumiMessage(`¡Toca las sílabas para armar ${card.value}!`);
+    else if (step === 'identify') setGumiMessage(`¿Cuál es ${card.value}? Toca la imagen correcta.`);
+    else if (step === 'wordBuild') setGumiMessage(`¡Toca las sílabas en orden para armar ${card.value}!`);
+    else if (step === 'imageMatch') setGumiMessage(`Esta es la palabra ${card.value}. Toca la imagen que va con ella.`);
+    else if (step === 'syllableFill') setGumiMessage(`¡Falta una sílaba! Toca la que completa ${card.value}.`);
+    else if (step === 'listenPick') setGumiMessage(`Escucha y toca la palabra correcta.`);
     else if (step === 'reward') {
       setGumiMessage(`¡Muy bien! ¡Aprendiste ${card.value}!`);
       if (settings.soundEnabled) playApplauseSound();
@@ -82,28 +120,34 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
 
   const playSound = (fn: () => void) => { if (settings.soundEnabled) fn(); };
 
-  const handleCorrectIdentify = () => {
-    playSound(playGentleSuccessSound);
-    const elapsed = Date.now() - identifyStartTime.current;
-    logAttempt(user.id, card.id, card.value, 'identify', true, null, attempts, elapsed);
-    setFeedback('success');
-    setTimeout(() => { setFeedback(null); setWrongChoice(null); setTouchedSyllables([]); setStep('wordBuild'); }, 1200);
+  const advanceFromGame = () => {
+    setWrongChoice(null);
+    setTouchedSyllables([]);
+    setAttempts(0);
+    if (currentGameIdx + 1 < games.length) {
+      setCurrentGameIdx(currentGameIdx + 1);
+      setStep(games[currentGameIdx + 1]);
+      gameStartTime.current = Date.now();
+    } else {
+      setStep('reward');
+    }
   };
 
-  const handleCorrectWordBuild = () => {
+  const handleGameSuccess = (gameType: GameType) => {
     playSound(playGentleSuccessSound);
-    logAttempt(user.id, card.id, card.value, 'wordBuild', true, null, attempts, null);
+    const elapsed = Date.now() - gameStartTime.current;
+    logAttempt(user.id, card.id, card.value, gameType, true, null, attempts, elapsed);
     setFeedback('success');
-    setTimeout(() => { setFeedback(null); setStep('reward'); }, 800);
+    setTimeout(() => { setFeedback(null); advanceFromGame(); }, 1200);
   };
 
-  const handleError = (choice: string) => {
+  const handleGameError = (gameType: GameType, choice: string) => {
     playSound(playGentleErrorSound);
-    logAttempt(user.id, card.id, card.value, 'identify', false, choice, attempts, null);
+    logAttempt(user.id, card.id, card.value, gameType, false, choice, attempts, null);
     setFeedback('error');
     setWrongChoice(choice);
     setGumiMessage('¡Casi! Intenta de nuevo, tú puedes.');
-    setTimeout(() => { setFeedback(null); setGumiMessage(`¿Cuál es ${card.value}? Toca la que brilla.`); }, 1500);
+    setTimeout(() => { setFeedback(null); }, 1500);
   };
 
   const handleBack = () => { playSound(playPopSound); onBack(); };
@@ -114,69 +158,118 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
     onComplete(100);
   };
 
+  const startGames = () => {
+    setAttempts(0);
+    setCurrentGameIdx(0);
+    setStep(games[0]);
+    gameStartTime.current = Date.now();
+  };
+
   const handleSyllableTouch = (idx: number) => {
     playSound(playPopSound);
     setTouchedSyllables(prev => [...prev, idx]);
     if (wordData && touchedSyllables.length + 1 >= wordData.syllables.length) {
-      setTimeout(() => handleCorrectWordBuild(), 400);
+      setTimeout(() => handleGameSuccess('wordBuild'), 400);
     }
   };
 
   const cardBase = "w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-white border-4 border-indigo-200 shadow-xl flex flex-col items-center justify-center transition-all transform hover:scale-105 active:scale-95 overflow-hidden relative";
 
-  const renderHintWordCard = (choice: string, isCorrect: boolean, idx: number) => {
-    const isWrong = wrongChoice === choice;
-    const choicePict = PICTOGRAMS[choice];
+  const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>;
+  const CheckIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
+  const StarIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
 
+  const gameLabel: Record<GameType, string> = {
+    identify: 'Identificar',
+    wordBuild: 'Armar palabra',
+    imageMatch: 'Unir imagen',
+    syllableFill: 'Completar sílaba',
+    listenPick: 'Escoger palabra',
+  };
+
+  const renderImageChoice = (word: string, imageUrl: string, idx: number) => {
+    const isWrong = wrongChoice === word;
     if (isWrong) {
       return (
         <div key={idx} className={`${cardBase} opacity-30 scale-90 pointer-events-none transition-all duration-500`}>
-          {choicePict?.imageUrl && <img src={choicePict.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />}
+          <img src={imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
         </div>
       );
     }
-
     return (
       <button
         key={idx}
         onClick={() => {
-          if (choice === card.value) { handleCorrectIdentify(); }
-          else { handleError(choice); setAttempts(a => a + 1); }
+          if (word === card.value) handleGameSuccess('identify');
+          else { handleGameError('identify', word); setAttempts(a => a + 1); }
         }}
-        className={`${cardBase} ${isCorrect ? `ring-4 ring-amber-300 ${!reduceAnim ? 'animate-pulse' : ''}` : ''}`}
+        className={`${cardBase} ${word === card.value && step === 'identify' ? `ring-4 ring-amber-300 ${!reduceAnim ? 'animate-pulse' : ''}` : ''}`}
       >
-        {choicePict?.imageUrl ? (
-          <img src={choicePict.imageUrl} alt={choice} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-        ) : (
-          <div className="w-full h-full bg-indigo-100" />
-        )}
+        <img src={imageUrl} alt={word} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
         <div className="absolute bottom-0 left-0 right-0 bg-indigo-500/90 py-1 text-center">
-          <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{choice}</span>
+          <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{word}</span>
         </div>
       </button>
     );
   };
 
-  const BackIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>;
-  const CheckIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
-  const StarIcon = ({ className }: { className?: string }) => <svg viewBox="0 0 24 24" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+  const renderWordChoice = (word: string, idx: number, gameType: GameType) => {
+    const isWrong = wrongChoice === word;
+    const choicePict = PICTOGRAMS[word];
+    if (isWrong) {
+      return (
+        <button key={idx} disabled className="w-36 h-16 rounded-2xl bg-white/40 border-4 border-gray-200 opacity-30 flex items-center justify-center shadow-sm">
+          <span className="font-magic text-lg text-gray-400 uppercase">{word}</span>
+        </button>
+      );
+    }
+    return (
+      <button
+        key={idx}
+        onClick={() => {
+          if (word === card.value) handleGameSuccess(gameType);
+          else { handleGameError(gameType, word); setAttempts(a => a + 1); }
+        }}
+        className={`w-36 h-16 rounded-2xl bg-white border-4 border-indigo-200 shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${word === card.value && !reduceAnim ? 'ring-2 ring-amber-300/50' : ''}`}
+      >
+        <span className="font-magic text-lg sm:text-xl text-indigo-700 uppercase">{word}</span>
+      </button>
+    );
+  };
+
+  const renderSyllableChoice = (syl: string, idx: number) => {
+    const isWrong = wrongChoice === syl;
+    if (isWrong) {
+      return (
+        <button key={idx} disabled className="w-24 h-20 rounded-2xl bg-white/40 border-4 border-gray-200 opacity-30 flex items-center justify-center shadow-sm">
+          <span className="font-magic text-2xl text-gray-400">{syl}</span>
+        </button>
+      );
+    }
+    return (
+      <button
+        key={idx}
+        onClick={() => {
+          if (syllableFillChoices && syl === syllableFillChoices.correctSyl) handleGameSuccess('syllableFill');
+          else { handleGameError('syllableFill', syl); setAttempts(a => a + 1); }
+        }}
+        className={`w-24 h-20 rounded-2xl bg-white border-4 border-indigo-200 shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${syl === syllableFillChoices?.correctSyl && !reduceAnim ? 'ring-2 ring-amber-300/50' : ''}`}
+      >
+        <span className="font-magic text-2xl sm:text-3xl text-indigo-700">{syl}</span>
+      </button>
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col p-3 sm:p-6 pt-20 sm:pt-24 overflow-y-auto">
-
-      <button
-        onClick={handleBack}
-        className="absolute top-20 sm:top-24 left-3 sm:left-6 z-[110] bg-white/90 p-2 sm:p-3 rounded-xl border-2 border-indigo-200 hover:bg-white transition-all active:scale-90 shadow-md"
-      >
+      <button onClick={handleBack} className="absolute top-20 sm:top-24 left-3 sm:left-6 z-[110] bg-white/90 p-2 sm:p-3 rounded-xl border-2 border-indigo-200 hover:bg-white transition-all active:scale-90 shadow-md">
         <BackIcon />
       </button>
 
-      {/* Gumi guía */}
       <div className="fixed top-20 sm:top-24 right-3 sm:right-6 z-[110] flex flex-col items-end">
         <img src="/gumi-avatar.webp" alt="Gumi" className={`w-8 h-8 sm:w-10 sm:h-10 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
       </div>
 
-      {/* Mensaje de Gumi */}
       <div className="fixed top-28 sm:top-32 right-3 sm:right-6 z-[110] max-w-[170px] sm:max-w-[200px]">
         <div className="bg-white/95 rounded-2xl rounded-tr-none px-3 py-2 shadow-md border border-indigo-100">
           <p className="text-xs sm:text-sm text-indigo-700 font-bold leading-tight">{gumiMessage}</p>
@@ -190,9 +283,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
           <div className="flex flex-col items-center space-y-3 text-center w-full animate-fade-in">
             <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[2.5rem] border-4 border-indigo-200 w-full max-w-sm space-y-3 shadow-xl">
               <div className="flex flex-col items-center justify-center py-4">
-                <h3 className="font-magic text-4xl sm:text-6xl text-indigo-700 leading-none mb-3 uppercase tracking-tight">
-                  {card.value}
-                </h3>
+                <h3 className="font-magic text-4xl sm:text-6xl text-indigo-700 leading-none mb-3 uppercase tracking-tight">{card.value}</h3>
                 <div className="bg-white rounded-[2rem] border-4 border-indigo-100 shadow-lg overflow-hidden w-[85%] mx-auto">
                   {pictInfo?.imageUrl ? (
                     <img src={pictInfo.imageUrl} alt={card.pictogramWord} className="w-full h-36 sm:h-48 object-contain bg-white" />
@@ -204,25 +295,24 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                   </div>
                 </div>
               </div>
-
               <div className="space-y-2">
-                <VoiceButton
-                  text={card.audioInstruction}
-                  className="w-full py-3 bg-indigo-500 rounded-full border-b-4 border-indigo-700 justify-center"
-                  autoPlayMarker
-                />
-                <button
-                  onClick={() => { setAttempts(0); setStep('identify'); identifyStartTime.current = Date.now(); }}
-                  className="w-full bg-cyan-500 text-white py-3.5 rounded-2xl text-xl sm:text-2xl font-magic shadow-lg border-b-4 border-cyan-700 active:translate-y-1 transition-all uppercase tracking-widest"
-                >
-                  ¡JUGAR!
-                </button>
+                <VoiceButton text={card.audioInstruction} className="w-full py-3 bg-indigo-500 rounded-full border-b-4 border-indigo-700 justify-center" autoPlayMarker />
+                <button onClick={startGames} className="w-full bg-cyan-500 text-white py-3.5 rounded-2xl text-xl sm:text-2xl font-magic shadow-lg border-b-4 border-cyan-700 active:translate-y-1 transition-all uppercase tracking-widest">¡JUGAR!</button>
               </div>
             </div>
           </div>
         )}
 
-        {/* IDENTIFY */}
+        {/* Progress dots */}
+        {step !== 'intro' && step !== 'reward' && (
+          <div className="flex gap-2 mb-4">
+            {games.map((g, i) => (
+              <div key={i} className={`h-2 rounded-full transition-all ${i < currentGameIdx ? 'bg-emerald-400 w-8' : i === currentGameIdx ? 'bg-indigo-500 w-12' : 'bg-indigo-200 w-8'}`} />
+            ))}
+          </div>
+        )}
+
+        {/* IDENTIFY: hear word, pick correct image */}
         {step === 'identify' && (
           <div className="w-full flex flex-col items-center justify-center space-y-5 py-2 animate-fade-in">
             <div className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border-2 border-indigo-200 max-w-lg w-full text-center shadow-lg">
@@ -230,12 +320,46 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
               <h3 className="text-lg sm:text-2xl font-magic text-indigo-700 uppercase">¿Cuál es {card.value}?</h3>
             </div>
             <div className="w-full flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-2">
-              {wordChoices.map((choice, idx) => renderHintWordCard(choice, choice === card.value, idx))}
+              {imageChoices.map(([word, info], idx) => renderImageChoice(word, info.imageUrl, idx))}
             </div>
           </div>
         )}
 
-        {/* WORD BUILD */}
+        {/* IMAGE MATCH: see word text, pick matching image */}
+        {step === 'imageMatch' && (
+          <div className="w-full flex flex-col items-center justify-center space-y-5 py-2 animate-fade-in">
+            <div className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border-2 border-indigo-200 max-w-lg w-full text-center shadow-lg">
+              <h3 className="font-magic text-3xl sm:text-4xl text-indigo-700 uppercase mb-1">{card.value}</h3>
+              <p className="text-xs text-indigo-400 font-bold uppercase">Toca la imagen que va con esta palabra</p>
+            </div>
+            <div className="w-full flex flex-wrap items-center justify-center gap-3 sm:gap-5 px-2">
+              {imageChoices.map(([word, info], idx) => {
+                const isWrong = wrongChoice === word;
+                if (isWrong) {
+                  return (
+                    <div key={idx} className={`${cardBase} opacity-30 scale-90 pointer-events-none`}>
+                      <img src={info.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                    </div>
+                  );
+                }
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      if (word === card.value) handleGameSuccess('imageMatch');
+                      else { handleGameError('imageMatch', word); setAttempts(a => a + 1); }
+                    }}
+                    className={cardBase}
+                  >
+                    <img src={info.imageUrl} alt={word} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* WORD BUILD: tap syllables in order */}
         {step === 'wordBuild' && wordData && (
           <div className="w-full flex flex-col items-center justify-center space-y-4 py-2 animate-fade-in">
             <div className="bg-indigo-500 p-3 rounded-2xl max-w-lg w-full text-center shadow-lg">
@@ -260,13 +384,61 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                       }`}
                       style={{ minWidth: '72px', height: '88px' }}
                     >
-                      <span className={`font-magic text-2xl sm:text-4xl leading-none ${touched ? 'text-emerald-500' : 'text-indigo-700'}`}>
-                        {syl}
-                      </span>
+                      <span className={`font-magic text-2xl sm:text-4xl leading-none ${touched ? 'text-emerald-500' : 'text-indigo-700'}`}>{syl}</span>
                     </button>
                   );
                 })}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* SYLLABLE FILL: word with missing syllable, pick correct one */}
+        {step === 'syllableFill' && wordData && syllableFillChoices && (
+          <div className="w-full flex flex-col items-center justify-center space-y-4 py-2 animate-fade-in">
+            <div className="bg-indigo-500 p-3 rounded-2xl max-w-lg w-full text-center shadow-lg">
+              <h3 className="text-lg sm:text-2xl font-magic text-white uppercase">Completa: {card.value}</h3>
+            </div>
+            <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-5 border-2 border-indigo-200 shadow-lg flex flex-col items-center">
+              {pictInfo?.imageUrl && (
+                <img src={pictInfo.imageUrl} alt={wordData.word} className="w-20 h-20 object-contain rounded-xl mb-3 border-2 border-indigo-200 bg-white" />
+              )}
+              <div className="flex gap-1 sm:gap-2 justify-center items-center mb-5">
+                {wordData.syllables.map((syl, idx) => {
+                  const isMissing = idx === syllableFillChoices.missingIdx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`rounded-2xl border-4 flex items-center justify-center ${isMissing ? 'border-amber-400 border-dashed bg-amber-50' : 'border-indigo-200 bg-white'}`}
+                      style={{ minWidth: '64px', height: '72px' }}
+                    >
+                      {isMissing ? (
+                        <span className="font-magic text-2xl text-amber-400">?</span>
+                      ) : (
+                        <span className="font-magic text-xl sm:text-2xl text-indigo-700">{syl}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-xs font-bold text-indigo-400 uppercase mb-3">Elige la sílaba que falta</p>
+              <div className="flex gap-2 sm:gap-3 flex-wrap justify-center">
+                {syllableFillChoices.options.map((syl, idx) => renderSyllableChoice(syl, idx))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* LISTEN PICK: hear audio, pick correct word from text options */}
+        {step === 'listenPick' && (
+          <div className="w-full flex flex-col items-center justify-center space-y-5 py-2 animate-fade-in">
+            <div className="bg-white/90 backdrop-blur-xl p-4 rounded-2xl border-2 border-indigo-200 max-w-lg w-full text-center shadow-lg">
+              <VoiceButton text={card.pictogramWord} className="bg-indigo-500 rounded-full mb-2" large />
+              <h3 className="text-lg sm:text-2xl font-magic text-indigo-700 uppercase">Escucha y elige</h3>
+              <p className="text-xs text-indigo-400">Toca el botón para escuchar, luego elige la palabra</p>
+            </div>
+            <div className="w-full flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-2">
+              {wordChoices.map((word, idx) => renderWordChoice(word, idx, 'listenPick'))}
             </div>
           </div>
         )}
@@ -284,32 +456,18 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
                 )}
                 <span className="font-magic text-xl text-indigo-700 uppercase mt-1">{card.pictogramWord}</span>
               </div>
+              <div className="flex justify-center gap-1.5 mb-2">
+                {games.map((g, i) => (
+                  <span key={i} className="text-[8px] font-bold text-indigo-400 uppercase bg-indigo-50 px-2 py-0.5 rounded-full">{gameLabel[g]}</span>
+                ))}
+              </div>
               <StarIcon className="w-8 h-8 mx-auto mb-1" />
               <p className="text-indigo-500 font-bold text-sm">+100 estrellas</p>
             </div>
-            <button
-              onClick={handleComplete}
-              className="bg-indigo-500 text-white py-3 px-8 rounded-full text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 uppercase tracking-widest active:scale-95 transition-all"
-            >
-              SIGUIENTE
-            </button>
+            <button onClick={handleComplete} className="bg-indigo-500 text-white py-3 px-8 rounded-full text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 uppercase tracking-widest active:scale-95 transition-all">SIGUIENTE</button>
           </div>
         )}
 
-        {/* SUCCESS */}
-        {step === 'success' && (
-          <div className="flex flex-col items-center space-y-4 text-center w-full">
-            <StarIcon className={`w-16 h-16 ${!reduceAnim ? 'animate-bounce' : ''}`} />
-            <button
-              onClick={handleComplete}
-              className="bg-indigo-500 text-white py-3 px-8 rounded-full text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 uppercase tracking-widest active:scale-95 transition-all"
-            >
-              CONTINUAR
-            </button>
-          </div>
-        )}
-
-        {/* FEEDBACK positivo */}
         {feedback === 'success' && (
           <div className="fixed inset-0 flex items-center justify-center bg-emerald-400/20 z-[150] backdrop-blur-sm pointer-events-none">
             <div className="text-center">

@@ -149,7 +149,7 @@ const App: React.FC = () => {
 
   const renderSection = () => {
     if (selectedCardIndex !== null && user) {
-        return <GameBoard user={user} card={MAGIC_PATH[selectedCardIndex]} onComplete={handleGameComplete} onBack={() => setSelectedCardIndex(null)} />;
+        return <GameBoard user={user} card={MAGIC_PATH[selectedCardIndex]} cardIndex={selectedCardIndex} onComplete={handleGameComplete} onBack={() => setSelectedCardIndex(null)} />;
     }
     switch (section) {
       case 'pre-login': return <PreLogin onStart={() => setSection('login')} />;
