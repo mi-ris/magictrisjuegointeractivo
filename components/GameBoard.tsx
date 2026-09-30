@@ -13,10 +13,10 @@ interface Props {
   onBack: () => void;
 }
 
-type Step = 'greeting' | 'intro' | 'identify' | 'wordBuild' | 'reward' | 'success';
+type Step = 'intro' | 'identify' | 'wordBuild' | 'reward' | 'success';
 
 const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
-  const [step, setStep] = useState<Step>('greeting');
+  const [step, setStep] = useState<Step>('intro');
   const [feedback, setFeedback] = useState<'success' | 'error' | null>(null);
   const [wrongChoice, setWrongChoice] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
@@ -51,8 +51,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   }, [step, settings.autoPlayVoice, settings.soundEnabled]);
 
   useEffect(() => {
-    if (step === 'greeting') setGumiMessage(`¡Hola ${user.nickname}! Vamos a aprender.`);
-    else if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
+    if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
     else if (step === 'identify') setGumiMessage(`¿Cuál es ${card.value}? Toca la que brilla.`);
     else if (step === 'wordBuild') setGumiMessage(`¡Toca las sílabas para armar ${card.value}!`);
     else if (step === 'reward') {
@@ -62,8 +61,6 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
   }, [step, user.nickname, card.value, settings.soundEnabled]);
 
   const playSound = (fn: () => void) => { if (settings.soundEnabled) fn(); };
-
-  const handleStartActivity = () => { playSound(playPopSound); setAttempts(0); setStep('intro'); };
 
   const handleCorrectIdentify = () => {
     playSound(playGentleSuccessSound);
@@ -158,23 +155,6 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
       </div>
 
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-2xl mx-auto w-full pb-8 mt-14">
-
-        {/* GREETING */}
-        {step === 'greeting' && (
-          <div className="flex flex-col items-center space-y-4 text-center w-full animate-fade-in">
-            <img src="/gumi-avatar.webp" alt="Gumi" className={`w-20 h-20 ${!reduceAnim ? 'animate-bounce' : ''} object-contain`} />
-            <div className="bg-white/90 backdrop-blur-xl p-5 rounded-[2rem] border-4 border-indigo-200 max-w-xs w-full shadow-xl">
-              <h3 className="text-xl sm:text-2xl font-magic text-indigo-700 uppercase mb-1">¡Hola, {user.nickname}!</h3>
-              <p className="text-indigo-400 text-sm mb-3">Vamos a aprender una palabra.</p>
-              <button
-                onClick={handleStartActivity}
-                className="w-full bg-indigo-500 text-white py-3 rounded-2xl text-lg sm:text-xl font-magic shadow-lg border-b-4 border-indigo-700 active:translate-y-1 transition-all uppercase tracking-widest"
-              >
-                ¡EMPEZAR!
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* INTRO */}
         {step === 'intro' && (
