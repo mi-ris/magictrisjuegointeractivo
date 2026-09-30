@@ -50,7 +50,7 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
     <div className="p-4 pt-24 sm:pt-28 max-w-4xl mx-auto space-y-4 pb-12 relative">
       <div className="bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border-[8px] border-white ring-4 ring-rose-100/30">
         
-        <div className="bg-gradient-to-r from-rose-400 via-fuchsia-500 to-violet-500 p-6 flex flex-row items-center justify-center gap-6">
+        <div className="bg-gradient-to-r from-violet-400 to-rose-500 p-6 flex flex-row items-center justify-center gap-6">
           <div className="relative">
             <span className="text-[70px] bg-white w-24 h-24 rounded-full border-[6px] border-white shadow-xl flex items-center justify-center animate-bounce-in">
               {user.avatar}
@@ -78,13 +78,13 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-magic text-fuchsia-500 uppercase tracking-widest ml-4">Apodo Mágico (Toca para cambiar)</label>
+            <label className="text-[10px] font-magic text-violet-500 uppercase tracking-widest ml-4">Apodo Mágico (Toca para cambiar)</label>
             <input 
               type="text"
               value={tempNickname}
               onChange={(e) => setTempNickname(e.target.value)}
               onBlur={handleNicknameBlur}
-              className="w-full bg-fuchsia-50 px-6 py-4 rounded-full border-2 border-fuchsia-200 text-2xl font-magic text-fuchsia-600 outline-none focus:ring-4 focus:ring-fuchsia-100 transition-all shadow-md placeholder-fuchsia-200"
+              className="w-full bg-violet-50 px-6 py-4 rounded-full border-2 border-violet-200 text-2xl font-magic text-violet-600 outline-none focus:ring-4 focus:ring-violet-100 transition-all shadow-md placeholder-violet-200"
               placeholder="Escribe tu apodo..."
               spellCheck="false"
             />
@@ -104,14 +104,14 @@ const Profile: React.FC<Props> = ({ user, onBack, onLogout, onUpdate }) => {
               </div>
             </div>
 
-            <div className="bg-fuchsia-50/50 p-4 rounded-[2.5rem] border-2 border-fuchsia-100">
-              <h3 className="text-sm font-magic text-fuchsia-700 mb-3 text-center uppercase tracking-tighter">Cambia tu foto</h3>
+            <div className="bg-violet-50/50 p-4 rounded-[2.5rem] border-2 border-violet-100">
+              <h3 className="text-sm font-magic text-violet-700 mb-3 text-center uppercase tracking-tighter">Cambia tu foto</h3>
               <div className="flex justify-center gap-2 flex-wrap">
                 {avatars.map(a => (
                   <button 
                     key={a}
                     onClick={() => handleAvatarSelect(a)}
-                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-fuchsia-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-fuchsia-200'}`}
+                    className={`text-3xl p-2 rounded-xl transition-all border-2 ${user.avatar === a ? 'bg-white border-violet-500 scale-110 shadow-md' : 'bg-white/40 border-transparent hover:bg-white hover:border-violet-200'}`}
                   >
                     {a}
                   </button>

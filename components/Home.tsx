@@ -29,7 +29,7 @@ const Home: React.FC<Props> = ({ user }) => {
       <div className="flex flex-col items-center gap-4">
         <VoiceButton 
           text={welcomeText} 
-          className="!px-10 !py-5 !text-2xl btn-magic-pop bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-[0_8px_0_#7c3aed]" 
+          className="!px-10 !py-5 !text-2xl btn-magic-pop bg-gradient-to-r from-violet-500 to-violet-600 shadow-[0_8px_0_#7c3aed]" 
         />
         <span className="text-sm font-bold text-violet-500 uppercase tracking-widest">Escuchar saludo</span>
       </div>

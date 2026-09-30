@@ -220,7 +220,7 @@ const GameBoard: React.FC<Props> = ({ user, card, onComplete, onBack }) => {
         )}
 
         {feedback === 'success' && (
-            <div className="fixed inset-0 flex items-center justify-center bg-emerald-500/30 z-[150] backdrop-blur-lg">
+            <div className="fixed inset-0 flex items-center justify-center bg-teal-500/30 z-[150] backdrop-blur-lg">
                 <span className="text-[120px] sm:text-[200px] animate-bounce">✨</span>
             </div>
         )}

@@ -55,7 +55,7 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
       <div className="flex flex-col items-center w-full max-w-sm z-20">
         <button 
           onClick={handleStart}
-          className="btn-magic-pop bg-gradient-to-r from-rose-500 via-fuchsia-500 to-violet-500 hover:from-rose-600 hover:via-fuchsia-600 hover:to-violet-600 text-white text-2xl sm:text-4xl px-10 sm:px-16 py-4 sm:py-6 rounded-full font-magic uppercase tracking-widest border-2 sm:border-4 border-white shadow-[0_8px_0_#7c3aed] sm:shadow-[0_12px_0_#7c3aed] active:shadow-none active:translate-y-2 flex items-center justify-center"
+          className="btn-magic-pop bg-gradient-to-r from-violet-500 to-rose-500 hover:from-violet-600 hover:to-rose-600 text-white text-2xl sm:text-4xl px-10 sm:px-16 py-4 sm:py-6 rounded-full font-magic uppercase tracking-widest border-2 sm:border-4 border-white shadow-[0_8px_0_#7c3aed] sm:shadow-[0_12px_0_#7c3aed] active:shadow-none active:translate-y-2 flex items-center justify-center"
         >
           COMENZAR
         </button>

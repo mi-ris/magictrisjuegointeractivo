@@ -44,7 +44,7 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
 
         <button 
           onClick={handlePrint}
-          className="bg-emerald-500 text-white px-10 py-4 rounded-[2rem] font-magic text-2xl shadow-xl hover:bg-emerald-600 active:translate-y-1 transition-all flex items-center justify-center min-w-[180px]"
+          className="bg-teal-500 text-white px-10 py-4 rounded-[2rem] font-magic text-2xl shadow-xl hover:bg-teal-600 active:translate-y-1 transition-all flex items-center justify-center min-w-[180px]"
         >
           IMPRIMIR
         </button>
@@ -57,7 +57,7 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
                  Recorta las tarjetas y pégalas en cartulina. ¡Ahora cada sílaba se ve mejor que nunca!
               </p>
           </div>
-          <div className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
+          <div className="bg-gradient-to-r from-violet-500 to-violet-600 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
               <h3 className="font-magic text-xl mb-2">¿Cómo imprimir?</h3>
               <p className="text-sm font-bold opacity-90">1. Toca el botón verde "IMPRIMIR".</p>
               <p className="text-sm font-bold opacity-90">2. En las opciones de tu impresora, activa <b>"Gráficos de fondo"</b>.</p>

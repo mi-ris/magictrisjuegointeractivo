@@ -31,7 +31,6 @@ const Hub: React.FC<Props> = ({ user, onSelectCard }) => {
         {MAGIC_LEVELS.map((level, levelIdx) => {
           const levelColors = [
             'text-amber-300', 'text-rose-300', 'text-teal-300', 'text-violet-300',
-            'text-emerald-300', 'text-sky-300', 'text-fuchsia-300', 'text-orange-300',
           ];
           const levelColor = levelColors[levelIdx % levelColors.length];
           return (

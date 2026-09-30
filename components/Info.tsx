@@ -27,7 +27,7 @@ const Info: React.FC<Props> = ({ onBack }) => {
       icon: '🎖️',
       title: 'Progreso Mágico',
       text: 'Cada acierto motiva al niño a seguir explorando el abecedario de una forma positiva y divertida.',
-      accent: 'text-emerald-300'
+      accent: 'text-violet-300'
     }
   ];
 
@@ -47,7 +47,7 @@ const Info: React.FC<Props> = ({ onBack }) => {
               ))}
           </div>
 
-          <div className="mt-20 p-10 sm:p-14 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-rose-500 rounded-[4.5rem] text-center border-8 border-white/40 shadow-2xl">
+          <div className="mt-20 p-10 sm:p-14 bg-gradient-to-br from-violet-500 to-rose-500 rounded-[4.5rem] text-center border-8 border-white/40 shadow-2xl">
               <span className="text-7xl mb-8 block">✨</span>
               <p className="text-2xl sm:text-3xl font-bold text-white leading-snug">
                   "Este juego ha sido diseñado para que cada letra sea un paso lleno de alegría y aprendizaje."

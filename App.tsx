@@ -130,7 +130,7 @@ const App: React.FC = () => {
   };
 
   if (initializing) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-rose-100 via-violet-100 to-teal-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-amber-100 via-violet-100 to-teal-100">
        <div className="text-8xl animate-bounce mb-4">✨</div>
        <p className="font-magic text-violet-600 animate-pulse text-xl uppercase">Cargando Magia...</p>
     </div>

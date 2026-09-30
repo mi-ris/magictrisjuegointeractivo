@@ -25,15 +25,15 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
   const getStreakData = (s: number) => {
     if (s === 0) return { color: 'from-gray-400 to-gray-500', icon: '❄️' };
     if (s < 4) return { color: 'from-amber-400 to-amber-500', icon: '🔥' };
-    if (s < 7) return { color: 'from-teal-400 to-emerald-500', icon: '🔥' };
-    return { color: 'from-amber-400 to-yellow-400 animate-pulse', icon: '👑' };
+    if (s < 7) return { color: 'from-teal-400 to-teal-500', icon: '🔥' };
+    return { color: 'from-amber-400 to-amber-500 animate-pulse', icon: '👑' };
   };
 
   const streak = getStreakData(user.streak);
   const showHome = inGame || currentSection !== 'hub';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-gradient-to-r from-violet-800 via-indigo-700 to-teal-600 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
+    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-gradient-to-r from-violet-800 to-teal-600 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
       <div className="flex items-center gap-2 sm:gap-3">
         {showHome && (
           <button

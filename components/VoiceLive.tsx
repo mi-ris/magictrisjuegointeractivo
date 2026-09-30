@@ -103,7 +103,7 @@ const VoiceLive: React.FC = () => {
       
       <button 
         onClick={toggleSession}
-        className={`px-8 py-4 rounded-full font-magic text-xl text-white btn-magic-pop uppercase tracking-widest ${isActive ? 'bg-red-500' : 'bg-gradient-to-r from-rose-500 to-fuchsia-500'}`}
+        className={`px-8 py-4 rounded-full font-magic text-xl text-white btn-magic-pop uppercase tracking-widest ${isActive ? 'bg-red-500' : 'bg-gradient-to-r from-violet-500 to-rose-500'}`}
       >
         {isActive ? 'Detener' : 'Hablar'}
       </button>
@@ -113,7 +113,7 @@ const VoiceLive: React.FC = () => {
           <p className="text-rose-400 italic text-center">Di algo para empezar...</p>
         ) : (
           transcript.map((line, i) => (
-            <p key={i} className={`mb-1 ${line.startsWith('Gumi') ? 'font-bold text-rose-800' : 'text-fuchsia-600'}`}>
+            <p key={i} className={`mb-1 ${line.startsWith('Gumi') ? 'font-bold text-rose-800' : 'text-violet-600'}`}>
               {line}
             </p>
           ))

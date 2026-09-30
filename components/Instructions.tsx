@@ -44,7 +44,7 @@ const Instructions: React.FC<Props> = ({ onBack }) => {
 
         <button 
           onClick={onBack} 
-          className="w-full max-w-md bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white py-6 rounded-[2.5rem] text-3xl font-magic shadow-2xl btn-magic-pop mb-10 uppercase tracking-widest"
+          className="w-full max-w-md bg-gradient-to-r from-violet-500 to-violet-600 text-white py-6 rounded-[2.5rem] text-3xl font-magic shadow-2xl btn-magic-pop mb-10 uppercase tracking-widest"
         >
           ENTENDIDO
         </button>

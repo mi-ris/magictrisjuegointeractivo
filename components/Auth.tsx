@@ -196,7 +196,7 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white py-4 sm:py-5 rounded-[1.5rem] sm:rounded-[2rem] font-magic text-xl sm:text-2xl shadow-xl hover:from-violet-600 hover:to-fuchsia-600 active:translate-y-1 transition-all border-b-6 sm:border-b-8 border-violet-800"
+            className="w-full bg-gradient-to-r from-violet-500 to-violet-600 text-white py-4 sm:py-5 rounded-[1.5rem] sm:rounded-[2rem] font-magic text-xl sm:text-2xl shadow-xl hover:from-violet-600 hover:to-violet-700 active:translate-y-1 transition-all border-b-6 sm:border-b-8 border-violet-800"
           >
             {loading ? 'CARGANDO...' : 'ENTRAR'}
           </button>
