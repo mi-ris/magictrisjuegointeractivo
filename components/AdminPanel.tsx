@@ -3,10 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { User } from '../types';
 import { MAGIC_PATH, MAGIC_ISLANDS, PICTOGRAMS } from '../services/mockData';
 import { supabase } from '../services/supabaseClient';
+import CloudPath from './CloudPath';
 
 interface Props {
   user: User;
   onBack: () => void;
+  onPreviewCard: (index: number) => void;
 }
 
 interface AttemptRow {
@@ -32,10 +34,10 @@ interface LevelStat {
   worstWrong: string | null;
 }
 
-const AdminPanel: React.FC<Props> = ({ user, onBack }) => {
+const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
   const [attempts, setAttempts] = useState<AttemptRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'stats' | 'levels' | 'history'>('stats');
+  const [view, setView] = useState<'stats' | 'levels' | 'history' | 'preview'>('stats');
 
   const fetchAttempts = useCallback(async () => {
     setLoading(true);
@@ -127,6 +129,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack }) => {
           { key: 'stats', label: 'Resumen' },
           { key: 'levels', label: 'Niveles' },
           { key: 'history', label: 'Historial' },
+          { key: 'preview', label: 'Probar' },
         ] as const).map(tab => (
           <button
             key={tab.key}
@@ -339,6 +342,23 @@ const AdminPanel: React.FC<Props> = ({ user, onBack }) => {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {!loading && view === 'preview' && (
+        <div className="space-y-3">
+          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3 text-center">
+            <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider">Modo Vista Previa</p>
+            <p className="text-[10px] text-indigo-400 mt-0.5">Todos los niveles desbloqueados. Lo que juegues aqui no afecta el progreso del niño ni sus estadisticas.</p>
+          </div>
+          <div className="max-w-lg mx-auto">
+            <CloudPath
+              isCardUnlocked={() => true}
+              isCardNext={() => false}
+              isCardCompleted={() => false}
+              onSelectCard={onPreviewCard}
+            />
+          </div>
         </div>
       )}
     </div>

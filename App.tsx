@@ -22,6 +22,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [section, setSection] = useState<Section | 'chat' | 'voice' | 'generator' | 'admin'>('pre-login');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
+  const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
   const [initializing, setInitializing] = useState(true);
 
   const getDaysDiff = (date1: Date, date2: Date) => {
@@ -143,11 +144,22 @@ const App: React.FC = () => {
     setSection('hub');
   };
 
-  const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
-  const inGame = selectedCardIndex !== null;
+  const handlePreviewComplete = () => {
+    setPreviewCardIndex(null);
+  };
+
+  const handlePreviewBack = () => {
+    setPreviewCardIndex(null);
+  };
+
+  const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register' && previewCardIndex === null;
+  const inGame = selectedCardIndex !== null || previewCardIndex !== null;
   const darkBg = section === 'info';
 
   const renderSection = () => {
+    if (previewCardIndex !== null && user) {
+        return <GameBoard user={user} card={MAGIC_PATH[previewCardIndex]} cardIndex={previewCardIndex} onComplete={handlePreviewComplete} onBack={handlePreviewBack} />;
+    }
     if (selectedCardIndex !== null && user) {
         return <GameBoard user={user} card={MAGIC_PATH[selectedCardIndex]} cardIndex={selectedCardIndex} onComplete={handleGameComplete} onBack={() => setSelectedCardIndex(null)} />;
     }
@@ -159,7 +171,7 @@ const App: React.FC = () => {
       case 'profile': return user ? <Profile user={user} onBack={() => setSection('hub')} onLogout={() => { setUser(null); localStorage.removeItem('magic_user'); setSection('pre-login'); }} onUpdate={(upd) => setUser({...user, ...upd})} /> : null;
       case 'info': return <Info onBack={() => setSection('hub')} />;
       case 'printable': return <PrintableCards onBack={() => setSection('hub')} />;
-      case 'admin': return user ? <AdminPanel user={user} onBack={() => setSection('hub')} /> : null;
+      case 'admin': return user ? <AdminPanel user={user} onBack={() => setSection('hub')} onPreviewCard={setPreviewCardIndex} /> : null;
       case 'chat': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><ChatBuddy /></div>;
       case 'voice': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><VoiceLive /></div>;
       case 'generator': return <div className="pt-24 sm:pt-28 px-4 max-w-2xl mx-auto pb-10"><MediaGenerator /></div>;
