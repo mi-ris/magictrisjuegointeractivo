@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { getSharedAudioContext, playPopSound } from './AudioUtils';
 
@@ -13,71 +12,31 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
   };
 
   const letters = [
-    { letter: 'A', color: 'from-rose-400 to-pink-500', shadow: 'shadow-rose-300' },
-    { letter: 'E', color: 'from-amber-400 to-orange-500', shadow: 'shadow-amber-300' },
-    { letter: 'I', color: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-300' },
-    { letter: 'O', color: 'from-sky-400 to-blue-500', shadow: 'shadow-sky-300' },
-    { letter: 'U', color: 'from-violet-400 to-purple-500', shadow: 'shadow-violet-300' },
+    { letter: 'A', color: 'border-pink-400 text-pink-500', symbol: '◉' },
+    { letter: 'E', color: 'border-amber-400 text-amber-500', symbol: '●' },
+    { letter: 'I', color: 'border-emerald-400 text-emerald-500', symbol: '♣' },
   ];
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center py-6 px-4 overflow-hidden">
-
-      {/* Logo Gumi con brillo */}
-      <div className="z-10 flex flex-col items-center mb-4 sm:mb-6">
-        <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-white/40 blur-2xl scale-110" />
-          <img
-            src="/gumi-avatar.png"
-            alt="Gumi"
-            className="relative w-36 h-36 sm:w-52 sm:h-52 object-contain drop-shadow-2xl floating-gumi"
-          />
-        </div>
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-8 overflow-hidden bg-gradient-to-b from-cyan-300 via-sky-400 to-blue-500">
+      <div className="absolute top-10 left-8 text-white/70 text-6xl">☁</div>
+      <div className="absolute bottom-24 left-1/4 text-white/70 text-6xl">☁</div>
+      <div className="relative z-10 text-center mb-7 sm:mb-10">
+        <h1 className="text-6xl sm:text-8xl md:text-9xl leading-none font-magic text-blue-700 drop-shadow-[0_5px_0_white] tracking-tight">MAGICTRIS</h1>
+        <span className="inline-block mt-3 px-7 py-1.5 rounded-full bg-white/60 text-blue-800 font-magic text-lg sm:text-2xl shadow-sm">¡La magia de aprender!</span>
       </div>
 
-      {/* Título con fondo pill */}
-      <div className="z-10 text-center mb-6 sm:mb-8">
-        <h1 className="text-[52px] sm:text-[90px] md:text-[110px] leading-none magic-title whitespace-nowrap drop-shadow-[0_6px_0_rgba(49,46,129,0.4)]">
-          MAGICTRIS
-        </h1>
-        <div className="mt-2 sm:mt-3">
-          <span className="text-base sm:text-2xl text-blue-900 font-magic px-5 sm:px-8 py-1.5 sm:py-2 bg-white/70 backdrop-blur-md rounded-full inline-block shadow-md border-2 border-white/80">
-            ¡La magia de aprender!
-          </span>
-        </div>
-      </div>
-
-      {/* Letras flotantes */}
-      <div className="flex gap-2 sm:gap-5 items-center justify-center mb-8 sm:mb-10 z-10">
-        {letters.map((item, idx) => (
-          <div
-            key={idx}
-            className={`bg-gradient-to-br ${item.color} w-12 h-16 sm:w-20 sm:h-28 flex items-center justify-center rounded-2xl sm:rounded-3xl shadow-2xl ${item.shadow} border-4 border-white/60`}
-            style={{ animation: `float-gumi ${2.8 + idx * 0.35}s ease-in-out infinite`, animationDelay: `${idx * 0.15}s` }}
-          >
-            <span className="text-3xl sm:text-5xl font-magic text-white drop-shadow-md leading-none">{item.letter}</span>
+      <div className="relative z-10 flex gap-4 sm:gap-7 mb-10">
+        {letters.map(item => (
+          <div key={item.letter} className={`w-28 h-56 sm:w-36 sm:h-64 rounded-[2rem] bg-white border-[10px] ${item.color} shadow-xl flex flex-col items-center justify-between py-8`}>
+            <span className="text-4xl opacity-80">{item.symbol}</span>
+            <span className={`text-6xl sm:text-7xl font-magic ${item.color.split(' ')[1]}`}>{item.letter}</span>
           </div>
         ))}
       </div>
 
-      {/* Botón comenzar */}
-      <div className="flex flex-col items-center gap-3 z-20">
-        <button
-          onClick={handleStart}
-          className="btn-magic-pop bg-indigo-500 hover:bg-indigo-600 text-white text-2xl sm:text-4xl px-12 sm:px-20 py-4 sm:py-6 rounded-full font-magic uppercase tracking-widest border-4 border-white shadow-[0_10px_0_#3730a3] active:shadow-none active:translate-y-3 transition-all"
-        >
-          ¡COMENZAR!
-        </button>
-        <p className="text-xs sm:text-sm font-bold text-indigo-700/70 uppercase tracking-widest">
-          ¡Toca para empezar la aventura!
-        </p>
-      </div>
-
-      <footer className="absolute bottom-4 w-full text-center z-10 opacity-50">
-        <p className="text-[10px] sm:text-xs font-magic text-blue-900 uppercase tracking-widest">
-          Hecho con magia para niños curiosos
-        </p>
-      </footer>
+      <button onClick={handleStart} className="relative z-10 bg-orange-500 hover:bg-orange-600 text-white text-2xl sm:text-4xl px-14 sm:px-24 py-4 rounded-full font-magic uppercase tracking-wider border-4 border-white shadow-[0_9px_0_#c2410c] active:translate-y-2 active:shadow-none transition-all">COMENZAR</button>
+      <p className="relative z-10 mt-12 text-xs font-magic text-blue-800 uppercase tracking-widest">Hecho con magia para niños curiosos</p>
     </div>
   );
 };

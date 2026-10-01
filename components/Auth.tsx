@@ -126,41 +126,34 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8">
       {/* Card */}
-      <div className="bg-white/85 backdrop-blur-2xl rounded-[3rem] shadow-2xl w-full max-w-md border-[6px] border-white overflow-hidden animate-fade-in">
+      <div className="bg-[#e3f3fb] rounded-[3rem] shadow-2xl w-full max-w-md border-[6px] border-white overflow-hidden animate-fade-in">
 
         {/* Header */}
-        <div className="bg-gradient-to-br from-indigo-500 to-cyan-500 px-8 pt-8 pb-6 flex flex-col items-center text-center">
-          <div className="relative mb-3">
-            <div className="absolute inset-0 bg-white/30 blur-xl rounded-full" />
-            <img src="/gumi-avatar.png" alt="Gumi" className="relative w-24 h-24 object-contain floating-gumi drop-shadow-xl" />
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-magic text-white uppercase tracking-tight drop-shadow-md">
-            {mode === 'login' ? '¡Hola de nuevo!' : '¡Hola nuevo amigo!'}
+        <div className="px-8 pt-10 pb-4 text-center">
+          <h2 className="text-3xl sm:text-4xl font-magic text-indigo-700 uppercase tracking-tight">
+            {mode === 'login' ? '¡HOLA DE NUEVO!' : '¡CREA TU CUENTA!'}
           </h2>
-          <p className="text-white/80 text-sm font-bold mt-1">
-            {mode === 'login' ? 'Entra a tu mundo mágico' : 'Únete a la aventura mágica'}
-          </p>
         </div>
 
         {/* Form */}
-        <div className="px-7 py-6 space-y-3">
+        <div className="px-7 pb-8 pt-2 space-y-3">
           {mode === 'register' && (
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300 text-lg">👤</span>
+              
               <input className={inputClass + ' pl-11'} placeholder="¿Cómo te llamas?" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
             </div>
           )}
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300 text-lg">✉️</span>
+            
             <input className={inputClass + ' pl-11'} placeholder="Correo electrónico" type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
           </div>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300 text-lg">🔒</span>
+            
             <input className={inputClass + ' pl-11'} placeholder="Contraseña" type="password" value={formData.pass} onChange={e => setFormData({...formData, pass: e.target.value})} />
           </div>
           {mode === 'register' && (
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300 text-lg">🔒</span>
+              
               <input className={inputClass + ' pl-11'} placeholder="Repite tu contraseña" type="password" value={formData.confirm} onChange={e => setFormData({...formData, confirm: e.target.value})} />
             </div>
           )}
@@ -174,7 +167,7 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-magic text-xl shadow-xl hover:bg-indigo-700 active:translate-y-1 transition-all border-b-4 border-indigo-800 disabled:opacity-60 uppercase tracking-wide mt-1"
+            className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-magic text-xl shadow-xl hover:bg-indigo-700 active:translate-y-1 transition-all border-b-4 border-indigo-800 disabled:opacity-60 uppercase tracking-wide mt-3"
           >
             {loading ? 'CARGANDO...' : mode === 'login' ? 'ENTRAR' : 'REGISTRARSE'}
           </button>
@@ -189,9 +182,9 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
           {/* Modo invitado */}
           <button
             onClick={handleGuestEntry}
-            className="w-full bg-cyan-50 text-cyan-700 border-2 border-cyan-200 py-3.5 rounded-2xl font-magic text-lg hover:bg-cyan-100 transition-all active:scale-95 uppercase tracking-wide flex items-center justify-center gap-2"
+            className="w-full bg-transparent text-pink-500 py-2 rounded-2xl font-magic text-lg hover:bg-pink-50 transition-all active:scale-95 uppercase tracking-wide flex items-center justify-center gap-2"
           >
-            <span>🌟</span> Modo Invitado
+            Modo Invitado
           </button>
 
           {/* Toggle */}
