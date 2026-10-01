@@ -30,7 +30,7 @@ export const chatWithPro = async (message: string, history: any[] = []) => {
   return await chat.sendMessage({ message });
 };
 
-export const textToSpeech = async (text: string): Promise<string | undefined> => {
+export const textToSpeech = async (text: string, _rate: 'slow' | 'normal' = 'slow'): Promise<string | undefined> => {
   const ai = getGeminiClient();
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",

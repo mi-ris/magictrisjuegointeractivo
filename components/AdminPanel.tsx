@@ -4,6 +4,8 @@ import { User } from '../types';
 import { MAGIC_PATH, MAGIC_ISLANDS, PICTOGRAMS } from '../services/mockData';
 import { supabase } from '../services/supabaseClient';
 import CloudPath from './CloudPath';
+import { useSettings } from './SettingsContext';
+import { playPopSound } from './AudioUtils';
 
 interface Props {
   user: User;
@@ -37,7 +39,8 @@ interface LevelStat {
 const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
   const [attempts, setAttempts] = useState<AttemptRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'stats' | 'levels' | 'history' | 'preview'>('stats');
+  const [view, setView] = useState<'stats' | 'levels' | 'history' | 'preview' | 'settings'>('stats');
+  const { settings, updateSettings } = useSettings();
 
   const fetchAttempts = useCallback(async () => {
     setLoading(true);
@@ -130,6 +133,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
           { key: 'levels', label: 'Niveles' },
           { key: 'history', label: 'Historial' },
           { key: 'preview', label: 'Probar' },
+          { key: 'settings', label: 'Ajustes' },
         ] as const).map(tab => (
           <button
             key={tab.key}
@@ -358,6 +362,82 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
               isCardCompleted={() => false}
               onSelectCard={onPreviewCard}
             />
+          </div>
+        </div>
+      )}
+
+      {view === 'settings' && (
+        <div className="space-y-4 max-w-lg mx-auto">
+          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border-2 border-indigo-100 shadow-md space-y-5">
+            <h3 className="text-sm font-magic text-indigo-700 uppercase mb-1">Configuracion de audio y voz</h3>
+
+            {/* Sonido */}
+            <div className="flex items-center justify-between py-2 border-b border-indigo-50">
+              <div>
+                <p className="text-sm font-bold text-indigo-700">Sonido</p>
+                <p className="text-[11px] text-indigo-400">Activa o desactiva todos los sonidos</p>
+              </div>
+              <button
+                onClick={() => { updateSettings({ soundEnabled: !settings.soundEnabled }); if (settings.soundEnabled) playPopSound(); }}
+                className={`relative w-12 h-7 rounded-full transition-colors ${settings.soundEnabled ? 'bg-indigo-500' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${settings.soundEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+
+            {/* Voz automatica */}
+            <div className="flex items-center justify-between py-2 border-b border-indigo-50">
+              <div>
+                <p className="text-sm font-bold text-indigo-700">Voz automatica</p>
+                <p className="text-[11px] text-indigo-400">Reproduce las instrucciones solo al entrar a cada juego</p>
+              </div>
+              <button
+                onClick={() => updateSettings({ autoPlayVoice: !settings.autoPlayVoice })}
+                className={`relative w-12 h-7 rounded-full transition-colors ${settings.autoPlayVoice ? 'bg-indigo-500' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${settings.autoPlayVoice ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+
+            {/* Velocidad de voz */}
+            <div className="py-2 border-b border-indigo-50">
+              <div className="mb-2">
+                <p className="text-sm font-bold text-indigo-700">Velocidad de voz</p>
+                <p className="text-[11px] text-indigo-400">Mas lento para los mas peques, normal para mayores</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => updateSettings({ speechRate: 'slow' })}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all ${settings.speechRate === 'slow' ? 'bg-indigo-500 text-white shadow-md' : 'bg-indigo-50 text-indigo-400'}`}
+                >
+                  Lenta
+                </button>
+                <button
+                  onClick={() => updateSettings({ speechRate: 'normal' })}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all ${settings.speechRate === 'normal' ? 'bg-indigo-500 text-white shadow-md' : 'bg-indigo-50 text-indigo-400'}`}
+                >
+                  Normal
+                </button>
+              </div>
+            </div>
+
+            {/* Animaciones */}
+            <div className="flex items-center justify-between py-2">
+              <div>
+                <p className="text-sm font-bold text-indigo-700">Animaciones reducidas</p>
+                <p className="text-[11px] text-indigo-400">Menos movimiento, ideal si el niño se distrae facilmente</p>
+              </div>
+              <button
+                onClick={() => updateSettings({ reduceAnimations: !settings.reduceAnimations })}
+                className={`relative w-12 h-7 rounded-full transition-colors ${settings.reduceAnimations ? 'bg-indigo-500' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${settings.reduceAnimations ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4 text-center">
+            <p className="text-[11px] text-indigo-500">Los cambios se guardan automaticamente en este dispositivo.</p>
           </div>
         </div>
       )}

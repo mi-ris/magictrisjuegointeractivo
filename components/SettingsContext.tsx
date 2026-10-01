@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AppSettings } from '../types';
+import { setSpeechRate } from './AudioUtils';
 
 interface SettingsContextType {
   settings: AppSettings;
@@ -32,6 +33,10 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
 
   const [showBreakReminder, setShowBreakReminder] = useState(false);
+
+  useEffect(() => {
+    setSpeechRate(settings.speechRate);
+  }, [settings.speechRate]);
 
   useEffect(() => {
     try {
