@@ -86,18 +86,27 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  source.playbackRate.value = rate === 'slow' ? 0.88 : 1.0;
+  // Slightly faster for a lively, energetic feel — not dragging
+  source.playbackRate.value = rate === 'slow' ? 1.0 : 1.08;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 0.06);
+  gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.04);
 
+  // Gentle high-shelf boost for brightness and clarity
+  const highshelf = ctx.createBiquadFilter();
+  highshelf.type = 'highshelf';
+  highshelf.frequency.value = 4000;
+  highshelf.gain.value = 3;
+
+  // Soft lowpass just to remove harshness, not kill vibrancy
   const lowpass = ctx.createBiquadFilter();
   lowpass.type = 'lowpass';
-  lowpass.frequency.value = 9000;
-  lowpass.Q.value = 0.5;
+  lowpass.frequency.value = 12000;
+  lowpass.Q.value = 0.3;
 
-  source.connect(lowpass);
+  source.connect(highshelf);
+  highshelf.connect(lowpass);
   lowpass.connect(gain);
   gain.connect(getMasterGain());
 
@@ -180,9 +189,10 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void 
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  utter.rate = rate === 'slow' ? 0.8 : 1.0;
-  utter.pitch = 1.4;
-  utter.volume = 0.9;
+  // Faster and higher pitch for a cheerful, animated cartoon-like voice
+  utter.rate = rate === 'slow' ? 1.0 : 1.15;
+  utter.pitch = 1.8;
+  utter.volume = 1.0;
 
   const voices = window.speechSynthesis.getVoices();
   const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
