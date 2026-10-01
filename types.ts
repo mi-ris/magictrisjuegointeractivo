@@ -62,7 +62,7 @@ export interface AppSettings {
   soundEnabled: boolean;
   reduceAnimations: boolean;
   autoPlayVoice: boolean;
-  speechRate: 'slow' | 'normal';
+  speechRate: 'slow' | 'normal' | 'fast';
   sessionStartTime: number;
 }
 

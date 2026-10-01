@@ -30,9 +30,13 @@ export const chatWithPro = async (message: string, history: any[] = []) => {
   return await chat.sendMessage({ message });
 };
 
-export const textToSpeech = async (text: string, _rate: 'slow' | 'normal' = 'slow'): Promise<string | undefined> => {
+export const textToSpeech = async (text: string, rate: 'slow' | 'normal' | 'fast' = 'slow'): Promise<string | undefined> => {
   const ai = getGeminiClient();
-  const styledText = `Eres un nino pequeno que le ensena a otro nino con mucha alegria y entusiasmo. Habla lento, muy claro, pronunciando bien cada silaba, haciendo pausas para que el otro nino pueda entender y aprender. Pon emocion y sorpresa en tu voz como si estuvieras descubriendo algo divertido. Se animado, carinoso y divertido, pero sin apresurarte. ${text}`;
+  const paceInstruction =
+    rate === 'slow'  ? 'Habla DESPACIO y con mucha claridad, pausando entre palabras para que los niños puedan entender cada una.' :
+    rate === 'fast'  ? 'Habla con ritmo rápido y muy alegre, lleno de energía y entusiasmo.' :
+                       'Habla a un ritmo natural, alegre y amigable.';
+  const styledText = `Eres una voz infantil, dulce y muy animada, como un personaje de caricatura que le enseña a otros niños. ${paceInstruction} Sé cariñoso, divertido y expresivo, como si estuvieras descubriendo algo mágico. ${text}`;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: styledText }] }],
@@ -40,7 +44,7 @@ export const textToSpeech = async (text: string, _rate: 'slow' | 'normal' = 'slo
       responseModalities: [Modality.AUDIO],
       speechConfig: {
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: 'Fenrir' },
+          prebuiltVoiceConfig: { voiceName: 'Kore' },
         },
       },
     },

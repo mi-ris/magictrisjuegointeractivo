@@ -79,15 +79,14 @@ export function isVoicePlaying(text?: string): boolean {
   return true;
 }
 
-export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: 'slow' | 'normal' = 'slow'): Promise<void> {
+export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: 'slow' | 'normal' | 'fast' = 'slow'): Promise<void> {
   stopCurrentVoice();
   const ctx = getSharedAudioContext();
   if (ctx.state === 'suspended') await ctx.resume();
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  // Slow and clear so kids can understand and learn each word
-  source.playbackRate.value = rate === 'slow' ? 0.85 : 0.95;
+  source.playbackRate.value = rate === 'slow' ? 0.82 : rate === 'fast' ? 1.1 : 0.95;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
@@ -122,13 +121,13 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
 // ---- Speech rate setting ----
 
-let currentSpeechRate: 'slow' | 'normal' = 'slow';
+let currentSpeechRate: 'slow' | 'normal' | 'fast' = 'slow';
 
-export function setSpeechRate(rate: 'slow' | 'normal') {
+export function setSpeechRate(rate: 'slow' | 'normal' | 'fast') {
   currentSpeechRate = rate;
 }
 
-export function getSpeechRate(): 'slow' | 'normal' {
+export function getSpeechRate(): 'slow' | 'normal' | 'fast' {
   return currentSpeechRate;
 }
 
@@ -176,14 +175,13 @@ export async function speakText(text: string): Promise<void> {
 // ---- Browser Speech Synthesis fallback ----
 // Only used when Gemini fails. Uses a cheerful female Spanish voice.
 
-function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void {
+function speakWithBrowser(text: string, rate: 'slow' | 'normal' | 'fast' = 'slow'): void {
   if (!('speechSynthesis' in window)) return;
 
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  // Slow and clear so kids can follow along and learn
-  utter.rate = rate === 'slow' ? 0.75 : 0.9;
+  utter.rate = rate === 'slow' ? 0.7 : rate === 'fast' ? 1.1 : 0.9;
   utter.pitch = 1.6;
   utter.volume = 1.0;
 

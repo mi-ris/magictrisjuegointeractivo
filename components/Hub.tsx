@@ -74,18 +74,9 @@ const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
             </div>
             <div className="flex justify-between mt-0.5 px-0.5">
               <p className="text-[7px] sm:text-[9px] font-magic text-indigo-500 uppercase tracking-wider">{progressPercent}%</p>
-              <p className="text-[7px] sm:text-[9px] font-bold text-indigo-400">{getSessionMinutes()} min</p>
             </div>
           </div>
-          {settings.soundEnabled ? (
-            <button onClick={() => updateSettings({ soundEnabled: false })} className="p-0.5" title="Silenciar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 sm:w-5 sm:h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-            </button>
-          ) : (
-            <button onClick={() => updateSettings({ soundEnabled: true })} className="p-0.5 opacity-40" title="Activar sonido">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 sm:w-5 sm:h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-            </button>
-          )}
+          <span className="text-[8px] font-magic text-indigo-400 uppercase tracking-widest">{getSessionMinutes()} min</span>
         </div>
       </footer>
 

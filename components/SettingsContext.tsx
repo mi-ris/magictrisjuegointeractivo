@@ -35,7 +35,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [showBreakReminder, setShowBreakReminder] = useState(false);
 
   useEffect(() => {
-    setSpeechRate(settings.speechRate);
+    setSpeechRate(settings.speechRate as 'slow' | 'normal' | 'fast');
   }, [settings.speechRate]);
 
   useEffect(() => {
