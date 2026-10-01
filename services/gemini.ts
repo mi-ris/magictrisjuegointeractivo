@@ -32,7 +32,7 @@ export const chatWithPro = async (message: string, history: any[] = []) => {
 
 export const textToSpeech = async (text: string, _rate: 'slow' | 'normal' = 'slow'): Promise<string | undefined> => {
   const ai = getGeminiClient();
-  const styledText = `¡Hola! Expresa esto con MUCHÍSIMA alegría, energía y entusiasmo, como una maestra de preescolar super divertida contando un cuento a niños pequeños. Sube el tono de voz, sonríe mientras hablas, pon emoción en cada palabra, haz pausas divertidas, y cambia el ritmo para mantener la atención. ¡Que se sienta como un personaje de caricatura amigable y cariñoso! ${text}`;
+  const styledText = `Habla con voz suave, dulce y cariñosa, como un amigo animado que le enseña a un niño pequeño. Pronuncia cada palabra con claridad, despacio, pausando entre frases para que el niño pueda entender. Sé alegre y amigable, pero sin apresurarte. Habla como si le estuvieras contando algo emocionante a un niño con mucha paciencia y ternura. ${text}`;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: styledText }] }],
@@ -40,7 +40,7 @@ export const textToSpeech = async (text: string, _rate: 'slow' | 'normal' = 'slo
       responseModalities: [Modality.AUDIO],
       speechConfig: {
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: 'Zephyr' },
+          prebuiltVoiceConfig: { voiceName: 'Puck' },
         },
       },
     },

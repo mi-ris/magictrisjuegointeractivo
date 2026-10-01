@@ -86,28 +86,28 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  // Slightly faster for a lively, energetic feel — not dragging
-  source.playbackRate.value = rate === 'slow' ? 1.0 : 1.08;
+  // Gentle pace: slow mode is calm and clear for kids to follow, normal is natural
+  source.playbackRate.value = rate === 'slow' ? 0.92 : 1.0;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.04);
+  gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.06);
 
-  // Gentle high-shelf boost for brightness and clarity
-  const highshelf = ctx.createBiquadFilter();
-  highshelf.type = 'highshelf';
-  highshelf.frequency.value = 4000;
-  highshelf.gain.value = 3;
-
-  // Soft lowpass just to remove harshness, not kill vibrancy
+  // Warm lowpass for a soft, pleasant tone
   const lowpass = ctx.createBiquadFilter();
   lowpass.type = 'lowpass';
-  lowpass.frequency.value = 12000;
-  lowpass.Q.value = 0.3;
+  lowpass.frequency.value = 10000;
+  lowpass.Q.value = 0.4;
 
-  source.connect(highshelf);
-  highshelf.connect(lowpass);
-  lowpass.connect(gain);
+  // Subtle high-shelf for clarity so words are understandable
+  const highshelf = ctx.createBiquadFilter();
+  highshelf.type = 'highshelf';
+  highshelf.frequency.value = 3500;
+  highshelf.gain.value = 2;
+
+  source.connect(lowpass);
+  lowpass.connect(highshelf);
+  highshelf.connect(gain);
   gain.connect(getMasterGain());
 
   currentVoiceSource = source;
@@ -189,9 +189,9 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void 
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  // Faster and higher pitch for a cheerful, animated cartoon-like voice
-  utter.rate = rate === 'slow' ? 1.0 : 1.15;
-  utter.pitch = 1.8;
+  // Soft, clear pace for kids to follow along
+  utter.rate = rate === 'slow' ? 0.85 : 1.0;
+  utter.pitch = 1.3;
   utter.volume = 1.0;
 
   const voices = window.speechSynthesis.getVoices();
