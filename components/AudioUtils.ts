@@ -33,6 +33,7 @@ let currentVoiceSource: AudioBufferSourceNode | null = null;
 let currentVoiceGain: GainNode | null = null;
 let currentVoiceText: string | null = null;
 let isVoiceLoading: boolean = false;
+let browserUtterance: SpeechSynthesisUtterance | null = null;
 const voiceListeners: Set<(text: string | null) => void> = new Set();
 
 export function onVoiceChange(cb: (text: string | null) => void): () => void {
@@ -42,6 +43,13 @@ export function onVoiceChange(cb: (text: string | null) => void): () => void {
 
 function notifyVoiceChange() {
   voiceListeners.forEach(cb => cb(currentVoiceText));
+}
+
+function stopBrowserVoice() {
+  if (browserUtterance && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    browserUtterance = null;
+  }
 }
 
 export function stopCurrentVoice(): void {
@@ -59,13 +67,14 @@ export function stopCurrentVoice(): void {
     currentVoiceSource = null;
     currentVoiceGain = null;
   }
+  stopBrowserVoice();
   currentVoiceText = null;
   isVoiceLoading = false;
   notifyVoiceChange();
 }
 
 export function isVoicePlaying(text?: string): boolean {
-  if (!currentVoiceSource) return false;
+  if (!currentVoiceSource && !browserUtterance) return false;
   if (text) return currentVoiceText === text;
   return true;
 }
@@ -121,11 +130,11 @@ export function getSpeechRate(): 'slow' | 'normal' {
   return currentSpeechRate;
 }
 
-// ---- Single animated voice: Gemini TTS only ----
-// No browser fallback — prevents mixing different voices
+// ---- Single animated voice: Gemini TTS (Puck) ----
+// Falls back to browser voice ONLY if Gemini is unavailable
+// Browser voice is forced to a cheerful female Spanish voice to avoid mixing
 
 export async function speakText(text: string): Promise<void> {
-  // If something is loading or playing, stop it first
   stopCurrentVoice();
   isVoiceLoading = true;
   currentVoiceText = text;
@@ -135,37 +144,65 @@ export async function speakText(text: string): Promise<void> {
   try {
     const { textToSpeech } = await import('../services/gemini');
     const audioData = await textToSpeech(text, rate);
-    if (!audioData) {
-      // No audio returned — silently skip, no fallback voice
-      isVoiceLoading = false;
-      if (currentVoiceText === text) {
-        currentVoiceText = null;
-        notifyVoiceChange();
+    if (audioData) {
+      // If another voice was requested while loading, abort
+      if (currentVoiceText !== text) {
+        isVoiceLoading = false;
+        return;
       }
-      return;
-    }
-    // If another voice was requested while loading, abort
-    if (currentVoiceText !== text) {
+      const ctx = getSharedAudioContext();
+      if (ctx.state === 'suspended') await ctx.resume();
+      const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
+      if (currentVoiceText !== text) {
+        isVoiceLoading = false;
+        return;
+      }
       isVoiceLoading = false;
+      await playVoiceBuffer(buffer, text, rate);
       return;
     }
-    const ctx = getSharedAudioContext();
-    if (ctx.state === 'suspended') await ctx.resume();
-    const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
-    if (currentVoiceText !== text) {
-      isVoiceLoading = false;
-      return;
-    }
-    isVoiceLoading = false;
-    await playVoiceBuffer(buffer, text, rate);
   } catch (err) {
-    isVoiceLoading = false;
+    console.warn('Gemini TTS no disponible, usando voz del navegador:', err);
+  }
+  // Fallback: browser voice (female Spanish only, never mixes with Gemini)
+  isVoiceLoading = false;
+  if (currentVoiceText === text) {
+    speakWithBrowser(text, rate);
+  }
+}
+
+// ---- Browser Speech Synthesis fallback ----
+// Only used when Gemini fails. Uses a cheerful female Spanish voice.
+
+function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void {
+  if (!('speechSynthesis' in window)) return;
+
+  stopBrowserVoice();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'es-ES';
+  utter.rate = rate === 'slow' ? 0.8 : 1.0;
+  utter.pitch = 1.4;
+  utter.volume = 0.9;
+
+  const voices = window.speechSynthesis.getVoices();
+  const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
+  // Prefer female Spanish voices for a warm, animated tone
+  const preferredVoice = spanishVoices.find(v => /female|mujer|laura|paulina|monica|helena|google.*es/i.test(v.name)) || spanishVoices[0];
+  if (preferredVoice) utter.voice = preferredVoice;
+
+  browserUtterance = utter;
+  currentVoiceText = text;
+  notifyVoiceChange();
+
+  utter.onend = () => {
     if (currentVoiceText === text) {
       currentVoiceText = null;
+      browserUtterance = null;
       notifyVoiceChange();
     }
-    console.warn('Voz no disponible:', err);
-  }
+  };
+
+  window.speechSynthesis.speak(utter);
 }
 
 export function getCurrentVoiceText(): string | null {

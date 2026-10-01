@@ -198,9 +198,23 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
   };
 
   const handleSyllableTouch = (idx: number) => {
+    if (!wordData) return;
+    // Must tap syllables in the correct order (left to right)
+    const expectedIdx = touchedSyllables.length;
+    if (idx !== expectedIdx) {
+      // Wrong order — error
+      playSound(playGentleErrorSound);
+      setWrongChoice(wordData.syllables[idx]);
+      setGumiMessage('¡Casi! Toca las sílabas en orden, de izquierda a derecha.');
+      setFeedback('error');
+      logAttempt(user.id, card.id, card.value, 'wordBuild', false, wordData.syllables[idx], attempts, null);
+      setTimeout(() => { setFeedback(null); setWrongChoice(null); }, 1500);
+      return;
+    }
     playSound(playPopSound);
-    setTouchedSyllables(prev => [...prev, idx]);
-    if (wordData && touchedSyllables.length + 1 >= wordData.syllables.length) {
+    const newTouched = [...touchedSyllables, idx];
+    setTouchedSyllables(newTouched);
+    if (newTouched.length >= wordData.syllables.length) {
       setTimeout(() => handleGameSuccess('wordBuild'), 400);
     }
   };
@@ -257,9 +271,18 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     const choicePict = PICTOGRAMS[word];
     if (isWrong) {
       return (
-        <button key={idx} disabled className="w-36 h-16 rounded-2xl bg-white/40 border-4 border-gray-200 opacity-30 flex items-center justify-center shadow-sm">
-          <span className="font-magic text-lg text-gray-400 uppercase">{word}</span>
-        </button>
+        <div key={idx} className={`${imageCardBase} opacity-30 scale-90 pointer-events-none transition-all duration-500`}>
+          <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-indigo-50 p-1">
+            {choicePict?.imageUrl ? (
+              <img src={choicePict.imageUrl} alt="" className="w-full h-full object-contain opacity-30" />
+            ) : (
+              <span className="font-magic text-lg text-gray-400 uppercase">{word}</span>
+            )}
+          </div>
+          <div className="bg-indigo-100 py-1 text-center">
+            <span className="font-magic text-indigo-400 text-sm sm:text-lg uppercase leading-tight">{word}</span>
+          </div>
+        </div>
       );
     }
     return (
@@ -269,9 +292,18 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
           if (word === card.value) handleGameSuccess(gameType);
           else { handleGameError(gameType, word); setAttempts(a => a + 1); }
         }}
-        className={`w-36 h-16 rounded-2xl bg-white border-4 border-indigo-200 shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${word === card.value && !reduceAnim ? 'ring-2 ring-amber-300/50' : ''}`}
+        className={`${imageCardBase} ${word === card.value && !reduceAnim ? 'ring-2 ring-amber-300/50' : ''}`}
       >
-        <span className="font-magic text-lg sm:text-xl text-indigo-700 uppercase">{word}</span>
+        <div className="w-full h-24 sm:h-28 flex items-center justify-center bg-white p-1.5">
+          {choicePict?.imageUrl ? (
+            <img src={choicePict.imageUrl} alt={word} className="w-full h-full object-contain" loading="lazy" />
+          ) : (
+            <span className="font-magic text-lg text-indigo-700 uppercase">{word}</span>
+          )}
+        </div>
+        <div className="bg-indigo-500 py-1.5 text-center">
+          <span className="font-magic text-white text-sm sm:text-lg uppercase leading-tight">{word}</span>
+        </div>
       </button>
     );
   };
