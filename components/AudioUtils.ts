@@ -27,12 +27,12 @@ function getMasterGain(): GainNode {
   return masterGain;
 }
 
-// ---- Central audio manager: prevents overlapping voice playback ----
+// ---- Central audio manager: single voice source, no overlapping ----
 
 let currentVoiceSource: AudioBufferSourceNode | null = null;
 let currentVoiceGain: GainNode | null = null;
 let currentVoiceText: string | null = null;
-let browserUtterance: SpeechSynthesisUtterance | null = null;
+let isVoiceLoading: boolean = false;
 const voiceListeners: Set<(text: string | null) => void> = new Set();
 
 export function onVoiceChange(cb: (text: string | null) => void): () => void {
@@ -45,7 +45,6 @@ function notifyVoiceChange() {
 }
 
 export function stopCurrentVoice(): void {
-  // Soft fade-out for voice
   if (currentVoiceSource && currentVoiceGain) {
     try {
       const ctx = getSharedAudioContext();
@@ -60,16 +59,13 @@ export function stopCurrentVoice(): void {
     currentVoiceSource = null;
     currentVoiceGain = null;
   }
-  if (browserUtterance && typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    browserUtterance = null;
-  }
   currentVoiceText = null;
+  isVoiceLoading = false;
   notifyVoiceChange();
 }
 
 export function isVoicePlaying(text?: string): boolean {
-  if (!currentVoiceSource && !browserUtterance) return false;
+  if (!currentVoiceSource) return false;
   if (text) return currentVoiceText === text;
   return true;
 }
@@ -81,28 +77,19 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  // Slow rate = 0.88x (slightly slower for kids), normal = 1.0x
   source.playbackRate.value = rate === 'slow' ? 0.88 : 1.0;
 
-  // Soft fade-in for a gentle start
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
   gain.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 0.06);
 
-  // Gentle high-shelf boost for clarity + lowpass for warmth
   const lowpass = ctx.createBiquadFilter();
   lowpass.type = 'lowpass';
   lowpass.frequency.value = 9000;
   lowpass.Q.value = 0.5;
 
-  // Slight pitch shift up for a more energetic, animated feel
-  const detune = ctx.createBiquadFilter();
-  detune.type = 'allpass';
-  detune.frequency.value = 1000;
-
   source.connect(lowpass);
-  lowpass.connect(detune);
-  detune.connect(gain);
+  lowpass.connect(gain);
   gain.connect(getMasterGain());
 
   currentVoiceSource = source;
@@ -134,59 +121,51 @@ export function getSpeechRate(): 'slow' | 'normal' {
   return currentSpeechRate;
 }
 
+// ---- Single animated voice: Gemini TTS only ----
+// No browser fallback — prevents mixing different voices
+
 export async function speakText(text: string): Promise<void> {
+  // If something is loading or playing, stop it first
+  stopCurrentVoice();
+  isVoiceLoading = true;
+  currentVoiceText = text;
+  notifyVoiceChange();
+
   const rate = getSpeechRate();
   try {
     const { textToSpeech } = await import('../services/gemini');
     const audioData = await textToSpeech(text, rate);
-    if (audioData) {
-      const ctx = getSharedAudioContext();
-      if (ctx.state === 'suspended') await ctx.resume();
-      const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
-      await playVoiceBuffer(buffer, text, rate);
+    if (!audioData) {
+      // No audio returned — silently skip, no fallback voice
+      isVoiceLoading = false;
+      if (currentVoiceText === text) {
+        currentVoiceText = null;
+        notifyVoiceChange();
+      }
       return;
     }
+    // If another voice was requested while loading, abort
+    if (currentVoiceText !== text) {
+      isVoiceLoading = false;
+      return;
+    }
+    const ctx = getSharedAudioContext();
+    if (ctx.state === 'suspended') await ctx.resume();
+    const buffer = await decodeAudioData(decode(audioData), ctx, 24000, 1);
+    if (currentVoiceText !== text) {
+      isVoiceLoading = false;
+      return;
+    }
+    isVoiceLoading = false;
+    await playVoiceBuffer(buffer, text, rate);
   } catch (err) {
-    console.warn('Gemini TTS no disponible, usando voz del navegador:', err);
-  }
-  // Fallback: browser built-in speech synthesis
-  speakWithBrowser(text, rate);
-}
-
-// ---- Browser Speech Synthesis fallback ----
-
-function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void {
-  stopCurrentVoice();
-  if (!('speechSynthesis' in window)) return;
-
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'es-ES';
-  // Higher pitch for a cheerful, animated cartoon-like voice
-  utter.rate = rate === 'slow' ? 0.8 : 1.0;
-  utter.pitch = 1.4;
-  utter.volume = 0.9;
-
-  const voices = window.speechSynthesis.getVoices();
-  // Prefer a female Spanish voice for a warmer, more child-friendly tone
-  const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
-  const preferredVoice = spanishVoices.find(v => /female|mujer|laura|paulina|monica|helena|google.*es/i.test(v.name)) || spanishVoices[0];
-  if (preferredVoice) utter.voice = preferredVoice;
-
-  browserUtterance = utter;
-  currentVoiceText = text;
-  notifyVoiceChange();
-
-  utter.onend = () => {
+    isVoiceLoading = false;
     if (currentVoiceText === text) {
       currentVoiceText = null;
-      currentVoiceSource = null;
-      browserUtterance = null;
       notifyVoiceChange();
     }
-  };
-
-  window.speechSynthesis.speak(utter);
+    console.warn('Voz no disponible:', err);
+  }
 }
 
 export function getCurrentVoiceText(): string | null {
@@ -232,8 +211,6 @@ export async function decodeAudioData(
 }
 
 // ---- Soft sound effects with smooth envelopes ----
-// All effects use gentle fade-in/fade-out to avoid harsh clicks
-// and slight pitch randomization for a more dynamic, lively feel
 
 function randomSlightPitch(base: number): number {
   return base * (1 + (Math.random() - 0.5) * 0.06);
@@ -292,7 +269,6 @@ export function playSuccessSound() {
 export function playGentleSuccessSound() {
   try {
     const ctx = getSharedAudioContext();
-    // Pentatonic ascending: C5, E5, G5, A5 — gentle and cheerful
     const notes = [523.25, 659.25, 783.99, 880.0];
     notes.forEach((freq, i) => {
       const osc = ctx.createOscillator();
@@ -336,14 +312,12 @@ export function playGentleErrorSound() {
 export function playApplauseSound() {
   try {
     const ctx = getSharedAudioContext();
-    // Fewer, softer claps with gentle filtering
     const clapCount = 5;
     for (let i = 0; i < clapCount; i++) {
       const noise = ctx.createBufferSource();
       const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.06, ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let j = 0; j < data.length; j++) {
-        // Softer noise with a decay envelope baked in
         const decay = 1 - j / data.length;
         data[j] = (Math.random() * 2 - 1) * 0.2 * decay;
       }
@@ -372,7 +346,6 @@ export function playRewardSound() {
   try {
     playApplauseSound();
     const ctx = getSharedAudioContext();
-    // Major scale ascending: C5, E5, G5, C6 — triumphant but soft
     const notes = [523.25, 659.25, 783.99, 1046.5];
     notes.forEach((freq, i) => {
       const osc = ctx.createOscillator();

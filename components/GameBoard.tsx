@@ -109,6 +109,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
   }, [step, card, settings.autoPlayVoice, settings.soundEnabled]);
 
   const voiceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSpokenStepRef = useRef<string>('');
 
   useEffect(() => {
     // Stop any previous voice when step changes
@@ -116,6 +117,9 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
 
     if (!stepVoiceText) return;
+    // Prevent replaying the same step's voice
+    if (lastSpokenStepRef.current === step) return;
+    lastSpokenStepRef.current = step;
 
     voiceTimerRef.current = setTimeout(() => {
       speakText(stepVoiceText).catch(() => {});
@@ -124,7 +128,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     return () => {
       if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
     };
-  }, [stepVoiceText]);
+  }, [step, stepVoiceText]);
 
   useEffect(() => {
     if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
