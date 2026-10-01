@@ -132,7 +132,7 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
         <div className="bg-gradient-to-br from-indigo-500 to-cyan-500 px-8 pt-8 pb-6 flex flex-col items-center text-center">
           <div className="relative mb-3">
             <div className="absolute inset-0 bg-white/30 blur-xl rounded-full" />
-            <img src="/Logo_gumi_.jpg" alt="Gumi" className="relative w-24 h-24 object-contain floating-gumi drop-shadow-xl" />
+            <img src="/gumi-avatar.png" alt="Gumi" className="relative w-24 h-24 object-contain floating-gumi drop-shadow-xl" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-magic text-white uppercase tracking-tight drop-shadow-md">
             {mode === 'login' ? '¡Hola de nuevo!' : '¡Hola nuevo amigo!'}

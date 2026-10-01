@@ -28,7 +28,7 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-white/40 blur-2xl scale-110" />
           <img
-            src="/Logo_gumi_.jpg"
+            src="/gumi-avatar.png"
             alt="Gumi"
             className="relative w-36 h-36 sm:w-52 sm:h-52 object-contain drop-shadow-2xl floating-gumi"
           />

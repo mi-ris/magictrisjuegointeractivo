@@ -403,7 +403,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
             <div className="py-2 border-b border-indigo-50">
               <div className="mb-2">
                 <p className="text-sm font-bold text-indigo-700">Velocidad de voz</p>
-                <p className="text-[11px] text-indigo-400">Mas lento para los mas peques, normal para mayores</p>
+                <p className="text-[11px] text-indigo-400">Lenta para aprender, normal o rápida para practicar</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -417,6 +417,12 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
                   className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all ${settings.speechRate === 'normal' ? 'bg-indigo-500 text-white shadow-md' : 'bg-indigo-50 text-indigo-400'}`}
                 >
                   Normal
+                </button>
+                <button
+                  onClick={() => updateSettings({ speechRate: 'fast' })}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-bold uppercase transition-all ${settings.speechRate === 'fast' ? 'bg-indigo-500 text-white shadow-md' : 'bg-indigo-50 text-indigo-400'}`}
+                >
+                  Rápida
                 </button>
               </div>
             </div>

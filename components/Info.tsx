@@ -53,7 +53,7 @@ const Info: React.FC<Props> = () => {
               ))}
             </div>
             <div className="relative z-10 flex flex-col items-center">
-              <img src="/Logo_gumi_.jpg" alt="Gumi" className="w-24 h-24 sm:w-32 sm:h-32 mb-4 floating-gumi object-contain drop-shadow-2xl" />
+              <img src="/gumi-avatar.png" alt="Gumi" className="w-24 h-24 sm:w-32 sm:h-32 mb-4 floating-gumi object-contain drop-shadow-2xl" />
               <h2 className="text-4xl sm:text-6xl font-magic text-white drop-shadow-lg uppercase tracking-tight mb-3">¿Qué es MagicTris?</h2>
               <p className="text-lg sm:text-xl text-white/90 font-bold max-w-lg leading-relaxed mb-4">
                 Un mundo mágico donde los niños aprenden palabras jugando con pictogramas, sonidos y juegos divertidos.
@@ -101,7 +101,7 @@ const Info: React.FC<Props> = () => {
         {/* Characters */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-indigo-100 to-cyan-100 rounded-[2.5rem] shadow-xl border-4 border-white p-6 text-center">
-            <img src="/Logo_gumi_.jpg" alt="Gumi" className="w-20 h-20 mx-auto mb-3 floating-gumi object-contain" />
+            <img src="/gumi-avatar.png" alt="Gumi" className="w-20 h-20 mx-auto mb-3 floating-gumi object-contain" />
             <h3 className="text-2xl font-magic text-indigo-700 mb-1">Gumi</h3>
             <p className="text-sm font-bold text-gray-600">Tu guía mágica que te enseña cada palabra con alegría.</p>
           </div>

@@ -33,10 +33,10 @@ export const chatWithPro = async (message: string, history: any[] = []) => {
 export const textToSpeech = async (text: string, rate: 'slow' | 'normal' | 'fast' = 'slow'): Promise<string | undefined> => {
   const ai = getGeminiClient();
   const paceInstruction =
-    rate === 'slow'  ? 'Habla DESPACIO y con mucha claridad, pausando entre palabras para que los niños puedan entender cada una.' :
-    rate === 'fast'  ? 'Habla con ritmo rápido y muy alegre, lleno de energía y entusiasmo.' :
-                       'Habla a un ritmo natural, alegre y amigable.';
-  const styledText = `Eres una voz infantil, dulce y muy animada, como un personaje de caricatura que le enseña a otros niños. ${paceInstruction} Sé cariñoso, divertido y expresivo, como si estuvieras descubriendo algo mágico. ${text}`;
+    rate === 'slow'  ? 'Habla despacio, con naturalidad y claridad. Haz pausas breves entre ideas para que el niño pueda seguirte.' :
+    rate === 'fast'  ? 'Habla un poco más rápido, manteniendo una pronunciación clara y natural. Nunca atropelles las palabras.' :
+                       'Habla a un ritmo natural, cálido y tranquilo.';
+  const styledText = `Habla en español con una voz juvenil, cálida y humana, como un maestro alegre que disfruta enseñar a niños. ${paceInstruction} Usa variaciones naturales de tono y volumen, pausas expresivas y énfasis suave según el sentido: curiosidad al descubrir, calma al ayudar, entusiasmo al animar y alegría al celebrar. Sé expresivo y cercano, pero nunca robótico, plano, monótono, gritón ni exagerado. No agregues explicaciones antes o después del texto. Di exactamente esto: ${text}`;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: styledText }] }],
@@ -44,7 +44,7 @@ export const textToSpeech = async (text: string, rate: 'slow' | 'normal' | 'fast
       responseModalities: [Modality.AUDIO],
       speechConfig: {
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: 'Kore' },
+          prebuiltVoiceConfig: { voiceName: 'Puck' },
         },
       },
     },

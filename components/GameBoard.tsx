@@ -338,7 +338,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
       </button>
 
       <div className="fixed top-20 sm:top-24 right-3 sm:right-6 z-[110] flex flex-col items-end">
-        <img src="/Logo_gumi_.jpg" alt="Gumi" className={`w-8 h-8 sm:w-10 sm:h-10 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
+        <img src="/gumi-avatar.png" alt="Gumi" className={`w-8 h-8 sm:w-10 sm:h-10 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
       </div>
 
       <div className="fixed top-28 sm:top-32 right-3 sm:right-6 z-[110] max-w-[170px] sm:max-w-[200px]">
@@ -543,7 +543,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
               />
             ))}
             <div className="relative z-10 flex flex-col items-center animate-bounce-in px-6 text-center">
-              <img src="/Logo_gumi_.jpg" alt="Gumi" className={`w-28 h-28 sm:w-36 sm:h-36 mb-3 ${!reduceAnim ? 'animate-bounce' : ''} object-contain drop-shadow-2xl`} />
+              <img src="/gumi-avatar.png" alt="Gumi" className={`w-28 h-28 sm:w-36 sm:h-36 mb-3 ${!reduceAnim ? 'animate-bounce' : ''} object-contain drop-shadow-2xl`} />
               <h2 className="text-5xl sm:text-7xl font-magic text-white uppercase drop-shadow-lg mb-2" style={{ textShadow: '0 4px 0 rgba(245,158,11,0.6)' }}>¡Muy bien!</h2>
               <p className="text-2xl sm:text-3xl font-magic text-white uppercase mb-4" style={{ textShadow: '0 3px 0 rgba(245,158,11,0.5)' }}>¡Aprendiste {card.value}!</p>
               {pictInfo?.imageUrl && (
@@ -572,7 +572,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
         {feedback === 'error' && (
           <div className="fixed inset-0 flex items-center justify-center bg-amber-400/15 z-[150] backdrop-blur-sm pointer-events-none">
             <div className="text-center">
-              <img src="/Logo_gumi_.jpg" alt="Gumi" className="w-14 h-14 mx-auto object-contain" />
+              <img src="/gumi-avatar.png" alt="Gumi" className="w-14 h-14 mx-auto object-contain" />
               <p className="text-lg sm:text-xl font-magic text-indigo-600 uppercase mt-2">¡Casi! Otra vez</p>
             </div>
           </div>

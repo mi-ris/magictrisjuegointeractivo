@@ -173,7 +173,7 @@ const App: React.FC = () => {
       case 'pre-login': return <PreLogin onStart={() => setSection('login')} />;
       case 'login': return <Auth mode="login" onAuthSuccess={(u) => { setUser(u); setSection('hub'); }} toggleMode={() => setSection('register')} />;
       case 'register': return <Auth mode="register" onAuthSuccess={(u) => { setUser(u); setSection('hub'); }} toggleMode={() => setSection('login')} />;
-      case 'hub': return user ? <Hub user={user} setSection={setSection as any} onSelectCard={setSelectedCardIndex} /> : null;
+      case 'hub': return user ? <Hub user={user} onSelectCard={setSelectedCardIndex} /> : null;
       case 'profile': return user ? <Profile user={user} onBack={() => setSection('hub')} onLogout={() => { setUser(null); localStorage.removeItem('magic_user'); setSection('pre-login'); }} onUpdate={(upd) => setUser({...user, ...upd})} /> : null;
       case 'info': return <Info onBack={() => setSection('hub')} />;
       case 'printable': return <PrintableCards onBack={() => setSection('hub')} />;
