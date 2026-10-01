@@ -86,8 +86,8 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  // Fast and lively for an energetic, fun feel
-  source.playbackRate.value = rate === 'slow' ? 1.1 : 1.2;
+  // Slow and clear so kids can understand and learn each word
+  source.playbackRate.value = rate === 'slow' ? 0.85 : 0.95;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
@@ -182,9 +182,9 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void 
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  // Fast and cheerful for an animated, fun voice
-  utter.rate = rate === 'slow' ? 1.15 : 1.3;
-  utter.pitch = 1.5;
+  // Slow and clear so kids can follow along and learn
+  utter.rate = rate === 'slow' ? 0.75 : 0.9;
+  utter.pitch = 1.6;
   utter.volume = 1.0;
 
   const voices = window.speechSynthesis.getVoices();
