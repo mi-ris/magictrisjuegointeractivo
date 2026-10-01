@@ -21,9 +21,7 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
       
       {/* TÍTULO */}
       <div className="text-center z-10 mb-8 sm:mb-12">
-        <h1 className="text-[50px] sm:text-[100px] md:text-[120px] leading-none magic-title whitespace-nowrap">
-          MAGICTRIS
-        </h1>
+        <img src="/Logo_gumi_.jpg" alt="MagicTris" className="w-full max-w-[280px] sm:max-w-[520px] md:max-w-[640px] h-auto object-contain" />
         <div className="mt-2 sm:mt-4">
             <span className="text-sm sm:text-2xl text-blue-900 font-magic px-4 sm:px-8 py-1.5 sm:py-2 bg-blue-100/60 backdrop-blur-md rounded-full inline-block shadow-sm">
                 ¡La magia de aprender!

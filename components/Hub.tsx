@@ -36,7 +36,7 @@ const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
 
         {/* Encabezado con Gumi */}
         <div className="flex flex-col items-center mb-3 text-center">
-          <img src="/gumi-avatar.webp" alt="Gumi" className={`w-14 h-14 sm:w-16 sm:h-16 mb-0.5 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
+          <img src="/Logo_gumi_.jpg" alt="Gumi" className={`w-14 h-14 sm:w-16 sm:h-16 mb-0.5 ${!reduceAnim ? 'floating-gumi' : ''} select-none object-contain`} />
           <h2 className="text-2xl sm:text-4xl font-magic text-indigo-700 drop-shadow-[0_3px_8px_rgba(255,255,255,0.8)] uppercase tracking-tighter">
             ¡Hola, {user.nickname}!
           </h2>
@@ -67,7 +67,7 @@ const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
       {/* Barra de progreso flotante */}
       <footer className="fixed bottom-0 left-0 right-0 p-2 sm:p-3 z-40 flex justify-center pointer-events-none">
         <div className="bg-white/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-2xl border-2 border-indigo-200 shadow-lg flex items-center gap-2.5 w-full max-w-xs pointer-events-auto">
-          <img src="/gumi-avatar.webp" alt="Gumi" className={`w-7 h-7 sm:w-8 sm:h-8 select-none object-contain ${!reduceAnim ? 'floating-gumi' : ''}`} />
+          <img src="/Logo_gumi_.jpg" alt="Gumi" className={`w-7 h-7 sm:w-8 sm:h-8 select-none object-contain ${!reduceAnim ? 'floating-gumi' : ''}`} />
           <div className="flex-1">
             <div className="w-full bg-indigo-100 h-2 sm:h-2.5 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-indigo-400 to-cyan-400 transition-all duration-1000" style={{ width: `${progressPercent}%` }} />
@@ -93,7 +93,7 @@ const Hub: React.FC<Props> = ({ user, setSection, onSelectCard }) => {
       {showBreakReminder && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[310] flex items-center justify-center p-4" onClick={dismissBreakReminder}>
           <div className="bg-white rounded-[2rem] p-6 max-w-xs w-full shadow-2xl border-4 border-indigo-200 text-center" onClick={e => e.stopPropagation()}>
-            <img src="/gumi-avatar.webp" alt="Gumi" className="w-12 h-12 mx-auto mb-3 object-contain" />
+            <img src="/Logo_gumi_.jpg" alt="Gumi" className="w-12 h-12 mx-auto mb-3 object-contain" />
             <h3 className="text-lg font-magic text-indigo-700 uppercase mb-2">¡Hora de descansar!</h3>
             <p className="text-sm text-gray-500 mb-4">Llevas {getSessionMinutes()} minutos. ¿Hacemos una pausa?</p>
             <button onClick={dismissBreakReminder} className="w-full bg-indigo-500 text-white py-2.5 rounded-xl font-bold uppercase text-sm shadow-md active:scale-95 transition-all">¡Descansar!</button>

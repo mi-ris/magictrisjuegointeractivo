@@ -172,6 +172,7 @@ const Auth: React.FC<Props> = ({ mode, onAuthSuccess, toggleMode }) => {
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-8 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl w-full max-w-md border-[6px] sm:border-[8px] border-white flex flex-col items-center animate-fade-in">
         <div className="mb-4 sm:mb-6 text-center">
+            <img src="/Logo_gumi_.jpg" alt="MagicTris" className="w-full max-w-[220px] mx-auto mb-4 object-contain" />
             <h2 className="text-2xl sm:text-4xl font-magic text-indigo-700 uppercase tracking-tighter drop-shadow-sm">
               {mode === 'login' ? '¡HOLA DE NUEVO!' : '¡HOLA NUEVO AMIGO!'}
             </h2>
