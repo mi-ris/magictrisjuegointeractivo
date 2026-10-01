@@ -74,8 +74,8 @@ const VoiceLive: React.FC = () => {
         },
         config: {
           responseModalities: [Modality.AUDIO],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
-          systemInstruction: 'Eres Gumi, un guía mágico en El Mundo de Gumi. Sé breve, juguetón y encantador.',
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Puck' } } },
+          systemInstruction: 'Eres Gumi, un guía mágico en El Mundo de Gumi. Sé breve, muy juguetón, alegre y encantador. Habla con entusiasmo y energía como un personaje animado.',
           outputAudioTranscription: {},
           inputAudioTranscription: {},
         }

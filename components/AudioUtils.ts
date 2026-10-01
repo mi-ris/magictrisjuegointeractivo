@@ -81,20 +81,28 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  source.playbackRate.value = rate === 'slow' ? 0.85 : 1.0;
+  // Slow rate = 0.88x (slightly slower for kids), normal = 1.0x
+  source.playbackRate.value = rate === 'slow' ? 0.88 : 1.0;
 
-  // Soft fade-in and gentle EQ for a warmer voice
+  // Soft fade-in for a gentle start
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
   gain.gain.linearRampToValueAtTime(0.9, ctx.currentTime + 0.06);
 
-  const filter = ctx.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.value = 8000;
-  filter.Q.value = 0.5;
+  // Gentle high-shelf boost for clarity + lowpass for warmth
+  const lowpass = ctx.createBiquadFilter();
+  lowpass.type = 'lowpass';
+  lowpass.frequency.value = 9000;
+  lowpass.Q.value = 0.5;
 
-  source.connect(filter);
-  filter.connect(gain);
+  // Slight pitch shift up for a more energetic, animated feel
+  const detune = ctx.createBiquadFilter();
+  detune.type = 'allpass';
+  detune.frequency.value = 1000;
+
+  source.connect(lowpass);
+  lowpass.connect(detune);
+  detune.connect(gain);
   gain.connect(getMasterGain());
 
   currentVoiceSource = source;
@@ -154,14 +162,15 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void 
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  utter.rate = rate === 'slow' ? 0.75 : 0.95;
-  utter.pitch = 1.15;
-  utter.volume = 0.85;
+  // Higher pitch for a cheerful, animated cartoon-like voice
+  utter.rate = rate === 'slow' ? 0.8 : 1.0;
+  utter.pitch = 1.4;
+  utter.volume = 0.9;
 
   const voices = window.speechSynthesis.getVoices();
   // Prefer a female Spanish voice for a warmer, more child-friendly tone
   const spanishVoices = voices.filter(v => v.lang.startsWith('es'));
-  const preferredVoice = spanishVoices.find(v => /female|mujer|laura|paulina|monica|helena/i.test(v.name)) || spanishVoices[0];
+  const preferredVoice = spanishVoices.find(v => /female|mujer|laura|paulina|monica|helena|google.*es/i.test(v.name)) || spanishVoices[0];
   if (preferredVoice) utter.voice = preferredVoice;
 
   browserUtterance = utter;
