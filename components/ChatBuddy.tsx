@@ -57,7 +57,7 @@ const ChatBuddy: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="bg-indigo-100/80 p-4 rounded-t-3xl border-b-4 border-indigo-200 flex items-center gap-4">
-        <span className="text-5xl">🤖</span>
+        <img src="/pipo-avatar.webp" alt="Pipo" className="w-14 h-14 object-contain floating-gumi" />
         <div>
           <h2 className="text-2xl text-indigo-700 font-magic">Chat con Pipo</h2>
           <p className="text-xs text-indigo-500 font-bold uppercase tracking-wider">Tu amigo robot inteligente</p>
@@ -67,7 +67,7 @@ const ChatBuddy: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-4 bg-white/50 space-y-4 min-h-[300px] max-h-[500px]">
         {messages.length === 0 && (
           <div className="text-center py-10 opacity-60">
-            <span className="text-6xl mb-4 block floating-gumi">👋</span>
+            <img src="/pipo-avatar.webp" alt="Pipo" className="w-20 h-20 mx-auto mb-4 floating-gumi object-contain" />
             <p className="text-xl text-indigo-800">¡Hola! Soy Pipo. Escríbeme algo lindo para charlar.</p>
           </div>
         )}

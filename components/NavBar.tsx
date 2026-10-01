@@ -85,7 +85,7 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
           onClick={() => handleNav('profile')}
           className="flex items-center gap-1 sm:gap-2 bg-white/10 p-0.5 sm:p-1 rounded-full border-2 border-white/20 hover:bg-white/30 shadow-lg pr-2 sm:pr-4"
         >
-          <img src="/gumi-avatar.png" alt={user.nickname} className="text-xl sm:text-3xl bg-white p-0.5 sm:p-1 rounded-full shadow-inner flex items-center justify-center w-8 h-8 sm:w-12 sm:h-12 overflow-hidden object-cover" />
+          <img src={user.avatar.startsWith('/') ? user.avatar : '/avatar-bear.webp'} alt={user.nickname} className="bg-white rounded-full shadow-inner w-8 h-8 sm:w-12 sm:h-12 overflow-hidden object-cover" />
           <span className="text-[10px] sm:text-sm font-magic text-white hidden lg:block tracking-tight">{user.nickname}</span>
         </button>
       </div>

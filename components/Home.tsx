@@ -14,7 +14,7 @@ const Home: React.FC<Props> = ({ user }) => {
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-4 md:p-6 animate-fade-in">
       <div className="relative mb-8">
         <div className="w-64 h-48 md:w-80 md:h-60 rounded-[3rem] border-[10px] border-white shadow-2xl overflow-hidden rotate-2 hover:rotate-0 transition-transform duration-500 bg-indigo-100 flex items-center justify-center">
-          <span className="text-8xl floating-gumi">🌈</span>
+          <img src={user.avatar.startsWith('/') ? user.avatar : '/avatar-bear.webp'} alt={user.nickname} className="w-32 h-32 floating-gumi object-contain" />
         </div>
         <div className="absolute -top-6 -right-6 bg-amber-400 p-4 rounded-full text-4xl shadow-lg animate-bounce border-4 border-white">
           🌟

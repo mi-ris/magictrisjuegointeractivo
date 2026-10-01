@@ -50,7 +50,7 @@ const App: React.FC = () => {
       username: profile.username || 'Gumi',
       email: profile.email || '',
       nickname: profile.nickname || profile.username || 'Invitado',
-      avatar: profile.avatar || '🌈',
+      avatar: profile.avatar || '/avatar-bear.webp',
       score: Number(profile.score) || 0,
       streak: currentStreak,
       progressIndex: Number(profile.progress_index ?? profile.progressIndex ?? 0) || 0,
@@ -158,7 +158,7 @@ const App: React.FC = () => {
     setPreviewCardIndex(null);
   };
 
-  const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register' && previewCardIndex === null;
+  const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
   const inGame = selectedCardIndex !== null || previewCardIndex !== null;
   const darkBg = section === 'info';
 

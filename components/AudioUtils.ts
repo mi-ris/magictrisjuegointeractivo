@@ -86,28 +86,21 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  // Gentle pace: slow mode is calm and clear for kids to follow, normal is natural
-  source.playbackRate.value = rate === 'slow' ? 0.92 : 1.0;
+  // Fast and lively for an energetic, fun feel
+  source.playbackRate.value = rate === 'slow' ? 1.1 : 1.2;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
   gain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.06);
 
-  // Warm lowpass for a soft, pleasant tone
+  // Minimal filtering — let the natural voice shine through
   const lowpass = ctx.createBiquadFilter();
   lowpass.type = 'lowpass';
-  lowpass.frequency.value = 10000;
-  lowpass.Q.value = 0.4;
-
-  // Subtle high-shelf for clarity so words are understandable
-  const highshelf = ctx.createBiquadFilter();
-  highshelf.type = 'highshelf';
-  highshelf.frequency.value = 3500;
-  highshelf.gain.value = 2;
+  lowpass.frequency.value = 14000;
+  lowpass.Q.value = 0.2;
 
   source.connect(lowpass);
-  lowpass.connect(highshelf);
-  highshelf.connect(gain);
+  lowpass.connect(gain);
   gain.connect(getMasterGain());
 
   currentVoiceSource = source;
@@ -189,9 +182,9 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' = 'slow'): void 
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  // Soft, clear pace for kids to follow along
-  utter.rate = rate === 'slow' ? 0.85 : 1.0;
-  utter.pitch = 1.3;
+  // Fast and cheerful for an animated, fun voice
+  utter.rate = rate === 'slow' ? 1.15 : 1.3;
+  utter.pitch = 1.5;
   utter.volume = 1.0;
 
   const voices = window.speechSynthesis.getVoices();
