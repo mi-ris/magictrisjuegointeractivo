@@ -27,14 +27,14 @@ const NavBar: React.FC<Props> = ({ user, currentSection, inGame, onNavigate, onH
   const showHome = inGame || currentSection !== 'hub';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-indigo-900/80 backdrop-blur-xl shadow-2xl z-[200] px-3 sm:px-8 flex items-center justify-between border-b-4 border-white/10">
+    <header className="fixed top-0 left-0 right-0 h-20 sm:h-24 bg-indigo-900/80 backdrop-blur-xl shadow-2xl z-[200] px-2 sm:px-4 flex items-center justify-between border-b-4 border-white/10">
       <div className="flex items-center gap-2 sm:gap-3">
         {showHome && (
           <button onClick={onHome} className="bg-white/10 p-2 sm:p-3 rounded-xl sm:rounded-2xl border-2 border-white/20 hover:bg-white/30 transition-all active:scale-90 shadow-lg" title="Inicio">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </button>
         )}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-magic text-white tracking-tighter drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] select-none">MAGIC<span className="text-cyan-300">TRIC</span><span className="text-white">S</span></h1>
+        <h1 className="text-2xl sm:text-4xl md:text-5xl font-magic text-white tracking-tighter drop-shadow-[0_4px_0_rgba(0,0,0,0.3)] select-none">MAGIC<span className="text-cyan-300">TRIS</span></h1>
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
