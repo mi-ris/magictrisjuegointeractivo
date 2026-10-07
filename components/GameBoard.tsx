@@ -116,19 +116,25 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
     stopCurrentVoice();
     if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
 
-    if (!stepVoiceText) return;
-    // Prevent replaying the same step's voice
-    if (lastSpokenStepRef.current === step) return;
-    lastSpokenStepRef.current = step;
+    if (!stepVoiceText) {
+      lastSpokenStepRef.current = '';
+      return;
+    }
+    // Prevent replaying the same instruction, but allow settings changes to take effect immediately
+    const voiceKey = `${step}:${settings.speechRate}`;
+    if (lastSpokenStepRef.current === voiceKey) return;
+    lastSpokenStepRef.current = voiceKey;
 
     voiceTimerRef.current = setTimeout(() => {
-      speakText(stepVoiceText).catch(() => {});
+      if (settings.soundEnabled && settings.autoPlayVoice) {
+        speakText(stepVoiceText).catch(() => {});
+      }
     }, 400);
 
     return () => {
       if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current);
     };
-  }, [step, stepVoiceText]);
+  }, [step, stepVoiceText, settings.speechRate, settings.soundEnabled, settings.autoPlayVoice]);
 
   useEffect(() => {
     if (step === 'intro') setGumiMessage(`Mira y escucha la palabra ${card.value}.`);
@@ -543,7 +549,7 @@ const GameBoard: React.FC<Props> = ({ user, card, cardIndex, onComplete, onBack 
               />
             ))}
             <div className="relative z-10 flex flex-col items-center animate-bounce-in px-6 text-center">
-              <img src="/gumi-avatar.png" alt="Gumi" className={`w-28 h-28 sm:w-36 sm:h-36 mb-3 ${!reduceAnim ? 'animate-bounce' : ''} object-contain drop-shadow-2xl`} />
+              <img src="/gumi-avatar.png" alt="Gumi" className={`w-28 h-28 sm:w-36 sm:h-36 mb-3 ${!reduceAnim ? 'animate-bounce' : ''} object-contain bg-transparent`} />
               <h2 className="text-5xl sm:text-7xl font-magic text-white uppercase drop-shadow-lg mb-2" style={{ textShadow: '0 4px 0 rgba(245,158,11,0.6)' }}>¡Muy bien!</h2>
               <p className="text-2xl sm:text-3xl font-magic text-white uppercase mb-4" style={{ textShadow: '0 3px 0 rgba(245,158,11,0.5)' }}>¡Aprendiste {card.value}!</p>
               {pictInfo?.imageUrl && (

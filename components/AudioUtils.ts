@@ -86,7 +86,7 @@ export async function playVoiceBuffer(buffer: AudioBuffer, text: string, rate: '
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
-  source.playbackRate.value = rate === 'slow' ? 0.82 : rate === 'fast' ? 1.18 : 1.0;
+  source.playbackRate.value = rate === 'slow' ? 0.65 : rate === 'fast' ? 1.25 : 1.0;
 
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, ctx.currentTime);
@@ -181,7 +181,7 @@ function speakWithBrowser(text: string, rate: 'slow' | 'normal' | 'fast' = 'slow
   stopBrowserVoice();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'es-ES';
-  utter.rate = rate === 'slow' ? 0.7 : rate === 'fast' ? 1.18 : 1.0;
+  utter.rate = rate === 'slow' ? 0.62 : rate === 'fast' ? 1.25 : 1.0;
   utter.pitch = 1.6;
   utter.volume = 1.0;
 

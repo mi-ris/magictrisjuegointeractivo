@@ -5,7 +5,7 @@ import { MAGIC_PATH, MAGIC_ISLANDS, PICTOGRAMS } from '../services/mockData';
 import { supabase } from '../services/supabaseClient';
 import CloudPath from './CloudPath';
 import { useSettings } from './SettingsContext';
-import { playPopSound } from './AudioUtils';
+import { playPopSound, stopCurrentVoice } from './AudioUtils';
 
 interface Props {
   user: User;
@@ -379,7 +379,11 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
                 <p className="text-[11px] text-indigo-400">Activa o desactiva todos los sonidos</p>
               </div>
               <button
-                onClick={() => { updateSettings({ soundEnabled: !settings.soundEnabled }); if (settings.soundEnabled) playPopSound(); }}
+                onClick={() => {
+                  const nextSoundEnabled = !settings.soundEnabled;
+                  updateSettings({ soundEnabled: nextSoundEnabled });
+                  if (nextSoundEnabled) playPopSound();
+                }}
                 className={`relative w-12 h-7 rounded-full transition-colors ${settings.soundEnabled ? 'bg-indigo-500' : 'bg-gray-300'}`}
               >
                 <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${settings.soundEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
@@ -393,7 +397,11 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
                 <p className="text-[11px] text-indigo-400">Reproduce las instrucciones solo al entrar a cada juego</p>
               </div>
               <button
-                onClick={() => updateSettings({ autoPlayVoice: !settings.autoPlayVoice })}
+                onClick={() => {
+                  const nextAutoPlayVoice = !settings.autoPlayVoice;
+                  updateSettings({ autoPlayVoice: nextAutoPlayVoice });
+                  if (!nextAutoPlayVoice) stopCurrentVoice();
+                }}
                 className={`relative w-12 h-7 rounded-full transition-colors ${settings.autoPlayVoice ? 'bg-indigo-500' : 'bg-gray-300'}`}
               >
                 <span className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-transform ${settings.autoPlayVoice ? 'translate-x-5' : 'translate-x-0.5'}`} />

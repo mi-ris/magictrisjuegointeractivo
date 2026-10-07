@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AppSettings } from '../types';
-import { setSpeechRate } from './AudioUtils';
+import { setSpeechRate, stopCurrentVoice } from './AudioUtils';
 
 interface SettingsContextType {
   settings: AppSettings;
@@ -35,8 +35,17 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [showBreakReminder, setShowBreakReminder] = useState(false);
 
   useEffect(() => {
-    setSpeechRate(settings.speechRate as 'slow' | 'normal' | 'fast');
+    setSpeechRate(settings.speechRate);
   }, [settings.speechRate]);
+
+  useEffect(() => {
+    if (!settings.soundEnabled) stopCurrentVoice();
+  }, [settings.soundEnabled]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('reduce-animations', settings.reduceAnimations);
+    return () => document.documentElement.classList.remove('reduce-animations');
+  }, [settings.reduceAnimations]);
 
   useEffect(() => {
     try {

@@ -33,10 +33,10 @@ export const chatWithPro = async (message: string, history: any[] = []) => {
 export const textToSpeech = async (text: string, rate: 'slow' | 'normal' | 'fast' = 'slow'): Promise<string | undefined> => {
   const ai = getGeminiClient();
   const paceInstruction =
-    rate === 'slow'  ? 'Habla despacio, con naturalidad y claridad. Haz pausas breves entre ideas para que el niño pueda seguirte.' :
-    rate === 'fast'  ? 'Habla un poco más rápido, manteniendo una pronunciación clara y natural. Nunca atropelles las palabras.' :
-                       'Habla a un ritmo natural, cálido y tranquilo.';
-  const styledText = `Habla exactamente en español y conserva la misma voz configurada. Suena cálido, alegre, amigable y natural, como un docente paciente que enseña a niños pequeños. Habla lentamente y con mucha claridad; separa bien cada palabra, evita unirlas o acelerarlas y deja pequeñas pausas naturales entre palabras, frases e instrucciones. Evita sonar robótico, monótono, rápido o demasiado formal. Usa cambios naturales de entonación y energía para mantener la atención sin gritar ni exagerar: en las preguntas utiliza una entonación claramente interrogativa; al felicitar, transmite alegría y motivación; al explicar, usa un tono tranquilo, paciente y didáctico. Pronuncia correctamente cada palabra en español. La prioridad es que el niño comprenda fácilmente cada palabra y se sienta acompañado durante el aprendizaje. ${paceInstruction} No agregues explicaciones antes o después del texto. Di exactamente esto: ${text}`;
+    rate === 'slow'  ? 'Habla lentamente, separando con claridad cada palabra y dejando pausas breves entre frases para que el niño pueda seguirte.' :
+    rate === 'fast'  ? 'Habla más rápido que el ritmo normal, manteniendo una pronunciación clara y natural sin atropellar las palabras.' :
+                       'Habla a un ritmo normal, cálido y tranquilo, con pausas naturales.';
+  const styledText = `Habla exactamente en español y conserva la misma voz configurada. Suena cálido, alegre, amigable y natural, como un docente paciente que enseña a niños pequeños. ${paceInstruction} Evita sonar robótico, monótono o demasiado formal. Usa cambios naturales de entonación y energía para mantener la atención sin gritar ni exagerar: en las preguntas utiliza una entonación claramente interrogativa; al felicitar, transmite alegría y motivación; al explicar, usa un tono tranquilo, paciente y didáctico. Pronuncia correctamente cada palabra en español. La prioridad es que el niño comprenda fácilmente cada palabra y se sienta acompañado durante el aprendizaje. No agregues explicaciones antes o después del texto. Di exactamente esto: ${text}`;
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: styledText }] }],

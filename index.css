@@ -622,3 +622,12 @@ body {
   .album-card-inner::before { display: none; }
   .album-card:hover .album-card-inner { transform: none; }
 }
+
+html.reduce-animations *,
+html.reduce-animations *::before,
+html.reduce-animations *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
