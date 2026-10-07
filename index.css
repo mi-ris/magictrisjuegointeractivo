@@ -43,12 +43,18 @@ body {
 
 .cloud-emoji {
   position: absolute;
-  animation: float-cloud linear infinite;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 0.7;
+  filter: blur(0.2px) drop-shadow(0 8px 10px rgba(83, 137, 211, 0.18));
+  animation: cloud-drift ease-in-out infinite;
+  will-change: transform;
 }
 
-@keyframes float-cloud {
-  from { transform: translateX(-20vw); }
-  to { transform: translateX(110vw); }
+@keyframes cloud-drift {
+  0%, 100% { transform: translate3d(-10px, 0, 0); }
+  25% { transform: translate3d(6px, -5px, 0); }
+  50% { transform: translate3d(14px, 1px, 0); }
+  75% { transform: translate3d(2px, 5px, 0); }
 }
 
 @keyframes confetti-fall {

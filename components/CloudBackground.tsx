@@ -1,29 +1,28 @@
-
 import React from 'react';
+import { useSettings } from './SettingsContext';
 
 interface Props {
   variant?: 'light' | 'dark';
 }
 
 const CloudBackground: React.FC<Props> = ({ variant = 'light' }) => {
-  const opacity = variant === 'dark' ? '0.15' : '0.8';
+  const { settings } = useSettings();
+  const opacity = variant === 'dark' ? 0.15 : 0.8;
   const clouds = [
-    { size: 'text-[120px]', top: 'top-10', duration: '45s', left: '-10%' },
-    { size: 'text-[180px]', top: 'top-60', duration: '70s', left: '-25%' },
-    { size: 'text-[140px]', top: 'top-20', duration: '55s', left: '80%' },
-    { size: 'text-[100px]', top: 'bottom-20', duration: '50s', left: '-15%' },
-    { size: 'text-[80px]', top: 'top-40', duration: '60s', left: '30%' },
+    { size: 'text-[120px]', top: 'top-[34%]', left: 'left-[-2%]', duration: '52s', delay: '-11s' },
+    { size: 'text-[92px]', top: 'top-[8%]', left: 'left-[68%]', duration: '61s', delay: '-27s' },
+    { size: 'text-[82px]', top: 'bottom-[12%]', left: 'left-[48%]', duration: '57s', delay: '-39s' },
   ];
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {clouds.map((c, i) => (
+      {clouds.map((cloud, index) => (
         <div
-          key={i}
-          className={`cloud-emoji absolute ${c.size} ${c.top}`}
-          style={{ animationDuration: c.duration, left: c.left, opacity }}
+          key={index}
+          className={`cloud-emoji absolute ${cloud.size} ${cloud.top} ${cloud.left}`}
+          style={{ opacity, animationDuration: cloud.duration, animationDelay: cloud.delay, animationPlayState: settings.reduceAnimations ? 'paused' : 'running' }}
         >
-          ☁️
+          ☁
         </div>
       ))}
     </div>
