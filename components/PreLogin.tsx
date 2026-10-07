@@ -34,7 +34,7 @@ const PreLogin: React.FC<Props> = ({ onStart }) => {
           ))}
         </section>
 
-        <button className="start-button" onClick={handleStart}>COMENZAR</button>
+        <button className="start-button" onClick={handleStart} type="button">COMENZAR</button>
         <p className="cover-footer">✦ HECHO CON MAGIA PARA NIÑOS CURIOSOS ✦</p>
       </div>
     </main>
