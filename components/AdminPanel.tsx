@@ -38,7 +38,7 @@ interface LevelStat {
 
 const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
   const [attempts, setAttempts] = useState<AttemptRow[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [view, setView] = useState<'stats' | 'levels' | 'history' | 'preview' | 'settings'>('stats');
   const { settings, updateSettings } = useSettings();
 
@@ -148,12 +148,13 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-3 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />
+        <div className="mb-3 flex items-center justify-center gap-2 rounded-xl border border-cyan-100 bg-white/70 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-cyan-600">
+          <div className="h-3 w-3 animate-spin rounded-full border-2 border-cyan-200 border-t-cyan-600" />
+          Actualizando datos
         </div>
       )}
 
-      {!loading && view === 'stats' && (
+      {view === 'stats' && (
         <div className="space-y-4">
           {/* Tarjetas resumen */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -252,7 +253,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
         </div>
       )}
 
-      {!loading && view === 'levels' && (
+      {view === 'levels' && (
         <div className="space-y-3">
           {MAGIC_ISLANDS.map((island, islandIdx) => {
             const islandStats = island.cardIds.map(id => {
@@ -311,7 +312,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
         </div>
       )}
 
-      {!loading && view === 'history' && (
+      {view === 'history' && (
         <div className="bg-white/90 backdrop-blur-md rounded-2xl border-2 border-indigo-100 shadow-md overflow-hidden">
           {attempts.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-8">No hay intentos registrados ainda.</p>
@@ -349,7 +350,7 @@ const AdminPanel: React.FC<Props> = ({ user, onBack, onPreviewCard }) => {
         </div>
       )}
 
-      {!loading && view === 'preview' && (
+      {view === 'preview' && (
         <div className="space-y-3">
           <div className="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-3 text-center">
             <p className="text-xs text-indigo-600 font-bold uppercase tracking-wider">Modo Vista Previa</p>

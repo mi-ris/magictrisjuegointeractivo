@@ -139,9 +139,12 @@ const App: React.FC = () => {
   };
 
   if (initializing) return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-cyan-50">
-       <div className="text-8xl animate-bounce mb-4">✨</div>
-       <p className="font-magic text-cyan-600 animate-pulse text-xl uppercase">Cargando Magia...</p>
+    <div className="relative min-h-screen overflow-hidden bg-cyan-50">
+      <CloudBackground />
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center">
+        <div className="mb-4 text-8xl animate-bounce">✨</div>
+        <p className="font-magic text-cyan-600 animate-pulse text-xl uppercase">Cargando Magia...</p>
+      </div>
     </div>
   );
 
@@ -160,8 +163,6 @@ const App: React.FC = () => {
 
   const showNavBar = user && section !== 'pre-login' && section !== 'login' && section !== 'register';
   const inGame = selectedCardIndex !== null || previewCardIndex !== null;
-  const darkBg = section === 'info';
-
   const renderSection = () => {
     if (previewCardIndex !== null && user) {
         return <GameBoard user={user} card={MAGIC_PATH[previewCardIndex]} cardIndex={previewCardIndex} onComplete={handlePreviewComplete} onBack={handlePreviewBack} />;
@@ -188,7 +189,7 @@ const App: React.FC = () => {
   return (
     <SettingsProvider>
       <div className="min-h-screen pb-10 relative">
-        <CloudBackground variant={darkBg ? 'dark' : 'light'} />
+        <CloudBackground />
         {showNavBar && user && (
           <NavBar
             user={user}
