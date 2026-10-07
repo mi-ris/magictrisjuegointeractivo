@@ -1,41 +1,42 @@
 import React from 'react';
+import { getSharedAudioContext, playPopSound } from './AudioUtils';
 
-interface Props {
-  onStart: () => void;
-}
+interface Props { onStart: () => void; }
 
-const cards = [
-  { letter: 'A', color: 'pink', icon: '🧠' },
-  { letter: 'E', color: 'yellow', icon: '●' },
-  { letter: 'I', color: 'green', icon: '♣' },
-] as const;
+const letters = [
+  { letter: 'A', color: 'pink', symbol: '🧠' },
+  { letter: 'E', color: 'yellow', symbol: '●' },
+  { letter: 'I', color: 'green', symbol: '☘' },
+];
 
 const PreLogin: React.FC<Props> = ({ onStart }) => {
+  const handleStart = () => {
+    const context = getSharedAudioContext();
+    if (context.state === 'suspended') context.resume();
+    playPopSound();
+    onStart();
+  };
+
   return (
     <main className="cover-page">
-      <section className="cover-content" aria-label="MagicTris">
+      <div className="cover-content">
         <header className="cover-heading">
           <h1>MAGICTRIS</h1>
           <p>¡La magia de aprender!</p>
         </header>
 
-        <div className="letter-cards" aria-label="Vocales mágicas">
-          {cards.map((card) => (
-            <article className={`letter-card letter-card--${card.color}`} key={card.letter}>
-              <span className={`card-icon card-icon--${card.color}`} aria-hidden="true">
-                {card.icon}
-              </span>
-              <strong>{card.letter}</strong>
+        <section className="vowel-cards" aria-label="Vocales mágicas">
+          {letters.map((item) => (
+            <article className={`vowel-card vowel-card-${item.color}`} key={item.letter}>
+              <span className="vowel-symbol" aria-hidden="true">{item.symbol}</span>
+              <span className="vowel-letter">{item.letter}</span>
             </article>
           ))}
-        </div>
+        </section>
 
-        <button className="start-button" type="button" onClick={onStart}>
-          <span>COMENZAR</span>
-        </button>
-
-        <p className="cover-footer">Hecho con magia para niños curiosos</p>
-      </section>
+        <button className="start-button" onClick={handleStart}>COMENZAR</button>
+        <p className="cover-footer">✦ HECHO CON MAGIA PARA NIÑOS CURIOSOS ✦</p>
+      </div>
     </main>
   );
 };
