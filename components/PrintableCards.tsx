@@ -13,12 +13,8 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
 
   const renderHighlightedWord = (word: string, syllable: string, color: string) => {
     const normalize = (str: string) => str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    
     const normalizedWord = normalize(word);
     const normalizedSyllable = normalize(syllable);
-    
-    const baseColor = 'text-white';
-
     const index = normalizedWord.indexOf(normalizedSyllable);
 
     if (index !== -1) {
@@ -26,76 +22,63 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
       const target = word.substring(index, index + syllable.length);
       const after = word.substring(index + syllable.length);
       return (
-        <span className={`font-magic uppercase tracking-tight leading-none ${baseColor} whitespace-nowrap`}>
-          {before}<span style={{ color: color }} className="text-[1.25em] inline-block font-black">{target}</span>{after}
+        <span className="album-word-text">
+          {before}<span style={{ color }} className="album-word-highlight">{target}</span>{after}
         </span>
       );
     }
-    return <span className={`font-magic uppercase tracking-tight leading-none ${baseColor} whitespace-nowrap`}>{word}</span>;
+    return <span className="album-word-text">{word}</span>;
   };
 
   return (
-    <div className="min-h-screen bg-transparent md:bg-transparent p-4 sm:p-8 animate-fade-in pb-20 pt-24 sm:pt-28">
-      <div className="print:hidden flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-        <div className="text-center">
-            <h1 className="text-4xl font-magic text-indigo-900 uppercase">Álbum de Recortes</h1>
-            <p className="text-sm font-bold text-indigo-400 uppercase tracking-widest">¡Imprime y juega fuera de línea!</p>
+    <div className="album-page animate-fade-in">
+      <div className="album-header print:hidden">
+        <button onClick={onBack} className="album-back" type="button" aria-label="Volver">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div className="album-header-text">
+          <h1>Álbum de Recortes</h1>
+          <p>¡Imprime y juega fuera de línea!</p>
         </div>
-
-        <button 
-          onClick={handlePrint}
-          className="bg-green-500 text-white px-10 py-4 rounded-[2rem] font-magic text-2xl shadow-xl hover:bg-green-600 active:translate-y-1 transition-all flex items-center justify-center min-w-[180px]"
-        >
+        <button onClick={handlePrint} className="album-print-btn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           IMPRIMIR
         </button>
       </div>
 
-      <div className="print:hidden max-w-4xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-[2.5rem] border-4 border-amber-400 shadow-xl flex items-center gap-6">
-              <span className="text-5xl"></span>
-              <p className="text-indigo-900 font-bold leading-tight">
-                 Recorta las tarjetas y pégalas en cartulina. ¡Ahora cada sílaba se ve mejor que nunca!
-              </p>
-          </div>
-          <div className="bg-indigo-500 text-white p-6 rounded-[2.5rem] border-4 border-white shadow-xl flex flex-col justify-center">
-              <h3 className="font-magic text-xl mb-2">¿Cómo imprimir?</h3>
-              <p className="text-sm font-bold opacity-90">1. Toca el botón verde "IMPRIMIR".</p>
-              <p className="text-sm font-bold opacity-90">2. En las opciones de tu impresora, activa <b>"Gráficos de fondo"</b>.</p>
-              <p className="text-sm font-bold opacity-90">3. El álbum se imprimirá a todo color.</p>
-          </div>
+      <div className="print:hidden album-tips">
+        <div className="album-tip-card album-tip-amber">
+          <div className="album-tip-icon">✂️</div>
+          <p>Recorta las tarjetas y pégalas en cartulina. ¡Ahora cada sílaba se ve mejor que nunca!</p>
+        </div>
+        <div className="album-tip-card album-tip-indigo">
+          <h3>¿Cómo imprimir?</h3>
+          <p><strong>1.</strong> Toca el botón verde "IMPRIMIR".</p>
+          <p><strong>2.</strong> Activa <strong>"Gráficos de fondo"</strong> en tu impresora.</p>
+          <p><strong>3.</strong> El álbum se imprimirá a todo color.</p>
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 print:gap-4 print:grid-cols-3">
+      <div className="album-grid">
         {MAGIC_PATH.map((card) => (
-          <div 
-            key={card.id}
-            className={`${card.color} border-4 border-white/40 rounded-[2.5rem] p-5 flex flex-col items-center justify-between aspect-[3/4] shadow-2xl print:shadow-none print:border-white print:rounded-[2rem] overflow-hidden`}
-            style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' } as any}
-          >
-            <div className="w-full flex justify-between items-start">
-                <span className="text-[10px] font-magic text-white/80 uppercase tracking-widest">
-                    {card.type === 'vocal' ? 'Vocal' : card.type === 'silaba' ? 'Sílaba' : 'Letra'}
-                </span>
-                <span className={`font-magic text-white drop-shadow-md leading-none ${card.value.length > 2 ? 'text-2xl' : 'text-4xl'}`}>
-                    {card.value}
-                </span>
-            </div>
-            
-            <div className="bg-white/20 backdrop-blur-md rounded-[2rem] w-full py-4 flex flex-col items-center border border-white/20 overflow-hidden">
+          <div key={card.id} className="album-card" style={{ ['--card-bg' as any]: card.color, ['--card-highlight' as any]: card.highlightColor }}>
+            <div className="album-card-inner">
+              <div className="album-card-badge">
+                {card.type === 'vocal' ? 'Vocal' : card.type === 'silaba' ? 'Sílaba' : 'Letra'}
+              </div>
+              <div className="album-card-value">{card.value}</div>
+              <div className="album-card-image-wrap">
                 {card.imageUrl ? (
-                  <img src={card.imageUrl} alt={card.pictogramWord} className="w-20 h-20 object-contain mb-2 bg-white rounded-2xl p-1" />
+                  <img src={card.imageUrl} alt={card.pictogramWord} className="album-card-image" />
                 ) : (
-                  <div className="w-20 h-20 bg-white/30 rounded-2xl mb-2" />
+                  <div className="album-card-image-placeholder" />
                 )}
-                <div className={`text-center px-2 w-full overflow-hidden ${card.pictogramWord.length > 8 ? 'text-lg' : 'text-xl'}`}>
-                    {renderHighlightedWord(card.pictogramWord, card.value, card.highlightColor)}
-                </div>
-            </div>
-
-            <div className="w-full h-1 bg-white/30 mt-4 rounded-full"></div>
-            
-            <div className="text-[8px] text-white/60 mt-1 uppercase font-magic text-center">
-                MagicTris - El Mundo de Gumi
+              </div>
+              <div className="album-card-word">
+                {renderHighlightedWord(card.pictogramWord, card.value, card.highlightColor)}
+              </div>
+              <div className="album-card-divider" />
+              <div className="album-card-footer">MagicTris · El Mundo de Gumi</div>
             </div>
           </div>
         ))}
@@ -103,21 +86,10 @@ const PrintableCards: React.FC<Props> = ({ onBack }) => {
 
       <style>{`
         @media print {
-          body {
-            background: white !important;
-            padding: 0 !important;
-          }
-          .animate-fade-in {
-            animation: none !important;
-          }
-          @page {
-            margin: 1cm;
-            size: auto;
-          }
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
+          body { background: white !important; padding: 0 !important; }
+          .animate-fade-in { animation: none !important; }
+          @page { margin: 1cm; size: auto; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
         .animate-fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn {
